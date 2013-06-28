@@ -1,0 +1,21 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <UsingTask TaskName="SourceLink.Build.SourceCheck" AssemblyFile="SourceLink.Build.dll" />
+  <UsingTask TaskName="SourceLink.Build.SourceLink" AssemblyFile="SourceLink.Build.dll" />
+
+  <PropertyGroup>
+    <BuildDependsOn>SourceCheck;$(BuildDependsOn);SourceLink</BuildDependsOn>
+    <SourceLinkRepoDir Condition="$(SourceLinkRepoDir) == '' And $(SolutionDir) != '*Undefined*' And $(SolutionDir) != ''">$(SolutionDir)</SourceLinkRepoDir>
+    <SourceLinkRepoDir Condition="$(SourceLinkRepoDir) == ''">$(MSBuildProjectDirectory)</SourceLinkRepoDir>
+  </PropertyGroup>
+  
+  <Target Name="SourceCheck" Condition="$(SourceCheck) == 'true'">
+    <SourceLink.Build.SourceCheck ProjectFile="$(MSBuildProjectFullPath)" RepoDir="$(SourceLinkRepoDir)" />
+  </Target>
+
+  <Target Name="SourceLink" Condition="$(SourceLink) == 'true' And $(SourceLinkRepoUrl) != ''">
+    <SourceLink.Build.SourceLink ProjectFile="$(MSBuildProjectFullPath)" TargetPath="$(TargetPath)"
+      RepoDir="$(SourceLinkRepoDir)" RepoUrl="$(SourceLinkRepoUrl)" />
+  </Target>
+
+</Project>
