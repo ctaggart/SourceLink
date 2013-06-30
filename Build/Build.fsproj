@@ -63,7 +63,6 @@
     <None Include="Build.nuspec" />
     <None Include="SourceLink.Build.targets" />
     <None Include="nuspec.2011.8.xsd" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SourceLink\SourceLink.fsproj">

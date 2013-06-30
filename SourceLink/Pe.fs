@@ -3,6 +3,7 @@
 open Mono.Cecil
 open System
 open System.Globalization
+open SourceLink.Extension
 
 let toString bytes = Text.Encoding.UTF8.GetString bytes // UTF8?
 
@@ -18,13 +19,6 @@ let toDateTime (timestamp:string) =
         Array.Reverse bytes
     let seconds = BitConverter.ToInt32(bytes, 0)
     unixEpoch.AddSeconds (double seconds)
-
-let formatDate (dt:DateTime) =
-    let s = dt.ToString DateTimeFormatInfo.InvariantInfo.SortableDateTimePattern
-    if dt.Kind = DateTimeKind.Utc then s+"Z" else s
-
-type Guid with
-    member x.ToStringN with get() = x.ToString("N").ToUpperInvariant()
 
 type PeInfo() =
     member val File = String.Empty with set, get

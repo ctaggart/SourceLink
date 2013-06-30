@@ -1,6 +1,8 @@
 ﻿
 open SourceLink
 open SourceLink.Build
+open SourceLink.Pdb
+open SourceLink.Extension
 
 let printChecksums proj =
 //    let sc = SourceCheck()
@@ -21,6 +23,7 @@ let printChecksumsStored dir files =
 [<EntryPoint>]
 let main argv = 
 
-    printChecksumsStored @"c:\temp\trybuild7" [|"Program.cs"|]
+//    printChecksumsStored @"c:\temp\trybuild7" [|"Program.cs"|]
+    use pdb = new PdbFile(@"C:\Projects\pdb\LibGit2Sharp.pdb\01980BA64D5A4977AF82EDC15D5B6DC61\LibGit2Sharp.1.pdb")
 
     0 // exit code

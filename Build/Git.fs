@@ -2,9 +2,11 @@
 
 open System
 open System.IO
-open SourceLink
 open LibGit2Sharp
 open System.Collections.Generic
+open SourceLink
+open SourceLink.Extension
+open SourceLink.Exception
 
 let concatBytes (a:byte[]) (b:byte[]) =
     let c = Array.create (a.Length + b.Length) 0uy
@@ -12,14 +14,12 @@ let concatBytes (a:byte[]) (b:byte[]) =
     Buffer.BlockCopy(b, 0, c, a.Length, b.Length)
     c
 
-let toBytes (s:string) = Text.Encoding.UTF8.GetBytes s
-
 let computeChecksums files =
     use sha1 = Security.Cryptography.SHA1.Create()
     files |> Seq.map (fun file ->
         let bytes = File.ReadAllBytes file
         let prefix = sprintf "blob %d%c" bytes.Length (char 0)
-        let checksum = sha1.ComputeHash(concatBytes (toBytes prefix) bytes) |> Hex.encode
+        let checksum = sha1.ComputeHash(concatBytes prefix.ToUtf8 bytes) |> Hex.encode
         checksum, file
     )
     |> Seq.toArray
@@ -44,6 +44,6 @@ let getChecksums dir files =
         else
             missing.Add f
         if missing.Count > 0 then
-            Ex.failwithf "files not in repo: %A" missing
+            failwithf "files not in repo: %A" missing
     )
     checksums
