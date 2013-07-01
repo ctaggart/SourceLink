@@ -6,7 +6,6 @@ open System.Collections.Generic
 open SourceLink.Pe
 open SourceLink.Extension
 open SourceLink.Exception
-open System.Collections
 
 let computeChecksums files =
     use md5 = Security.Cryptography.MD5.Create()
@@ -18,12 +17,22 @@ let computeChecksums files =
         checksums.[f |> computeHash |> Hex.encode] <- f
     checksums
 
+let readLines (bytes:byte[]) =
+    use sr = new StreamReader(new MemoryStream(bytes))
+    seq {
+        while not sr.EndOfStream do
+            yield sr.ReadLine()
+    }
+    |> Seq.toArray
+
 type PdbInfo() =
     member val File = String.Empty with set, get
     member val Guid = defaultGuid with set, get
     member val Age = 0 with set, get
-    member val StreamNames = Dictionary() :> IDictionary<string,int> with set, get
-    member val Checksums = SortedDictionary() :> IDictionary<string,string> with set, get
+    member val StreamCount = 0 with set, get
+    member val StreamNames = SortedDictionary(StringComparer.OrdinalIgnoreCase) :> IDictionary<string,int> with set, get
+    member val Filenames = SortedDictionary(StringComparer.OrdinalIgnoreCase) :> IDictionary<string,string> with set, get
+    member val Checksums = Dictionary(StringComparer.OrdinalIgnoreCase) :> IDictionary<string,string> with set, get
     member val PeAge = 0u with set, get
     member x.PeId with get() = x.Guid.ToStringN + x.PeAge.ToString()
     member val SrcSrv = [||] with set, get
@@ -36,12 +45,9 @@ type PdbStream() =
 type PdbFile(file) =
     let pi = PdbInfo()
     do pi.File <- file
-    let fs = File.Open(file, FileMode.Open, FileAccess.ReadWrite, FileShare.Read)
-    let br = new BinaryReader(fs)
+    let br = new BinaryReader(File.Open(file, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
 
-    let skip (i:int) = fs.Position <- fs.Position + int64 i
-    
-    let checkHeader =
+    do // check header
         let c00 = char 0x00 // null \0 null character
         let c0D = char 0x0D // cr \r carriage return
         let c0A = char 0x0A // lf \n line feed
@@ -52,18 +58,18 @@ type PdbFile(file) =
     
     // read rest of header
     let pageByteCount = br.ReadInt32()
-    do skip 4 // free pages
+    do br.Skip 4 // free pages
     let usedPageCount = br.ReadInt32()
     let directoryByteCount = br.ReadInt32()
-    do skip 4
+    do br.Skip 4
     let directoryPageNumber = br.ReadInt32()
 
     // reading functions
     let countPages nBytes = (nBytes + pageByteCount - 1) / pageByteCount
-    let goToPage n = fs.Position <- n * pageByteCount |> int64
-    let readPage bytes page offset count =
+    let goToPage n = br.Position <- n * pageByteCount
+    let readPage (bytes:byte[]) page offset count =
         goToPage page
-        let read = fs.Read(bytes, offset, count)
+        let read = br.Read(bytes, offset, count)
         if read <> count then failwithf "tried reading %d bytes at offset %d, but only read %d" count offset read
     let readStreamBytes (stream:PdbStream) =
         let pages = stream.Pages
@@ -78,46 +84,81 @@ type PdbFile(file) =
 
     // read stream directory pointers
     let directoryStream = PdbStream()
-    do directoryStream.ByteCount <- directoryByteCount
-    do directoryStream.Pages <- Array.create (countPages directoryByteCount) 0
-    do goToPage directoryPageNumber
-    do for i in 0 .. directoryStream.Pages.Length - 1 do
-        directoryStream.Pages.[i] <- br.ReadInt32()
+    do 
+        directoryStream.ByteCount <- directoryByteCount
+        directoryStream.Pages <- Array.create (countPages directoryByteCount) 0
+        goToPage directoryPageNumber
+        for i in 0 .. directoryStream.Pages.Length - 1 do
+            directoryStream.Pages.[i] <- br.ReadInt32()
 
     // read stream directory
     let brDirectory = streamReader directoryStream
-    let streamCount = brDirectory.ReadInt32()
-    let streams = Array.create streamCount (PdbStream())
-    do for i in 0 .. streamCount - 1 do
-        let stream = PdbStream()
-        streams.[i] <- stream
-        let byteCount = brDirectory.ReadInt32()
-        stream.ByteCount <- byteCount
-        let pageCount = countPages byteCount
-        stream.Pages <- Array.create pageCount 0
-    do for i in 0 .. streamCount - 1 do
-        for j in 0 .. streams.[i].Pages.Length - 1 do
-            streams.[i].Pages.[j] <- brDirectory.ReadInt32()
+    do pi.StreamCount <- brDirectory.ReadInt32()
+    let streams = Array.create pi.StreamCount (PdbStream())
+    do 
+        for i in 0 .. pi.StreamCount - 1 do
+            let stream = PdbStream()
+            streams.[i] <- stream
+            let byteCount = brDirectory.ReadInt32()
+            stream.ByteCount <- byteCount
+            let pageCount = countPages byteCount
+            stream.Pages <- Array.create pageCount 0
+        for i in 0 .. pi.StreamCount - 1 do
+            for j in 0 .. streams.[i].Pages.Length - 1 do
+                streams.[i].Pages.[j] <- brDirectory.ReadInt32()
+    
+    do // read stream 1, names
+        use br = streamReader streams.[1]
+        let version = br.ReadInt32() // of stream
+        let signature = br.ReadInt32()
+        pi.Age <- br.ReadInt32()
+        pi.Guid <- br.ReadGuid()
+        let namesByteCount = br.ReadInt32()
+        let namesByteStart = br.Position // 0x20
+        br.Position <- namesByteStart + namesByteCount
+        let nameCount = br.ReadInt32()
+        let nameCountMax = br.ReadInt32()
+        let flags = Array.create (br.ReadInt32()) 0 // bit flags for each nameCountMax
+        for i in 0 .. flags.Length - 1 do
+            flags.[i] <- br.ReadInt32() 
+        let hasName i =
+            let a = flags.[i / 32]
+            let b = (1 <<< i % 32)
+            a &&& b <> 0
+        br.Skip 4 // 0
+        let positions = List<int*int>(nameCount) // stream name position to stream index
+        for i in 0 .. nameCountMax - 1 do
+            if hasName i then
+                let position = br.ReadInt32()
+                let index = br.ReadInt32()
+                positions.Add(position, index)
+        if positions.Count <> nameCount then
+            failwithf "names index count, %d <> %d" positions.Count nameCount
+        for position, index in positions do
+            br.Position <- namesByteStart + position
+            let name = br.ReadCString()
+            pi.StreamNames.Add(name, index)
 
-    // TODO check file length
-    // TODO check # of pages in directory
-    // TODO read stream 1
-    //
-    do printfn "done reading" // temporary
-
+    do // read checksums
+        let prefix = "/src/files/"
+        pi.StreamNames
+        |> Seq.map (fun (KeyValue(name, i)) -> name.ToLowerInvariant(), i)
+        |> Seq.filter (fun (name, i) -> name.StartsWith prefix)
+        |> Seq.iter (fun (name, i) -> 
+            let checksum = (readStreamBytes streams.[i]).[72..87] |> Hex.encode
+            let filename = name.Substring prefix.Length
+            pi.Filenames.[filename] <- checksum
+            pi.Checksums.[checksum] <- filename
+        )
 
     member x.Dispose() =
-        use fs = fs
         use br = br
         use brDirectory = brDirectory
         GC.SuppressFinalize x
     interface IDisposable with member x.Dispose() = x.Dispose() 
     override x.Finalize() = x.Dispose()
 
-let readLines (bytes:byte[]) =
-    use sr = new StreamReader(new MemoryStream(bytes))
-    seq {
-        while not sr.EndOfStream do
-            yield sr.ReadLine()
-    }
-    |> Seq.toArray
+    member x.ReadStreamBytes i = readStreamBytes streams.[i]
+    member x.Info with get() = pi
+    member x.HasSrcSrv = x.Info.StreamNames.ContainsKey "SRCSRV"
+    member x.ReadSrcSrv = if x.HasSrcSrv then x.ReadStreamBytes x.Info.StreamNames.["SRCSRV"] |> readLines else [||]

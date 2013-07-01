@@ -3,6 +3,7 @@
 open System
 open System.Globalization
 open System.Collections.Generic
+open System.IO
 
 let private zulu (dt:DateTime) (fmt:string) =
     let s = dt.ToString fmt
@@ -26,3 +27,20 @@ type ICollection<'T> with
         else
             let comparer a' b' = Comparer<'T>.Default.Compare(a', b')
             (Seq.compareWith comparer a b) = 0
+
+type BinaryReader with
+    member x.ReadGuid() = Guid(x.ReadBytes 16)
+    member x.ReadCString() =
+        let byte = ref 0uy
+        byte := x.ReadByte()
+        seq {
+            while !byte <> 0uy do
+                yield !byte
+                byte := x.ReadByte()
+        }
+        |> Seq.toArray
+        |> Text.Encoding.UTF8.GetString
+    member x.Position 
+        with get() = int x.BaseStream.Position 
+        and set(i:int) = x.BaseStream.Position <- int64 i
+    member x.Skip i = x.Position <- x.Position + i
