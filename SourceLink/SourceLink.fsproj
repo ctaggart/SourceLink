@@ -39,9 +39,13 @@
     <Compile Include="Extension.fs" />
     <Compile Include="Exception.fs" />
     <Compile Include="Hex.fs" />
+    <Compile Include="File.fs" />
     <Compile Include="Pe.fs" />
-    <Compile Include="Pdb.fs" />
+    <Compile Include="PdbInfo.fs" />
+    <Compile Include="PdbFile.fs" />
+    <Compile Include="PdbChecksums.fs" />
     <Compile Include="SrcSrv.fs" />
+    <Compile Include="PdbModify.fs" />
     <None Include="packages.config" />
     <None Include="..\packages\LibGit2Sharp.0.12.0.0\NativeBinaries\x86\git2-9d9fff3.dll">
       <Link>git2-9d9fff3.dll</Link>

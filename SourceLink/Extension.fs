@@ -4,6 +4,7 @@ open System
 open System.Globalization
 open System.Collections.Generic
 open System.IO
+open System.Text
 
 let private zulu (dt:DateTime) (fmt:string) =
     let s = dt.ToString fmt
@@ -44,3 +45,9 @@ type BinaryReader with
         with get() = int x.BaseStream.Position 
         and set(i:int) = x.BaseStream.Position <- int64 i
     member x.Skip i = x.Position <- x.Position + i
+
+type BinaryWriter with
+    member x.WriteGuid (guid:Guid) = x.Write (guid.ToByteArray())
+
+type StringBuilder with
+    member x.Appendf format = Printf.ksprintf (fun s -> x.Append s |> ignore) format
