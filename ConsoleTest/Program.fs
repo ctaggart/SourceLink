@@ -24,9 +24,9 @@ let printChecksumsPdb (file:PdbFile) =
     for KeyValue(filename, checksum) in checksums.FilenameToChecksum do
         printfn "%s %s" checksum filename
 
-let printStreamPages (rootStream:RootStream) =
-    for i in 0 .. rootStream.Streams.Length - 1 do
-        let s = rootStream.Streams.[i]
+let printStreamPages (root:PdbRoot) =
+    for i in 0 .. root.Streams.Length - 1 do
+        let s = root.Streams.[i]
         printf "%d, %d, " i s.ByteCount
         for p in s.Pages do
             printf "%X " p
@@ -39,7 +39,7 @@ let printOrphanedPages (file:PdbFile) =
     add file.RootPage
     for page in file.RootPdbStream.Pages do
         add page
-    for stream in file.RootStream.Streams do
+    for stream in file.Root.Streams do
         for page in stream.Pages do
             add page
     let pagesFree = List<int>()
@@ -78,10 +78,13 @@ let main argv =
 //    printStreamPages file.Stream0
 //    printOrphanedPages file
     
-    let bytesOrig = file.ReadStreamBytes 1
-    let bytesMod = createInfoBytes file.Info
-//    writeFile "bytesOrig.3" bytesOrig
-//    writeFile "bytesMod.4" bytesMod
+//    let bytesOrig = file.ReadStreamBytes 1
+//    let bytesMod = createInfoBytes file.Info
+    let bytesOrig = file.ReadPdbStreamBytes file.RootPdbStream
+    let bytesMod = createRootBytes file.Root
+
+    writeFile "root.orig.1" bytesOrig
+    writeFile "root.mod.1" bytesMod
     let same = bytesOrig.CollectionEquals bytesMod
     if not same then
         printDiffPosition bytesOrig bytesMod

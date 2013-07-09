@@ -9,7 +9,8 @@ type PdbStream() =
     member val ByteCount = 0 with set, get
     member val Pages = Array.create 0 0 with set, get
 
-type RootStream() =
+// data in the root stream
+type PdbRoot() =
     member val Streams = Array.zeroCreate<PdbStream> 0 with set, get
 
 type PdbName() =
@@ -17,6 +18,7 @@ type PdbName() =
     member val Stream = 0 with set, get
     member val Name = String.Empty with set, get
 
+// data in the info stream
 type PdbInfo() =
     member val Version = 0 with set, get
     member val Signature = 0 with set, get

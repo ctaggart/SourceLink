@@ -55,8 +55,8 @@ type PdbFile(file) =
     let streamReader stream = new BinaryReader(readStream stream)
 
     // read root stream
-    let readRootStream streamRoot =
-        let rootStream = RootStream()
+    let readRoot streamRoot =
+        let root = PdbRoot()
         use brDirectory = streamReader streamRoot
         let streamCount = brDirectory.ReadInt32()
         if streamCount <> 0x0131CA0B then
@@ -72,8 +72,8 @@ type PdbFile(file) =
                 for j in 0 .. streams.[i].Pages.Length - 1 do
                     let page = brDirectory.ReadInt32()
                     streams.[i].Pages.[j] <- page
-            rootStream.Streams <- streams
-        rootStream
+            root.Streams <- streams
+        root
     let rootPdbStream =
         let pdbStream = PdbStream()
         pdbStream.ByteCount <- rootByteCount
@@ -82,7 +82,7 @@ type PdbFile(file) =
         for i in 0 .. pdbStream.Pages.Length - 1 do
             pdbStream.Pages.[i] <- br.ReadInt32()
         pdbStream
-    let root = readRootStream rootPdbStream
+    let root = readRoot rootPdbStream
 
     // read info stream
     let info =
@@ -131,14 +131,15 @@ type PdbFile(file) =
     override x.Finalize() = x.Dispose()
 
     member x.File with get() = file
-    member x.ReadStreamBytes i = readStreamBytes root.Streams.[i]
+    member x.ReadPdbStreamBytes pdbStream = readStreamBytes pdbStream
+    member x.ReadStreamBytes stream = readStreamBytes root.Streams.[stream]
     member x.Info with get() = info
     member x.HasSrcSrv with get() = info.NameToPdbName.ContainsKey "SRCSRV"
     member x.ReadSrcSrv() = if x.HasSrcSrv then x.ReadStreamBytes info.NameToPdbName.["SRCSRV"].Stream |> readLines else [||]
     member x.RootPage with get() = rootPage
     member x.RootPdbStream with get() = rootPdbStream
-    member x.RootStream with get() = root
-    member x.Stream0 with get() = readRootStream root.Streams.[0]
+    member x.Root with get() = root
+    member x.Stream0 with get() = readRoot root.Streams.[0]
     member x.PagesFree with get() = pagesFree
     member x.PageCount with get() = pageCount
     member x.FreeStream (i:int) = () // TODO free the pages of a stream
