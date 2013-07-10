@@ -7,6 +7,13 @@ open SourceLink
 open SourceLink.Extension
 open SourceLink.Exception
 
+let createRootPageBytes (pdbStream:PdbStream) =
+    use ms = new MemoryStream()
+    use bw = new BinaryWriter(ms)
+    for page in pdbStream.Pages do
+        bw.Write page
+    ms.ToArray()
+
 let createRootBytes (root:PdbRoot) =
     use ms = new MemoryStream()
     use bw = new BinaryWriter(ms)

@@ -51,3 +51,7 @@ type BinaryWriter with
 
 type StringBuilder with
     member x.Appendf format = Printf.ksprintf (fun s -> x.Append s |> ignore) format
+
+type FileStream with
+    member x.WriteBytes (bytes:byte[]) = x.Write(bytes, 0, bytes.Length)
+    member x.WriteBytesAt bytes (position:int) = x.Position <- int64 position; x.WriteBytes bytes

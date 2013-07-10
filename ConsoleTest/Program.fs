@@ -61,16 +61,36 @@ let printDiffPosition (a:byte[]) (b:byte[]) =
         if a.[i] <> b.[i] then
             printfn "%X %X %X" i a.[i] b.[i]
 
+let createCopy fn =
+    let fn0 = Path.ChangeExtension(fn,"0.pdb")
+    if File.Exists fn0 then File.Delete fn0
+    File.Copy(fn, fn0)
+    fn0
+
+let readAndWriteRoot fn =
+    let fn0 = createCopy fn
+    use pdb = new PdbFile(fn0)
+    pdb.FreePages pdb.RootPdbStream.Pages
+    let rootPdbStream = pdb.WriteStream (createRootBytes pdb.Root)
+    pdb.WriteRootPage (createRootPageBytes rootPdbStream)
+    fn0
+
+let readAndWriteInfo fn =
+    let fn0 = createCopy fn
+    use pdb = new PdbFile(fn0)
+    pdb.FreeStream 1
+    pdb.WriteStream (createInfoBytes pdb.Info) |> ignore
+    fn0
+
 [<EntryPoint>]
 let main argv = 
-
 //    printChecksumsGit @"c:\temp\trybuild7" [|"Program.cs"|]
 
 //    use file = new PdbFile(@"C:\Projects\pdb\LibGit2Sharp.pdb\01980BA64D5A4977AF82EDC15D5B6DC61\LibGit2Sharp.1.pdb")
 //    use file = new PdbFile(@"C:\Projects\pdb\LibGit2Sharp.pdb\01980BA64D5A4977AF82EDC15D5B6DC61\LibGit2Sharp.2.pdb")
 //    use file = new PdbFile(@"C:\Projects\pdb\Autofac.pdb\D77905B67A5046138298AF1CC87D57D51\Autofac.pdb")
 //    use file = new PdbFile(@"C:\Projects\pdb\Autofac.pdb\D864089AF4054AC38A575550C13670FC1\Autofac.pdb")
-    use file = new PdbFile(@"C:\Projects\SourceLink\ConsoleTest\bin\Debug\SourceLink - Copy.pdb")
+//    use file = new PdbFile(@"C:\Projects\SourceLink\ConsoleTest\bin\Debug\SourceLink - Copy.pdb")
 
 //    printfn "pdb guid: %s" file.Info.Guid.ToStringN
     
@@ -80,13 +100,22 @@ let main argv =
     
 //    let bytesOrig = file.ReadStreamBytes 1
 //    let bytesMod = createInfoBytes file.Info
-    let bytesOrig = file.ReadPdbStreamBytes file.RootPdbStream
-    let bytesMod = createRootBytes file.Root
+//    let bytesOrig = file.ReadPdbStreamBytes file.RootPdbStream
+//    let bytesMod = createRootBytes file.Root
+//
+//    writeFile "root.orig.1" bytesOrig
+//    writeFile "root.mod.1" bytesMod
 
-    writeFile "root.orig.1" bytesOrig
-    writeFile "root.mod.1" bytesMod
+
+    let fn = @"C:\Projects\SourceLink\ConsoleTest\bin\Debug\SourceLink - Copy.pdb"
+//    let fn0 = readAndWriteRoot fn
+    let fn0 = readAndWriteInfo fn
+    let bytesOrig = File.ReadAllBytes fn
+    let bytesMod = File.ReadAllBytes fn0
+
     let same = bytesOrig.CollectionEquals bytesMod
     if not same then
         printDiffPosition bytesOrig bytesMod
+
 
     0 // exit code
