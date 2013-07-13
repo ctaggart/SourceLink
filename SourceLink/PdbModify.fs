@@ -9,15 +9,15 @@ open SourceLink.Exception
 
 let createRootPageBytes (pdbStream:PdbStream) =
     use ms = new MemoryStream()
-    use bw = new BinaryWriter(ms)
+    use bw = new BinaryWriter(ms, Encoding.UTF8, true)
     for page in pdbStream.Pages do
         bw.Write page
     ms.ToArray()
 
 let createRootBytes (root:PdbRoot) =
     use ms = new MemoryStream()
-    use bw = new BinaryWriter(ms)
-    bw.Write root.Streams.Length
+    use bw = new BinaryWriter(ms, Encoding.UTF8, true)
+    bw.Write root.Streams.Count
     for stream in root.Streams do
         bw.Write stream.ByteCount
     for stream in root.Streams do
@@ -27,7 +27,7 @@ let createRootBytes (root:PdbRoot) =
 
 let createInfoBytes (info:PdbInfo) =
     use ms = new MemoryStream()
-    use bw = new BinaryWriter(ms)
+    use bw = new BinaryWriter(ms, Encoding.UTF8, true)
     bw.Write info.Version
     bw.Write info.Signature
     bw.Write info.Age
@@ -35,15 +35,22 @@ let createInfoBytes (info:PdbInfo) =
     
     let names = info.StreamToPdbName |> Seq.map (fun (KeyValue(stream, name)) -> name) |> Seq.toArray
 
-    let nameToPosition = Dictionary<string,int>()
+    let nameToPosition = Dictionary<string,int>() // could used an array instead
+//    let positions = Array.create names.Length (0,0)
+//    let i = ref 0
     let position = ref 0
+//    let byteCount = ref 0
     let nameBytes = // utf8 bytes without null
         names
         |> Seq.map (fun name ->
             let bytes = name.Name.ToUtf8
             nameToPosition.Add(name.Name, !position)
+//            positions.[!i] <- !position, name.Stream
+//            byteCount := !byteCount + bytes.Length + 1
             position := !position + bytes.Length + 1
+//            incr i
             bytes
+            
         )
         |> Seq.toArray
 
@@ -78,7 +85,8 @@ let createInfoBytes (info:PdbInfo) =
     bw.Write 0
 
     for name in info.Names do
-        bw.Write nameToPosition.[name.Name]
+        let position = nameToPosition.[name.Name]
+        bw.Write position
         bw.Write name.Stream
 
     bw.Write info.Tail

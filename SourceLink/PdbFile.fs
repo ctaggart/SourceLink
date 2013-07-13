@@ -3,16 +3,18 @@
 open System
 open System.IO
 open System.Collections.Generic
+open System.Text
 open SourceLink.Pe
 open SourceLink.Extension
 open SourceLink.Exception
 open SourceLink.File
+open SourceLink.PdbModify
 
 type PdbFile(file) =
     
     let fs = File.Open(file, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite)
-    let br = new BinaryReader(fs)
-//    let bw = new BinaryWriter(fs)
+    let br = new BinaryReader(fs, Encoding.UTF8, true)
+    let bw = new BinaryWriter(fs, Encoding.UTF8, true)
 
     do // check header
         let c00 = char 0x00 // null \0 null character
@@ -47,12 +49,13 @@ type PdbFile(file) =
         let read = br.Read(bytes, offset, count)
         if read <> count then failwithf "tried reading %d bytes at offset %d, but only read %d" count offset read
     let readStreamBytes (stream:PdbStream) =
-        let pages = stream.Pages
         let bytes = Array.create stream.ByteCount 0uy
-        for i in 0 .. pages.Length - 2 do
-            readPage bytes pages.[i] (i * pageByteCount) pageByteCount
-        let i = pages.Length - 1
-        readPage bytes pages.[i] (i * pageByteCount) (stream.ByteCount - (i * pageByteCount))
+        let pages = stream.Pages
+        if pages.Length <> 0 then
+            for i in 0 .. pages.Length - 2 do
+                readPage bytes pages.[i] (i * pageByteCount) pageByteCount
+            let i = pages.Length - 1
+            readPage bytes pages.[i] (i * pageByteCount) (stream.ByteCount - (i * pageByteCount))
         bytes
     let readStream stream = new MemoryStream(readStreamBytes stream)
     let streamReader stream = new BinaryReader(readStream stream)
@@ -63,10 +66,10 @@ type PdbFile(file) =
         use brDirectory = streamReader streamRoot
         let streamCount = brDirectory.ReadInt32()
         if streamCount <> 0x0131CA0B then
-            let streams = Array.create streamCount (PdbStream())
+            let streams = root.Streams
             for i in 0 .. streamCount - 1 do
                 let stream = PdbStream()
-                streams.[i] <- stream
+                streams.Add stream
                 let byteCount = brDirectory.ReadInt32()
                 stream.ByteCount <- byteCount
                 let pageCount = countPages byteCount
@@ -75,7 +78,6 @@ type PdbFile(file) =
                 for j in 0 .. streams.[i].Pages.Length - 1 do
                     let page = brDirectory.ReadInt32()
                     streams.[i].Pages.[j] <- page
-            root.Streams <- streams
         root
     let rootPdbStream =
         let pdbStream = PdbStream()
@@ -146,7 +148,7 @@ type PdbFile(file) =
             let newPageCount = n - freePageList.Length
             if newPageCount > 0 then
                 goToEnd()
-                for i in 0 .. newPageCount do
+                for i in 0 .. newPageCount - 1 do
                     let page = (int fs.Position) / pageByteCount
                     pages.Add page
                     fs.WriteBytes zerosPage
@@ -154,8 +156,8 @@ type PdbFile(file) =
 
     member x.Dispose() =
         use fs = fs
-        use brr = br
-//        use bw = bw
+        use br = br
+        use bw = bw
         GC.SuppressFinalize x
     interface IDisposable with member x.Dispose() = x.Dispose() 
     override x.Finalize() = x.Dispose()
@@ -164,8 +166,8 @@ type PdbFile(file) =
     member x.ReadPdbStreamBytes pdbStream = readStreamBytes pdbStream
     member x.ReadStreamBytes stream = readStreamBytes root.Streams.[stream]
     member x.Info with get() = info
-    member x.HasSrcSrv with get() = info.NameToPdbName.ContainsKey "SRCSRV"
-    member x.ReadSrcSrv() = if x.HasSrcSrv then x.ReadStreamBytes info.NameToPdbName.["SRCSRV"].Stream |> readLines else [||]
+    member x.HasSrcSrv with get() = info.NameToPdbName.ContainsKey "srcsrv"
+    member x.ReadSrcSrv() = if x.HasSrcSrv then x.ReadStreamBytes info.NameToPdbName.["srcsrv"].Stream |> readLines else [||]
     member x.RootPage with get() = rootPage
     member x.RootPdbStream with get() = rootPdbStream
     member x.Root with get() = root
@@ -184,25 +186,43 @@ type PdbFile(file) =
     member x.WriteStream (bytes:byte[]) =
         let n = countPages bytes.Length
         let pages = allocPages n
-        let j = ref 0
         for i in 0 .. n - 2 do
             goToPage pages.[i]
-            fs.Write(bytes, !j * pageByteCount, pageByteCount)
-            incr j
+            fs.Write(bytes, i * pageByteCount, pageByteCount)
         // write last page
-        let lastPageBytes = bytes.Length % pageByteCount
-        goToPage pages.[n-1]
-        if lastPageBytes = 0 then
-            fs.Write(bytes, !j * pageByteCount, pageByteCount)
-        else
-            fs.Write(bytes, !j * pageByteCount, lastPageBytes)
+        let last = n-1
+        let lastByteCount = 
+            let c = bytes.Length % pageByteCount
+            if c = 0 then pageByteCount else c
+        goToPage pages.[last]
+        fs.Write(bytes, last * pageByteCount, lastByteCount)
         let pdbStream = PdbStream()
         pdbStream.ByteCount <- bytes.Length
         pdbStream.Pages <- pages.ToArray()
         pdbStream
+
+    member x.WriteStreamTo bytes index =
+        root.Streams.[index] <- x.WriteStream bytes
 
     member x.WriteRootPage bytes =
         goToPage rootPage
         fs.WriteBytes zerosPage
         goToPage rootPage
         fs.WriteBytes bytes
+
+    member x.WriteHeader (rootByteCount:int) =
+        br.Position <- 0x28
+        bw.Write ((int fs.Length) / pageByteCount) // pageCount
+        bw.Write rootByteCount
+
+    /// writes the info stream, root stream, and header
+    member x.Save() =
+        x.FreePages x.RootPdbStream.Pages // free root
+        x.FreeStream 1 // free info
+        let infoBytes = createInfoBytes x.Info
+        x.WriteStreamTo infoBytes 1
+        let rootBytes = createRootBytes x.Root
+        let rootPdbStream = x.WriteStream rootBytes
+        let rootPageBytes = createRootPageBytes rootPdbStream
+        x.WriteRootPage rootPageBytes
+        x.WriteHeader rootPdbStream.ByteCount

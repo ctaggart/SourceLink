@@ -5,6 +5,7 @@ open SourceLink
 open SourceLink.Build
 open SourceLink.Extension
 open SourceLink.PdbModify
+open SourceLink.SrcSrv
 
 let printChecksums proj =
     let compiles = Proj.getCompiles proj
@@ -25,13 +26,12 @@ let printChecksumsPdb (file:PdbFile) =
         printfn "%s %s" checksum filename
 
 let printStreamPages (root:PdbRoot) =
-    for i in 0 .. root.Streams.Length - 1 do
+    for i in 0 .. root.Streams.Count - 1 do
         let s = root.Streams.[i]
         printf "%d, %d, " i s.ByteCount
         for p in s.Pages do
             printf "%X " p
         printfn ""
-    ()
 
 let printOrphanedPages (file:PdbFile) =
     let used = SortedSet<int>()
@@ -51,9 +51,9 @@ let printOrphanedPages (file:PdbFile) =
             printf "%x " i
     printfn ""
 
-let writeFile file (bytes:byte[]) =
+let writeFile file bytes =
     use fs = File.OpenWrite file
-    fs.Write(bytes, 0, bytes.Length)
+    fs.WriteBytes bytes
 
 let printDiffPosition (a:byte[]) (b:byte[]) =
     let n = if a.Length < b.Length then a.Length else b.Length
@@ -67,20 +67,55 @@ let createCopy fn =
     File.Copy(fn, fn0)
     fn0
 
-let readAndWriteRoot fn =
-    let fn0 = createCopy fn
-    use pdb = new PdbFile(fn0)
-    pdb.FreePages pdb.RootPdbStream.Pages
-    let rootPdbStream = pdb.WriteStream (createRootBytes pdb.Root)
-    pdb.WriteRootPage (createRootPageBytes rootPdbStream)
-    fn0
+let diffStreamPages a b =
+    use af = new PdbFile(a)
+    use bf = new PdbFile(b)
+    let ssa = af.Root.Streams
+    let ssb = bf.Root.Streams
+    printfn "stream count %d, %d" ssa.Count ssb.Count
+    let n = if ssa.Count <= ssb.Count then ssa.Count - 1 else ssb.Count - 1
+    for i in 0 .. n do
+        let sa = ssa.[i]
+        let sb = ssb.[i]
+        if sa.ByteCount <> sb.ByteCount then
+            printfn "stream %d, different byte count, %X, %X" i sa.ByteCount sb.ByteCount
+//        else
+//            printfn "stream %d, same byte count, %X" i sa.ByteCount
+        if sa.Pages.Length <> sb.Pages.Length then
+            printfn "  different # pages, %d, %d" sa.Pages.Length sb.Pages.Length
+//        else
+//            printfn "  same # pages, %d" sa.Pages.Length
+        if false = sa.Pages.CollectionEquals sb.Pages then
+            printfn "  pages not same, %A, %A" sa.Pages sb.Pages
 
-let readAndWriteInfo fn =
-    let fn0 = createCopy fn
-    use pdb = new PdbFile(fn0)
-    pdb.FreeStream 1
-    pdb.WriteStream (createInfoBytes pdb.Info) |> ignore
-    fn0
+let diffStreamBytes a b =
+    use fa = new PdbFile(a)
+    use fb = new PdbFile(b)
+
+    // root stream
+    let ra = fa.RootPdbStream
+    let rb = fb.RootPdbStream
+    let rba = fa.ReadPdbStreamBytes ra
+    let rbb = fb.ReadPdbStreamBytes rb
+    if false = rba.CollectionEquals rbb then
+        printfn "root length, a %d, b %d" ra.ByteCount rb.ByteCount
+    writeFile (sprintf "%s.root" a) rba
+    writeFile (sprintf "%s.root" b) rbb
+
+    // other streams
+    let ssa = fa.Root.Streams
+    let ssb = fb.Root.Streams
+    printfn "stream count %d, %d" ssa.Count ssb.Count
+    let n = if ssa.Count <= ssb.Count then ssa.Count - 1 else ssb.Count - 1
+    for i in 0 .. n do
+        let sa = ssa.[i]
+        let sb = ssb.[i]
+        let ba = fa.ReadPdbStreamBytes sa
+        let bb = fb.ReadPdbStreamBytes sb
+        if false = ba.CollectionEquals bb then
+            printfn "stream %d length, a %d, b %d" i sa.ByteCount sb.ByteCount
+            writeFile (sprintf "%s.%d" a i) ba
+            writeFile (sprintf "%s.%d" b i) bb
 
 [<EntryPoint>]
 let main argv = 
@@ -97,25 +132,22 @@ let main argv =
 //    printStreamPages file.RootStream
 //    printStreamPages file.Stream0
 //    printOrphanedPages file
-    
-//    let bytesOrig = file.ReadStreamBytes 1
-//    let bytesMod = createInfoBytes file.Info
-//    let bytesOrig = file.ReadPdbStreamBytes file.RootPdbStream
-//    let bytesMod = createRootBytes file.Root
-//
-//    writeFile "root.orig.1" bytesOrig
-//    writeFile "root.mod.1" bytesMod
-
 
     let fn = @"C:\Projects\SourceLink\ConsoleTest\bin\Debug\SourceLink - Copy.pdb"
-//    let fn0 = readAndWriteRoot fn
-    let fn0 = readAndWriteInfo fn
-    let bytesOrig = File.ReadAllBytes fn
-    let bytesMod = File.ReadAllBytes fn0
+//    let fn = @"C:\Projects\pdb\LibGit2Sharp.pdb\01980BA64D5A4977AF82EDC15D5B6DC61\LibGit2Sharp.1.pdb"
+//    let fn0 = @"C:\Projects\pdb\LibGit2Sharp.pdb\01980BA64D5A4977AF82EDC15D5B6DC61\LibGit2Sharp.2.pdb"
 
-    let same = bytesOrig.CollectionEquals bytesMod
-    if not same then
-        printDiffPosition bytesOrig bytesMod
+    do 
+        let fn0 = createCopy fn
+        use pdb = new PdbFile(fn0)
 
+        writeSrcSrvBytes pdb (File.ReadAllBytes @"C:\Projects\pdb\LibGit2Sharp.pdb\01980BA64D5A4977AF82EDC15D5B6DC61\LibGit2Sharp.pdb.srcsrv.txt")
+        pdb.Info.Age <- pdb.Info.Age + 1
+        pdb.Save()
 
+//    use pdb = new PdbFile(@"C:\Projects\SourceLink\ConsoleTest\bin\Debug\SourceLink - Copy.0.pdb")
+    diffStreamPages @"C:\Projects\SourceLink\ConsoleTest\bin\Debug\SourceLink - Copy.pdb" @"C:\Projects\SourceLink\ConsoleTest\bin\Debug\SourceLink - Copy.0.pdb"
+//    diffStreamBytes @"C:\Projects\SourceLink\ConsoleTest\bin\Debug\SourceLink - Copy.pdb" @"C:\Projects\SourceLink\ConsoleTest\bin\Debug\SourceLink - Copy.0.pdb"
+
+    
     0 // exit code

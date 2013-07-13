@@ -3,6 +3,7 @@
 open System
 open System.IO
 open System.Collections.Generic
+open SourceLink
 open SourceLink.File
 
 let pathCombine a b = Path.Combine(a, b)
@@ -48,3 +49,13 @@ let createSrcSrv urlBase revision (fileToPath:IDictionary<string,string>) =
         fprintfn sw "%s*%s" file path
     fprintfn sw "SRCSRV: end ------------------------------------------------"
     ms.ToArray()
+
+let writeSrcSrvBytes (file:PdbFile) (bytes:byte[]) =
+    if file.HasSrcSrv then
+        failwithf "overwriting srcsrv not coded yet"
+
+    let pdbStream = file.WriteStream bytes
+    let stream = file.Root.AddStream pdbStream
+
+    let pdbName = file.Info.AddNewName "srcsrv" // TODO caps?
+    pdbName.Stream <- stream
