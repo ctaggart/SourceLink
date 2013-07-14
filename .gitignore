@@ -2,3 +2,7 @@
 bin
 obj
 packages
+/Dia/*.h
+
+/Dia/*.tlb
+/Dia/*.c

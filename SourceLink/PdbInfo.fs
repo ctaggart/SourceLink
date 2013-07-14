@@ -2,7 +2,6 @@
 
 open System
 open System.Collections.Generic
-open Pe
 
 type PdbStream() =
     member val ByteCount = 0 with set, get
@@ -24,7 +23,7 @@ type PdbName() =
 type PdbInfo() =
     member val Version = 0 with set, get
     member val Signature = 0 with set, get
-    member val Guid = defaultGuid with set, get
+    member val Guid = Guid() with set, get
     member val Age = 0 with set, get
     member val NameIndexMax = 0 with set, get
     member val Names = List<PdbName>() with get // will be ordered by index

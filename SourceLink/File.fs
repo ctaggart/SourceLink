@@ -4,6 +4,8 @@ open System
 open System.IO
 open System.Collections.Generic
 
+let srcsrv = "srcsrv"
+
 let computeChecksums files =
     use md5 = Security.Cryptography.MD5.Create()
     let computeHash file =

@@ -6,6 +6,8 @@ open SourceLink.Build
 open SourceLink.Extension
 open SourceLink.PdbModify
 open SourceLink.SrcSrv
+open Microsoft.Dia
+open SourceLink.Dia
 
 let printChecksums proj =
     let compiles = Proj.getCompiles proj
@@ -34,21 +36,8 @@ let printStreamPages (root:PdbRoot) =
         printfn ""
 
 let printOrphanedPages (file:PdbFile) =
-    let used = SortedSet<int>()
-    let add page = used.Add page |> ignore
-    add file.RootPage
-    for page in file.RootPdbStream.Pages do
-        add page
-    for stream in file.Root.Streams do
-        for page in stream.Pages do
-            add page
-    let pagesFree = List<int>()
-    // page 0 is header
-    // page 1 is COFFFFFF... // does it need to be?
-    for i in 2 .. file.PageCount - 1 do
-        if false = used.Contains i then
-            pagesFree.Add i
-            printf "%x " i
+    for page in file.OrphanedPages do
+        printf "%x " page
     printfn ""
 
 let writeFile file bytes =
@@ -61,11 +50,12 @@ let printDiffPosition (a:byte[]) (b:byte[]) =
         if a.[i] <> b.[i] then
             printfn "%X %X %X" i a.[i] b.[i]
 
-let createCopy fn =
-    let fn0 = Path.ChangeExtension(fn,"0.pdb")
-    if File.Exists fn0 then File.Delete fn0
-    File.Copy(fn, fn0)
-    fn0
+let createCopy file i =
+    let ext = Path.GetExtension file
+    let copy = Path.ChangeExtension(file, sprintf ".%d%s" i ext)
+    if File.Exists copy then File.Delete copy
+    File.Copy(file, copy)
+    copy
 
 let diffStreamPages a b =
     use af = new PdbFile(a)
@@ -117,37 +107,39 @@ let diffStreamBytes a b =
             writeFile (sprintf "%s.%d" a i) ba
             writeFile (sprintf "%s.%d" b i) bb
 
+let printDia file =
+    let sn = openPdb file
+    let gs = sn.globalScope
+    printfn "%A %d" gs.guid gs.age
+
+    let sfs = sn.getTables().SourceFiles
+    printfn "# of source files %d" sfs.count
+    
+    for sf in sfs.toSeq() do
+        printfn "%d %s" sf.uniqueId sf.fileName
+//        for sym in sf.compilands.toSeq() do
+//            printfn "  %s" sym.name
+//    
+//    for ds in sn.getSeqDebugStreams() do
+//        printfn "%A %d" ds.name ds.count
+
+let printSrcSrv file = 
+    for line in PdbFile.ReadSrcSrvLines file do
+        printfn "%s" line
+
 [<EntryPoint>]
 let main argv = 
 //    printChecksumsGit @"c:\temp\trybuild7" [|"Program.cs"|]
-
-//    use file = new PdbFile(@"C:\Projects\pdb\LibGit2Sharp.pdb\01980BA64D5A4977AF82EDC15D5B6DC61\LibGit2Sharp.1.pdb")
-//    use file = new PdbFile(@"C:\Projects\pdb\LibGit2Sharp.pdb\01980BA64D5A4977AF82EDC15D5B6DC61\LibGit2Sharp.2.pdb")
-//    use file = new PdbFile(@"C:\Projects\pdb\Autofac.pdb\D77905B67A5046138298AF1CC87D57D51\Autofac.pdb")
-//    use file = new PdbFile(@"C:\Projects\pdb\Autofac.pdb\D864089AF4054AC38A575550C13670FC1\Autofac.pdb")
-//    use file = new PdbFile(@"C:\Projects\SourceLink\ConsoleTest\bin\Debug\SourceLink - Copy.pdb")
-
 //    printfn "pdb guid: %s" file.Info.Guid.ToStringN
-    
-//    printStreamPages file.RootStream
-//    printStreamPages file.Stream0
-//    printOrphanedPages file
 
-    let fn = @"C:\Projects\SourceLink\ConsoleTest\bin\Debug\SourceLink - Copy.pdb"
-//    let fn = @"C:\Projects\pdb\LibGit2Sharp.pdb\01980BA64D5A4977AF82EDC15D5B6DC61\LibGit2Sharp.1.pdb"
-//    let fn0 = @"C:\Projects\pdb\LibGit2Sharp.pdb\01980BA64D5A4977AF82EDC15D5B6DC61\LibGit2Sharp.2.pdb"
+//    printSrcSrv @"C:\Projects\pdb\Autofac.pdb\Autofac.pdb"
+//    printSrcSrv @"C:\Projects\pdb\Autofac.pdb\D77905B67A5046138298AF1CC87D57D51\Autofac.pdb"
 
-    do 
-        let fn0 = createCopy fn
-        use pdb = new PdbFile(fn0)
+//    let file = @"C:\Projects\SourceLink\ConsoleTest\bin\Debug\SourceLink - Copy.pdb"
+    let file = @"C:\Projects\pdb\Autofac.pdb\D77905B67A5046138298AF1CC87D57D51\Autofac.pdb"
+    let file2 = createCopy file 2
+    let ss = @"C:\Projects\pdb\LibGit2Sharp.pdb\01980BA64D5A4977AF82EDC15D5B6DC61\LibGit2Sharp.pdb.srcsrv.txt"
+    PdbFile.WriteSrcSrvFileTo ss file2
+    printDia file2
 
-        writeSrcSrvBytes pdb (File.ReadAllBytes @"C:\Projects\pdb\LibGit2Sharp.pdb\01980BA64D5A4977AF82EDC15D5B6DC61\LibGit2Sharp.pdb.srcsrv.txt")
-        pdb.Info.Age <- pdb.Info.Age + 1
-        pdb.Save()
-
-//    use pdb = new PdbFile(@"C:\Projects\SourceLink\ConsoleTest\bin\Debug\SourceLink - Copy.0.pdb")
-    diffStreamPages @"C:\Projects\SourceLink\ConsoleTest\bin\Debug\SourceLink - Copy.pdb" @"C:\Projects\SourceLink\ConsoleTest\bin\Debug\SourceLink - Copy.0.pdb"
-//    diffStreamBytes @"C:\Projects\SourceLink\ConsoleTest\bin\Debug\SourceLink - Copy.pdb" @"C:\Projects\SourceLink\ConsoleTest\bin\Debug\SourceLink - Copy.0.pdb"
-
-    
     0 // exit code

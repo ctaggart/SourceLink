@@ -5,12 +5,12 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>61cbf06d-603e-4cbd-afbf-079c08beec4b</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>ConsoleTest</RootNamespace>
-    <AssemblyName>ConsoleTest</AssemblyName>
+    <ProjectGuid>dc0f48d4-3de6-41cf-b545-343de72af618</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Dia</RootNamespace>
+    <AssemblyName>SourceLink.Dia</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <Name>ConsoleTest</Name>
+    <Name>Dia</Name>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -20,9 +20,7 @@
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DocumentationFile>bin\Debug\ConsoleTest.XML</DocumentationFile>
-    <Prefer32Bit>true</Prefer32Bit>
+    <DocumentationFile>bin\Debug\Dia.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,22 +29,12 @@
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DocumentationFile>bin\Release\ConsoleTest.XML</DocumentationFile>
-    <Prefer32Bit>true</Prefer32Bit>
+    <DocumentationFile>bin\Release\Dia.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="LibGit2Sharp">
-      <HintPath>..\packages\LibGit2Sharp.0.12.0.0\lib\net35\LibGit2Sharp.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.Build" />
-    <Reference Include="Microsoft.Build.Framework" />
-    <Reference Include="Microsoft.Build.Utilities.v4.0" />
     <Reference Include="Microsoft.Dia">
-      <HintPath>..\Dia\Microsoft.Dia.dll</HintPath>
+      <HintPath>Microsoft.Dia.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="mscorlib" />
     <Reference Include="FSharp.Core, Version=4.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Private>True</Private>
@@ -54,42 +42,9 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.fs" />
-    <None Include="App.config" />
-    <None Include="packages.config" />
-    <None Include="..\packages\LibGit2Sharp.0.12.0.0\NativeBinaries\x86\git2-9d9fff3.dll">
-      <Link>git2-9d9fff3.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\packages\LibGit2Sharp.0.12.0.0\NativeBinaries\x86\git2-9d9fff3.pdb">
-      <Link>git2-9d9fff3.pdb</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Build\Build.fsproj">
-      <Name>Build</Name>
-      <Project>{41ae9acc-1164-4886-8c85-eefbcb7ea5e0}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Dia\Dia.fsproj">
-      <Name>Dia</Name>
-      <Project>{dc0f48d4-3de6-41cf-b545-343de72af618}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Pe\Pe.fsproj">
-      <Name>Pe</Name>
-      <Project>{12331d73-8eb9-4a60-9079-00d26b71a04b}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\SourceLink\SourceLink.fsproj">
-      <Name>SourceLink</Name>
-      <Project>{aaf1b8d7-791e-40f1-a278-9a16d9667866}</Project>
-      <Private>True</Private>
-    </ProjectReference>
+    <Compile Include="Dia.fs" />
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>

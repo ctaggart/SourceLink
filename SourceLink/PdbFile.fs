@@ -4,7 +4,6 @@ open System
 open System.IO
 open System.Collections.Generic
 open System.Text
-open SourceLink.Pe
 open SourceLink.Extension
 open SourceLink.Exception
 open SourceLink.File
@@ -166,8 +165,8 @@ type PdbFile(file) =
     member x.ReadPdbStreamBytes pdbStream = readStreamBytes pdbStream
     member x.ReadStreamBytes stream = readStreamBytes root.Streams.[stream]
     member x.Info with get() = info
-    member x.HasSrcSrv with get() = info.NameToPdbName.ContainsKey "srcsrv"
-    member x.ReadSrcSrv() = if x.HasSrcSrv then x.ReadStreamBytes info.NameToPdbName.["srcsrv"].Stream |> readLines else [||]
+    member x.HasSrcSrv with get() = info.NameToPdbName.ContainsKey srcsrv
+    member x.SrcSrv with get() = info.NameToPdbName.[srcsrv].Stream
     member x.RootPage with get() = rootPage
     member x.RootPdbStream with get() = rootPdbStream
     member x.Root with get() = root
@@ -183,7 +182,7 @@ type PdbFile(file) =
 
     member x.FreeStream (i:int) = x.FreePages root.Streams.[i].Pages
 
-    member x.WriteStream (bytes:byte[]) =
+    member internal x.WriteStream (bytes:byte[]) =
         let n = countPages bytes.Length
         let pages = allocPages n
         for i in 0 .. n - 2 do
@@ -201,8 +200,14 @@ type PdbFile(file) =
         pdbStream.Pages <- pages.ToArray()
         pdbStream
 
-    member x.WriteStreamTo bytes index =
+    member x.WriteToStream index bytes =
         root.Streams.[index] <- x.WriteStream bytes
+
+    member x.WriteNewStream name bytes =
+        let pdbStream = x.WriteStream bytes
+        let stream = x.Root.AddStream pdbStream
+        let pdbName = x.Info.AddNewName name
+        pdbName.Stream <- stream
 
     member x.WriteRootPage bytes =
         goToPage rootPage
@@ -215,14 +220,61 @@ type PdbFile(file) =
         bw.Write ((int fs.Length) / pageByteCount) // pageCount
         bw.Write rootByteCount
 
-    /// writes the info stream, root stream, and header
-    member x.Save() =
+    member x.OrphanedPages
+        with get() =
+            let used = SortedSet<int>()
+            let add page = used.Add page |> ignore
+            add x.RootPage
+            for page in x.RootPdbStream.Pages do
+                add page
+            for stream in x.Root.Streams do
+                for page in stream.Pages do
+                    add page
+            let orphaned = List<int>()
+            // page 0 is header
+            for i in 1 .. x.PageCount - 1 do
+                if false = used.Contains i then
+                    orphaned.Add i
+            orphaned.ToArray()
+
+    /// frees pages for info stream, root stream, and orphaned pages
+    member x.FreeInfoPages() =
+        x.FreePages x.OrphanedPages
         x.FreePages x.RootPdbStream.Pages // free root
         x.FreeStream 1 // free info
+
+    /// writes the info stream, root stream, and header
+    member x.Save() =
         let infoBytes = createInfoBytes x.Info
-        x.WriteStreamTo infoBytes 1
+        x.WriteToStream 1 infoBytes
         let rootBytes = createRootBytes x.Root
         let rootPdbStream = x.WriteStream rootBytes
         let rootPageBytes = createRootPageBytes rootPdbStream
         x.WriteRootPage rootPageBytes
         x.WriteHeader rootPdbStream.ByteCount
+
+    member x.WriteSrcSrv bytes =
+        if x.HasSrcSrv then
+            x.FreeStream x.SrcSrv
+            x.WriteToStream x.SrcSrv bytes
+        else
+            x.WriteNewStream srcsrv bytes
+
+    static member WriteSrcSrvBytesTo bytes toFile =
+        use pdb = new PdbFile(toFile)
+        pdb.FreeInfoPages()
+        pdb.WriteSrcSrv bytes
+        pdb.Info.Age <- pdb.Info.Age + 1
+        pdb.Save()
+
+    static member WriteSrcSrvFileTo file toFile =
+        PdbFile.WriteSrcSrvBytesTo (File.ReadAllBytes file) toFile
+
+    static member ReadSrcSrvBytes file = 
+        use pdb = new PdbFile(file)
+        if pdb.HasSrcSrv then pdb.ReadStreamBytes pdb.SrcSrv else [||]
+
+    static member ReadSrcSrvLines file =
+        use pdb = new PdbFile(file)
+        if pdb.HasSrcSrv then pdb.ReadStreamBytes pdb.SrcSrv |> readLines else [||]
+         

@@ -5,9 +5,8 @@ open System
 open System.Globalization
 open SourceLink.Extension
 
-let toString bytes = Text.Encoding.UTF8.GetString bytes // UTF8?
+let toString bytes = Text.Encoding.UTF8.GetString bytes
 
-let defaultGuid = Guid() // Guid.ParseExact("00000000000000000000000000000000","N") // same
 let unixEpoch = DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)
 
 // for decoding hex value from running dumpbin /headers file.dll
@@ -22,7 +21,7 @@ let toDateTime (timestamp:string) =
 
 type PeInfo() =
     member val File = String.Empty with set, get
-    member val Guid = defaultGuid with set, get
+    member val Guid = Guid() with set, get
     member val Age = 0u with set, get
     member x.Id with get() = x.Guid.ToStringN + x.Age.ToString()
     member val DateTime = unixEpoch with set, get
