@@ -9,13 +9,13 @@
     <SourceLinkRepoDir Condition="$(SourceLinkRepoDir) == ''">$(MSBuildProjectDirectory)</SourceLinkRepoDir>
   </PropertyGroup>
   
-  <Target Name="SourceCheck" Condition="$(SourceCheck) == 'true'">
-    <SourceLink.Build.SourceCheck ProjectFile="$(MSBuildProjectFullPath)" RepoDir="$(SourceLinkRepoDir)" />
+  <Target Name="SourceCheck" Condition="$(SourceLink) == 'true'">
+    <SourceLink.Build.SourceCheck ProjectFile="$(MSBuildProjectFullPath)" RepoDir="$(SourceLinkRepoDir)" Exclude="$(SourceLinkExclude)" />
   </Target>
 
-  <Target Name="SourceLink" Condition="$(SourceLink) == 'true' And $(SourceLinkRepoUrl) != ''">
+  <Target Name="SourceLink" Condition="$(SourceLink) == 'true'">
     <SourceLink.Build.SourceLink ProjectFile="$(MSBuildProjectFullPath)" TargetPath="$(TargetPath)"
-      RepoDir="$(SourceLinkRepoDir)" RepoUrl="$(SourceLinkRepoUrl)" />
+      RepoDir="$(SourceLinkRepoDir)" RepoUrl="$(SourceLinkRepoUrl)" Exclude="$(SourceLinkExclude)" WriteSrcSrvTxt="$(SourceLinkWriteSrcSrvTxt)" />
   </Target>
 
 </Project>

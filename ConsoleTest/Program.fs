@@ -10,7 +10,7 @@ open Microsoft.Dia
 open SourceLink.Dia
 
 let printChecksums proj =
-    let compiles = Proj.getCompiles proj
+    let compiles = Proj.getCompiles proj (HashSet())
     for checksum, file in Git.computeChecksums compiles do
         printfn "%s %s"checksum file
 
@@ -135,11 +135,14 @@ let main argv =
 //    printSrcSrv @"C:\Projects\pdb\Autofac.pdb\Autofac.pdb"
 //    printSrcSrv @"C:\Projects\pdb\Autofac.pdb\D77905B67A5046138298AF1CC87D57D51\Autofac.pdb"
 
-//    let file = @"C:\Projects\SourceLink\ConsoleTest\bin\Debug\SourceLink - Copy.pdb"
-    let file = @"C:\Projects\pdb\Autofac.pdb\D77905B67A5046138298AF1CC87D57D51\Autofac.pdb"
-    let file2 = createCopy file 2
-    let ss = @"C:\Projects\pdb\LibGit2Sharp.pdb\01980BA64D5A4977AF82EDC15D5B6DC61\LibGit2Sharp.pdb.srcsrv.txt"
-    PdbFile.WriteSrcSrvFileTo ss file2
-    printDia file2
+//    let file = @"C:\Projects\libgit2sharp\LibGit2Sharp\bin\Release\LibGit2Sharp.pdb"
+//    let file2 = createCopy file 2
+//    let ss = @"C:\Projects\libgit2sharp\LibGit2Sharp\LibGit2Sharp.pdb.srcsrv.txt"
+//    PdbFile.WriteSrcSrvFileTo ss file2
+
+//    printSrcSrv @"C:\Projects\libgit2sharp\LibGit2Sharp\bin\Release\LibGit2Sharp.2.pdb"
+    printSrcSrv @"C:\Projects\libgit2sharp\LibGit2Sharp\bin\Release\LibGit2Sharp.pdb"
+
+//    printDia file2
 
     0 // exit code

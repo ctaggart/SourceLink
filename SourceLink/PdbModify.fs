@@ -12,6 +12,7 @@ let createRootPageBytes (pdbStream:PdbStream) =
     use bw = new BinaryWriter(ms, Encoding.UTF8, true)
     for page in pdbStream.Pages do
         bw.Write page
+    bw.Flush()
     ms.ToArray()
 
 let createRootBytes (root:PdbRoot) =
@@ -23,6 +24,7 @@ let createRootBytes (root:PdbRoot) =
     for stream in root.Streams do
         for page in stream.Pages do
             bw.Write page
+    bw.Flush()
     ms.ToArray()
 
 let createInfoBytes (info:PdbInfo) =
@@ -91,4 +93,5 @@ let createInfoBytes (info:PdbInfo) =
 
     bw.Write info.Tail
 
+    bw.Flush()
     ms.ToArray()

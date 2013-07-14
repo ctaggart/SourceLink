@@ -14,6 +14,7 @@ let concatBytes (a:byte[]) (b:byte[]) =
     Buffer.BlockCopy(b, 0, c, a.Length, b.Length)
     c
 
+/// compute the git checksums of the source files
 let computeChecksums files =
     use sha1 = Security.Cryptography.SHA1.Create()
     files |> Seq.map (fun file ->
@@ -28,6 +29,7 @@ let getRevision dir =
     use repo = new Repository(dir)
     repo.Head.Tip.Sha
 
+/// get the checksums from the git repository
 let getChecksums dir files =
     use repo = new Repository(dir)
     let checksums = HashSet(StringComparer.OrdinalIgnoreCase)
@@ -44,6 +46,6 @@ let getChecksums dir files =
         else
             missing.Add f
         if missing.Count > 0 then
-            failwithf "files not in repo: %A" missing
+            failwithf "# of source files without matching checksums in the git repository: %d, %A" missing.Count missing
     )
     checksums
