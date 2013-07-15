@@ -138,7 +138,7 @@ let diffInfoStreams a b =
         printfn "Tail %A <> %A" ia.Tail ib.Tail
 
     // compare names
-    for n in ia.Names do
+    for n in ia.NameToPdbName.Values do
         if false = ib.NameToPdbName.ContainsKey n.Name then
             printfn "name only in A %s" n.Name
         else
@@ -146,7 +146,7 @@ let diffInfoStreams a b =
             let sb = ib.NameToPdbName.[n.Name].Stream
             if sa <> sb then
                 printfn "diff streams for %s, %d, %d" n.Name sa sb
-    for n in ib.Names do
+    for n in ib.NameToPdbName.Values do
         if false = ia.NameToPdbName.ContainsKey n.Name then
             printfn "name only in B %s" n.Name
 
@@ -172,28 +172,30 @@ let printSrcSrv file =
     for line in PdbFile.ReadSrcSrvLines file do
         printfn "%s" line
 
+let printNames file =
+    use pdb = new PdbFile(file)
+    for name in pdb.Info.StreamToPdbName.Values do
+        printfn "%d %s" name.Stream name.Name 
+
+
 [<EntryPoint>]
 let main argv = 
 
-    let file1 = @"C:\Projects\libgit2sharp\LibGit2Sharp.1.pdb"
-    let file2 = @"C:\Projects\libgit2sharp\LibGit2Sharp.2.pdb"
-    let file3 = @"C:\Projects\libgit2sharp\LibGit2Sharp.3.pdb"
-    let file4 = @"C:\Projects\libgit2sharp\LibGit2Sharp.4.pdb"
+    let a1 = @"C:\Projects\libgit2sharp\LibGit2Sharp\bin\Release\LibGit2Sharp.1.pdb"
+    let a2 = @"C:\Projects\libgit2sharp\LibGit2Sharp\bin\Release\LibGit2Sharp.2.pdb"
+    let ass = @"C:\Projects\libgit2sharp\LibGit2Sharp\bin\Release\LibGit2Sharp.pdb.srcsrv.txt"
 
     let b1 = @"C:\Projects\SourceLink\SourceLink\bin\Debug\SourceLink.1.pdb" // orig
     let b2 = @"C:\Projects\SourceLink\SourceLink\bin\Debug\SourceLink.2.pdb" // this
     let b3 = @"C:\Projects\SourceLink\SourceLink\bin\Debug\SourceLink.3.pdb" // pdbstr
     let b4 = @"C:\Projects\SourceLink\SourceLink\bin\Debug\SourceLink.4.pdb" // pdbstr with free stream 0
+    let bss = @"C:\Projects\SourceLink\SourceLink\bin\Debug\srcsrv.txt"
 
-//    let file2 = createCopy file 2
-//    let srcsrv = @"C:\Projects\libgit2sharp\LibGit2Sharp.pdb.srcsrv.txt"
-    let srcsrv = @"C:\Projects\SourceLink\SourceLink\bin\Debug\srcsrv.txt"
-
-//    copyTo b3 b4
-//    PdbFile.WriteSrcSrvFileTo srcsrv b2
+    copyTo a1 a2
+    PdbFile.WriteSrcSrvFileTo ass a2
 
 //    printSrcSrv file3
-//    printDia file2
+//    printDia file2s
     
 //    do
 //        use pdb = new PdbFile(b4)
@@ -204,6 +206,7 @@ let main argv =
 //        printStreamPages pdb
 
 //    diffStreamBytes b2 b4
-    diffFiles (b2+".1") (b4+".1")
+//    diffFiles (b2+".1") (b4+".1")
+//    printNames a2
     
     0 // exit code

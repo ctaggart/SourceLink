@@ -15,7 +15,6 @@ type PdbRoot() =
         x.Streams.Count - 1
 
 type PdbName() =
-    member val Index = 0 with set, get
     member val Stream = 0 with set, get
     member val Name = String.Empty with set, get
 
@@ -26,20 +25,15 @@ type PdbInfo() =
     member val Guid = Guid() with set, get
     member val Age = 0 with set, get
     member val NameIndexMax = 0 with set, get
-    member val Names = List<PdbName>() with get // will be ordered by index
+    member val FlagCount = 0 with set, get
     member val StreamToPdbName = SortedDictionary() :> IDictionary<int,PdbName> with get
     member val NameToPdbName = SortedDictionary(StringComparer.OrdinalIgnoreCase) :> IDictionary<string,PdbName> with get
     member x.AddName (name:PdbName) =
-        x.Names.Add name
         x.StreamToPdbName.Add(name.Stream, name)
         x.NameToPdbName.Add(name.Name, name)
     member x.AddNewName name =
         let pdbName = PdbName()
         pdbName.Name <- name
-        let lastIndex = x.Names.[x.Names.Count-1].Index
-        pdbName.Index <- lastIndex + 1
-        if pdbName.Index >= x.NameIndexMax then
-            x.NameIndexMax <- pdbName.Index + 1 // TODO must it be greater? Increments? throw instead?
         let streamNumbers = x.StreamToPdbName.Keys |> List.ofSeq
         let lastStream = streamNumbers.[streamNumbers.Length-1]
         pdbName.Stream <- lastStream + 1

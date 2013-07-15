@@ -14,8 +14,7 @@ let createSrcSrv urlBase (revision:string) (sourceFiles:IList<string*string>) =
     fprintfn sw "VERSION=1"
     fprintfn sw "SRCSRV: variables ------------------------------------------"
     fprintfn sw "SRCSRVVERCTRL=%s" scheme
-//    sw.WriteLine (String.Format(urlBase.Replace("%","%%"), revision))
-    sw.WriteLine (String.Format(urlBase, revision))
+    fprintfn sw "SRCSRVTRG=%s" (String.Format(urlBase, revision))
     fprintfn sw "SRCSRV: source files ---------------------------------------"
     for file, path in sourceFiles do
         fprintfn sw "%s*%s" file path

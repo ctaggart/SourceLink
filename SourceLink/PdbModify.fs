@@ -37,20 +37,14 @@ let createInfoBytes (info:PdbInfo) =
     
     let names = info.StreamToPdbName |> Seq.map (fun (KeyValue(stream, name)) -> name) |> Seq.toArray
 
-    let nameToPosition = Dictionary<string,int>() // could used an array instead
-//    let positions = Array.create names.Length (0,0)
-//    let i = ref 0
+    let nameToPosition = Dictionary<string,int>()
     let position = ref 0
-//    let byteCount = ref 0
     let nameBytes = // utf8 bytes without null
         names
         |> Seq.map (fun name ->
             let bytes = name.Name.ToUtf8
             nameToPosition.Add(name.Name, !position)
-//            positions.[!i] <- !position, name.Stream
-//            byteCount := !byteCount + bytes.Length + 1
             position := !position + bytes.Length + 1
-//            incr i
             bytes
         )
         |> Seq.toArray
@@ -62,30 +56,25 @@ let createInfoBytes (info:PdbInfo) =
         bw.Write 0x0uy // null char
 
     bw.Write names.Length
-    //let nameIndexMax = info.Names.[info.Names.Count-1].Index + 1 // original may be bigger
     let nameIndexMax = info.NameIndexMax
+    if names.Length > nameIndexMax then
+        failwithf "names.Length > nameIndexMax"
     bw.Write nameIndexMax
     
-    let flagCount =
-        if nameIndexMax % 32 = 0 then
-            nameIndexMax / 32
-        else 
-            nameIndexMax / 32 + 1
     let flags =
-        let flags = Array.create flagCount 0
-        for name in info.Names do
-            let i = name.Index
+        let flags = Array.create info.FlagCount 0
+        for i in 0 .. names.Length-1 do
             let a = i / 32
             let b = 1 <<< (i % 32)
             flags.[a] <- flags.[a] ||| b
         flags
     
-    bw.Write flagCount
+    bw.Write info.FlagCount
     for flag in flags do
         bw.Write flag
     bw.Write 0
 
-    for name in info.Names do
+    for name in names do
         let position = nameToPosition.[name.Name]
         bw.Write position
         bw.Write name.Stream

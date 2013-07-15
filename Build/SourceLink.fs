@@ -39,7 +39,7 @@ type SourceLink() =
                 use pdb = new PdbFile(pdbFile)
                 let pdbChecksums = PdbChecksums(pdb)
                 for checksum in pdbChecksums.ChecksumToFilename.Keys do
-                    let file = pdbChecksums.ChecksumToFilename.[checksum]
+                    let file = fileChecksums.[checksum]
                     if fileChecksums.ContainsKey checksum then
                         let path = file.Substring(repoDir.Length+1).Replace('\\','/')
                         sourceFiles.Add(file,path)

@@ -101,8 +101,8 @@ type PdbFile(file) =
         br.Position <- namesByteStart + namesByteCount
         let nameCount = br.ReadInt32()
         info.NameIndexMax <- br.ReadInt32()
-        let flagCount = br.ReadInt32()
-        let flags = Array.create flagCount 0 // bit flags for each nameCountMax
+        info.FlagCount <- br.ReadInt32()
+        let flags = Array.create info.FlagCount 0 // bit flags for each nameCountMax
         for i in 0 .. flags.Length - 1 do
             flags.[i] <- br.ReadInt32() 
         let hasName i =
@@ -115,7 +115,6 @@ type PdbFile(file) =
             if hasName i then
                 let position = br.ReadInt32()
                 let name = PdbName()
-                name.Index <- i
                 name.Stream <- br.ReadInt32()
                 positions.Add(position, name)
         if positions.Count <> nameCount then
