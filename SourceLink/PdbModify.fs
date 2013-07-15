@@ -52,7 +52,6 @@ let createInfoBytes (info:PdbInfo) =
             position := !position + bytes.Length + 1
 //            incr i
             bytes
-            
         )
         |> Seq.toArray
 

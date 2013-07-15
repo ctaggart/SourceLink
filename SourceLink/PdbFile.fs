@@ -26,14 +26,14 @@ type PdbFile(file) =
     
     // read rest of header
     let pageByteCount = br.ReadInt32() // 0x20
-    let pagesFree = br.ReadInt32() // 0x24 TODO not sure meaning, often 2 free pages every 0x200 pages: 0x201 0x202 0x401 0x402 ...
+    let pagesFree = br.ReadInt32() // 0x24 TODO not sure meaning
     let pageCount = br.ReadInt32() // 0x28 for file
     let rootByteCount = br.ReadInt32() // 0x2C
     do br.Skip 4 // 0
-    let rootPage = br.ReadInt32() // 0x34
+    let mutable rootPage = br.ReadInt32() // 0x34
 
     do // check pdb
-        let length = int br.BaseStream.Length
+        let length = int fs.Length
         do if length % pageByteCount <> 0 then
             failwithf "pdb length %% bytes per page <> 0, %d, %d" length pageByteCount
         if length / pageByteCount <> pageCount then
@@ -133,24 +133,19 @@ type PdbFile(file) =
 
     let allocPages n = 
         let pages = List<int>()
-        let freePageList = freePages |> Seq.toList
-        if freePageList.Length >= n then
-            for i in 0 .. n - 1 do
-                let page = freePageList.[i]
+        let free = freePages |> Seq.toList
+        let nFree = if n <= free.Length then n else free.Length
+        let nAlloc = if n <= free.Length then 0 else n - free.Length
+        for i in 0 .. nFree-1 do
+            let page = free.[i]
+            pages.Add page
+            freePages.Remove page |> ignore
+        if nAlloc > 0 then
+            goToEnd()
+            for i in 0 .. nAlloc-1 do
+                let page = (int fs.Position) / pageByteCount
                 pages.Add page
-            freePages.Clear()
-        else
-            for i in 0 .. freePageList.Length - 1 do
-                let page = freePageList.[i]
-                pages.Add page
-                freePages.Remove page |> ignore
-            let newPageCount = n - freePageList.Length
-            if newPageCount > 0 then
-                goToEnd()
-                for i in 0 .. newPageCount - 1 do
-                    let page = (int fs.Position) / pageByteCount
-                    pages.Add page
-                    fs.WriteBytes zerosPage
+                fs.WriteBytes zerosPage
         pages
 
     member x.Dispose() =
@@ -176,25 +171,29 @@ type PdbFile(file) =
 
     member x.FreePages pages =
         for page in pages do
-            goToPage page
-            fs.WriteBytes zerosPage
-            freePages.Add page |> ignore
+            if page = 0 then
+                failwithf "cannot free page 0"
+            if false = freePages.Contains page then
+                goToPage page
+                fs.WriteBytes zerosPage
+                freePages.Add page |> ignore
 
     member x.FreeStream (i:int) = x.FreePages root.Streams.[i].Pages
 
     member internal x.WriteStream (bytes:byte[]) =
         let n = countPages bytes.Length
-        let pages = allocPages n
-        for i in 0 .. n - 2 do
-            goToPage pages.[i]
-            fs.Write(bytes, i * pageByteCount, pageByteCount)
-        // write last page
-        let last = n-1
-        let lastByteCount = 
-            let c = bytes.Length % pageByteCount
-            if c = 0 then pageByteCount else c
-        goToPage pages.[last]
-        fs.Write(bytes, last * pageByteCount, lastByteCount)
+        let pages = if n <> 0 then allocPages n else List(0)
+        if n <> 0 then
+            for i in 0 .. n - 2 do
+                goToPage pages.[i]
+                fs.Write(bytes, i * pageByteCount, pageByteCount)
+            // write last page
+            let last = n-1
+            let lastByteCount = 
+                let c = bytes.Length % pageByteCount
+                if c = 0 then pageByteCount else c
+            goToPage pages.[last]
+            fs.Write(bytes, last * pageByteCount, lastByteCount)
         let pdbStream = PdbStream()
         pdbStream.ByteCount <- bytes.Length
         pdbStream.Pages <- pages.ToArray()
@@ -210,15 +209,21 @@ type PdbFile(file) =
         pdbName.Stream <- stream
 
     member x.WriteRootPage bytes =
-        goToPage rootPage
+        x.FreePages [|x.RootPage|] // free root page
+        let page = (allocPages 1).[0]
+        rootPage <- page
+        goToPage page
         fs.WriteBytes zerosPage
-        goToPage rootPage
+        goToPage page
         fs.WriteBytes bytes
+        page
 
-    member x.WriteHeader (rootByteCount:int) =
+    member x.WriteHeader (rootByteCount:int) (rootPage:int) =
         br.Position <- 0x28
-        bw.Write ((int fs.Length) / pageByteCount) // pageCount
+        bw.Write ((int fs.Length) / pageByteCount) // page count
         bw.Write rootByteCount
+        br.Position <- 0x34
+        bw.Write rootPage
 
     member x.OrphanedPages
         with get() =
@@ -237,21 +242,23 @@ type PdbFile(file) =
                     orphaned.Add i
             orphaned.ToArray()
 
-    /// frees pages for info stream, root stream, and orphaned pages
-    member x.FreeInfoPages() =
+    /// frees info stream, root stream
+    member x.FreeInfo() =
         x.FreePages x.OrphanedPages
         x.FreePages x.RootPdbStream.Pages // free root
         x.FreeStream 1 // free info
+        x.FreeStream 0
 
-    /// writes the info stream, root stream, and header
-    member x.Save() =
+    /// writes info stream, root stream, and header
+    member x.SaveInfo() =
         let infoBytes = createInfoBytes x.Info
         x.WriteToStream 1 infoBytes
+        x.WriteToStream 0 [||]
         let rootBytes = createRootBytes x.Root
         let rootPdbStream = x.WriteStream rootBytes
         let rootPageBytes = createRootPageBytes rootPdbStream
-        x.WriteRootPage rootPageBytes
-        x.WriteHeader rootPdbStream.ByteCount
+        let rootPage = x.WriteRootPage rootPageBytes
+        x.WriteHeader rootPdbStream.ByteCount rootPage
 
     member x.WriteSrcSrv bytes =
         if x.HasSrcSrv then
@@ -260,12 +267,36 @@ type PdbFile(file) =
         else
             x.WriteNewStream srcsrv bytes
 
+    /// looks for the last used page and removes any free at the end
+    member x.TrimEnd() =
+        if freePages.Count > 0 then
+            let pageCount = (int fs.Length) / pageByteCount
+            let lastPage = seq { pageCount-1 .. -1 .. 1 } |> Seq.find (fun i -> false = freePages.Contains i)
+            if lastPage <> pageCount-1 then
+                let length = (lastPage+1) * pageByteCount
+                fs.SetLength (int64 length)
+
+    /// reads all the streams into memory then writes them back in order, removes free pages
+    member x.Defrag() =
+        let count = root.Streams.Count
+        let streamBytes = Array.zeroCreate<byte[]> count
+        x.FreeInfo()
+        for i in 2 .. count-1 do
+            streamBytes.[i] <- readStreamBytes root.Streams.[i]
+            x.FreeStream i
+        for i in 2 .. count-1 do
+            x.WriteToStream i streamBytes.[i]
+        x.SaveInfo()
+        x.FreeInfo()
+        x.TrimEnd()
+        x.SaveInfo()
+
     static member WriteSrcSrvBytesTo bytes toFile =
         use pdb = new PdbFile(toFile)
-        pdb.FreeInfoPages()
+        pdb.FreeInfo()
         pdb.WriteSrcSrv bytes
         pdb.Info.Age <- pdb.Info.Age + 1
-        pdb.Save()
+        pdb.SaveInfo()
 
     static member WriteSrcSrvFileTo file toFile =
         PdbFile.WriteSrcSrvBytesTo (File.ReadAllBytes file) toFile

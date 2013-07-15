@@ -1,6 +1,7 @@
 ﻿
 open System.Collections.Generic
 open System.IO
+open System.Text
 open SourceLink
 open SourceLink.Build
 open SourceLink.Extension
@@ -27,13 +28,20 @@ let printChecksumsPdb (file:PdbFile) =
     for KeyValue(filename, checksum) in checksums.FilenameToChecksum do
         printfn "%s %s" checksum filename
 
-let printStreamPages (root:PdbRoot) =
+let pagesToString (pages:int[]) =
+    let sb = StringBuilder()
+    sb.Appendf "%d pages: " pages.Length
+    for p in pages do 
+        sb.Appendf "%X " p
+    sb.ToString()
+
+let printStreamPages (file:PdbFile) =
+    printfn "root page is %X" file.RootPage
+    printfn "root stream, %d bytes, %s" file.RootPdbStream.ByteCount (pagesToString file.RootPdbStream.Pages)
+    let root = file.Root
     for i in 0 .. root.Streams.Count - 1 do
         let s = root.Streams.[i]
-        printf "%d, %d, " i s.ByteCount
-        for p in s.Pages do
-            printf "%X " p
-        printfn ""
+        printfn "stream %d, %d bytes, %s" i s.ByteCount (pagesToString s.Pages)
 
 let printOrphanedPages (file:PdbFile) =
     for page in file.OrphanedPages do
@@ -44,17 +52,23 @@ let writeFile file bytes =
     use fs = File.OpenWrite file
     fs.WriteBytes bytes
 
-let printDiffPosition (a:byte[]) (b:byte[]) =
+let diffBytes (a:byte[]) (b:byte[]) =
     let n = if a.Length < b.Length then a.Length else b.Length
     for i in 0 .. n - 1 do
         if a.[i] <> b.[i] then
             printfn "%X %X %X" i a.[i] b.[i]
 
+let diffFiles a b =
+    diffBytes (File.ReadAllBytes a) (File.ReadAllBytes b)
+
+let copyTo file copy =
+    if File.Exists copy then File.Delete copy
+    File.Copy(file, copy)
+
 let createCopy file i =
     let ext = Path.GetExtension file
     let copy = Path.ChangeExtension(file, sprintf ".%d%s" i ext)
-    if File.Exists copy then File.Delete copy
-    File.Copy(file, copy)
+    copyTo file copy
     copy
 
 let diffStreamPages a b =
@@ -69,14 +83,10 @@ let diffStreamPages a b =
         let sb = ssb.[i]
         if sa.ByteCount <> sb.ByteCount then
             printfn "stream %d, different byte count, %X, %X" i sa.ByteCount sb.ByteCount
-//        else
-//            printfn "stream %d, same byte count, %X" i sa.ByteCount
         if sa.Pages.Length <> sb.Pages.Length then
-            printfn "  different # pages, %d, %d" sa.Pages.Length sb.Pages.Length
-//        else
-//            printfn "  same # pages, %d" sa.Pages.Length
+            printfn "stream %d, different # pages, %d, %d" i sa.Pages.Length sb.Pages.Length
         if false = sa.Pages.CollectionEquals sb.Pages then
-            printfn "  pages not same, %A, %A" sa.Pages sb.Pages
+            printfn "stream %d, pages not same, %A, %A" i sa.Pages sb.Pages
 
 let diffStreamBytes a b =
     use fa = new PdbFile(a)
@@ -88,9 +98,9 @@ let diffStreamBytes a b =
     let rba = fa.ReadPdbStreamBytes ra
     let rbb = fb.ReadPdbStreamBytes rb
     if false = rba.CollectionEquals rbb then
-        printfn "root length, a %d, b %d" ra.ByteCount rb.ByteCount
-    writeFile (sprintf "%s.root" a) rba
-    writeFile (sprintf "%s.root" b) rbb
+        printfn "root length, %X <> %X" ra.ByteCount rb.ByteCount
+        writeFile (sprintf "%s.root" a) rba
+        writeFile (sprintf "%s.root" b) rbb
 
     // other streams
     let ssa = fa.Root.Streams
@@ -103,9 +113,44 @@ let diffStreamBytes a b =
         let ba = fa.ReadPdbStreamBytes sa
         let bb = fb.ReadPdbStreamBytes sb
         if false = ba.CollectionEquals bb then
-            printfn "stream %d length, a %d, b %d" i sa.ByteCount sb.ByteCount
+            printfn "stream %d length, %X <> %X" i sa.ByteCount sb.ByteCount
             writeFile (sprintf "%s.%d" a i) ba
             writeFile (sprintf "%s.%d" b i) bb
+
+let diffInfoStreams a b =
+    use fa = new PdbFile(a)
+    use fb = new PdbFile(b)
+    let ia = fa.Info
+    let ib = fb.Info
+    if ia.Version <> ib.Version then
+        printfn "Version %d <> %d" ia.Version ib.Version
+    if ia.Signature <> ib.Signature then
+        printfn "Signature %d <> %d" ia.Signature ib.Signature
+    if ia.Guid <> ib.Guid then
+        printfn "Signature %A <> %A" ia.Guid ib.Guid
+    if ia.Age <> ib.Age then
+        printfn "Signature %d <> %d" ia.Age ib.Age
+    if ia.NameIndexMax <> ib.NameIndexMax then
+        printfn "NameIndexMax %d <> %d" ia.NameIndexMax ib.NameIndexMax
+    if false = ia.SrcSrv.CollectionEquals ib.SrcSrv then
+        printfn "SrcSrv %A <> %A" ia.SrcSrv ib.SrcSrv
+    if false = ia.Tail.CollectionEquals ib.Tail then
+        printfn "Tail %A <> %A" ia.Tail ib.Tail
+
+    // compare names
+    for n in ia.Names do
+        if false = ib.NameToPdbName.ContainsKey n.Name then
+            printfn "name only in A %s" n.Name
+        else
+            let sa = ia.NameToPdbName.[n.Name].Stream
+            let sb = ib.NameToPdbName.[n.Name].Stream
+            if sa <> sb then
+                printfn "diff streams for %s, %d, %d" n.Name sa sb
+    for n in ib.Names do
+        if false = ia.NameToPdbName.ContainsKey n.Name then
+            printfn "name only in B %s" n.Name
+
+    printfn "done compairing info streams"
 
 let printDia file =
     let sn = openPdb file
@@ -129,20 +174,36 @@ let printSrcSrv file =
 
 [<EntryPoint>]
 let main argv = 
-//    printChecksumsGit @"c:\temp\trybuild7" [|"Program.cs"|]
-//    printfn "pdb guid: %s" file.Info.Guid.ToStringN
 
-//    printSrcSrv @"C:\Projects\pdb\Autofac.pdb\Autofac.pdb"
-//    printSrcSrv @"C:\Projects\pdb\Autofac.pdb\D77905B67A5046138298AF1CC87D57D51\Autofac.pdb"
+    let file1 = @"C:\Projects\libgit2sharp\LibGit2Sharp.1.pdb"
+    let file2 = @"C:\Projects\libgit2sharp\LibGit2Sharp.2.pdb"
+    let file3 = @"C:\Projects\libgit2sharp\LibGit2Sharp.3.pdb"
+    let file4 = @"C:\Projects\libgit2sharp\LibGit2Sharp.4.pdb"
 
-//    let file = @"C:\Projects\libgit2sharp\LibGit2Sharp\bin\Release\LibGit2Sharp.pdb"
+    let b1 = @"C:\Projects\SourceLink\SourceLink\bin\Debug\SourceLink.1.pdb" // orig
+    let b2 = @"C:\Projects\SourceLink\SourceLink\bin\Debug\SourceLink.2.pdb" // this
+    let b3 = @"C:\Projects\SourceLink\SourceLink\bin\Debug\SourceLink.3.pdb" // pdbstr
+    let b4 = @"C:\Projects\SourceLink\SourceLink\bin\Debug\SourceLink.4.pdb" // pdbstr with free stream 0
+
 //    let file2 = createCopy file 2
-//    let ss = @"C:\Projects\libgit2sharp\LibGit2Sharp\LibGit2Sharp.pdb.srcsrv.txt"
-//    PdbFile.WriteSrcSrvFileTo ss file2
+//    let srcsrv = @"C:\Projects\libgit2sharp\LibGit2Sharp.pdb.srcsrv.txt"
+    let srcsrv = @"C:\Projects\SourceLink\SourceLink\bin\Debug\srcsrv.txt"
 
-//    printSrcSrv @"C:\Projects\libgit2sharp\LibGit2Sharp\bin\Release\LibGit2Sharp.2.pdb"
-    printSrcSrv @"C:\Projects\libgit2sharp\LibGit2Sharp\bin\Release\LibGit2Sharp.pdb"
+//    copyTo b3 b4
+//    PdbFile.WriteSrcSrvFileTo srcsrv b2
 
+//    printSrcSrv file3
 //    printDia file2
+    
+//    do
+//        use pdb = new PdbFile(b4)
+//        pdb.Defrag()
 
+//    do
+//        use pdb = new PdbFile(b4)
+//        printStreamPages pdb
+
+//    diffStreamBytes b2 b4
+    diffFiles (b2+".1") (b4+".1")
+    
     0 // exit code

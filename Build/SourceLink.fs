@@ -56,10 +56,10 @@ type SourceLink() =
                     let srcsrv = SrcSrv.createSrcSrv x.RepoUrl revision srcFiles
                     if x.WriteSrcSrvTxt then
                         File.WriteAllBytes(pdbFile + ".srcsrv.txt", srcsrv)
-                    pdb.FreeInfoPages()
+                    pdb.FreeInfo()
                     pdb.WriteSrcSrv srcsrv
                     pdb.Info.Age <- pdb.Info.Age + 1
-                    pdb.Save()
+                    pdb.SaveInfo()
                 
             with
             | :? RepositoryNotFoundException as ex -> x.Error "%s" ex.Message
