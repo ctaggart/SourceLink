@@ -2,6 +2,7 @@
 
 open System
 open System.IO
+open System.Text
 open LibGit2Sharp
 open System.Collections.Generic
 open SourceLink
@@ -29,11 +30,10 @@ let getRevision dir =
     use repo = new Repository(dir)
     repo.Head.Tip.Sha
 
-/// get the checksums from the git repository
+/// get a set of checksums from the git repository for all files that exist
 let getChecksums dir files =
     use repo = new Repository(dir)
     let checksums = HashSet(StringComparer.OrdinalIgnoreCase)
-    let missing = List<string>()
     files |> Seq.iter (fun (file:string) ->
         let f =
             if Path.IsPathRooted file then
@@ -43,9 +43,5 @@ let getChecksums dir files =
         let ie = repo.Index.[f]
         if ie <> null then
             checksums.Add ie.Id.Sha |> ignore
-        else
-            missing.Add f
-        if missing.Count > 0 then
-            failwithf "# of source files without matching checksums in the git repository: %d, %A" missing.Count missing
     )
     checksums
