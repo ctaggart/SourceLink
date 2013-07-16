@@ -22,7 +22,7 @@ type SourceCheck() =
         if Path.IsPathRooted x.RepoDir then
             x.RepoDir.TrimEnd [|'\\'|]
         else
-            Path.Combine(Path.GetDirectoryName x.ProjectFile, x.RepoDir).TrimEnd [|'\\'|]
+            Path.Combine(Path.GetDirectoryName x.ProjectFile, x.RepoDir).TrimEnd [|'\\'|] |> Path.GetFullPath
 
     member internal x.GetSourceFiles() =
         let excludes = HashSet<string>(StringComparer.OrdinalIgnoreCase)
