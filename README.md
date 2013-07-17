@@ -1,16 +1,29 @@
+<img src="https://raw.github.com/ctaggart/SourceLink/master/SourceLink128.jpg" style="float:right">
 # SourceLink
 
 Provides MSBuild targets for source linking. Packages are [available on NuGet](http://nuget.org/packages/SourceLink.Build/). See my 2013-07-15 blog titled ["Source Linking"](http://blog.ctaggart.com/2013/07/source-linking.html).
 Other related posts are under the ["pdb"](http://blog.ctaggart.com/search/label/pdb) label.
 
-## Using with Git
-It is simple to use it with your git repository. Install the package and add a couple of properties to your project file to specify the repository URL and to enable it. The "Source Linking" blog post gives details. Here are some examples of how you would get it working with these projects:  
+<img src="https://raw.github.com/ctaggart/SourceLink/master/Nuget.Core-build.png">
 
+## Using with Git
+
+```xml
+<SourceLinkRepoUrl>https://raw.github.com/ctaggart/nuget/{0}/%var2%</SourceLinkRepoUrl>
+<SourceLink Condition="'$(Configuration)'=='Release'">true</SourceLink>
+```
+
+It is simple to use it with your git repository. Install the package and add a couple of properties to your project file to specify the repository URL and to enable it. The "Source Linking" blog post gives details. Here are some examples of how you can get it working with clones of these projects. I'm hoping some of these projects will begin using SourceLink.
+
+ * [Nuget.Core](https://github.com/ctaggart/nuget/pull/1)
  * [LibGit2Sharp](https://github.com/libgit2/libgit2sharp/pull/465)  
  * [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json/pull/103)  
 
 ## History
 For details take a look at the [commits](https://github.com/ctaggart/SourceLink/commits/master).
+
+2013-07-17 SourceLink.Build 0.2.1 [issues](https://github.com/ctaggart/SourceLink/issues?milestone=1&state=closed)  
+ * fixed some relative path issues
 
 2013-07-15 SourceLink.Build 0.2  
  * SourceLink MSBuild task works with git
