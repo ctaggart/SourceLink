@@ -4,7 +4,7 @@
 Provides MSBuild targets for source linking. Packages are [available on NuGet](http://nuget.org/packages/SourceLink.Build/). See my 2013-07-15 blog titled ["Source Linking"](http://blog.ctaggart.com/2013/07/source-linking.html).
 Other related posts are under the ["pdb"](http://blog.ctaggart.com/search/label/pdb) label.
 
-<img src="https://raw.github.com/ctaggart/SourceLink/master/Nuget.Core-build.png">
+<img src="https://raw.github.com/ctaggart/SourceLink/master/NuGet.Core-build.png">
 
 ## Using with Git
 
