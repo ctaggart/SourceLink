@@ -6,6 +6,7 @@ open Microsoft.Build.Framework
 open LibGit2Sharp
 open System.Collections.Generic
 open SourceLink
+open SourceLink.Exception
 
 type SourceCheck() =
     inherit Task()
@@ -13,16 +14,21 @@ type SourceCheck() =
     [<Required>]
     member val ProjectFile = String.Empty with set, get
 
-    [<Required>]
     member val RepoDir = String.Empty with set, get
 
     member val Exclude = String.Empty with set, get
-
-    member internal x.GetRepoDir() = 
-        if Path.IsPathRooted x.RepoDir then
-            x.RepoDir.TrimEnd [|'\\'|]
+    
+    member internal x.GetRepoDir() =
+        if String.IsNullOrEmpty x.RepoDir then
+            let repo = Git.findRepo x.ProjectFile
+            if repo.IsSome then repo.Value else failwithf "unable to find git repository"
         else
-            Path.Combine(Path.GetDirectoryName x.ProjectFile, x.RepoDir).TrimEnd [|'\\'|] |> Path.GetFullPath
+            let repo =
+                if Path.IsPathRooted x.RepoDir then
+                    x.RepoDir.TrimEnd [|'\\'|]
+                else
+                    Path.Combine(Path.GetDirectoryName x.ProjectFile, x.RepoDir).TrimEnd [|'\\'|] |> Path.GetFullPath
+            if Git.isRepo repo then repo else failwithf "git repository not found at %s" repo
 
     member internal x.GetSourceFiles() =
         let excludes = HashSet<string>(StringComparer.OrdinalIgnoreCase)
@@ -35,7 +41,7 @@ type SourceCheck() =
         try
             let repoDir = x.GetRepoDir()
             let files = x.GetSourceFiles()
-            x.MessageNormal "%d source files to check" files.Length
+            x.MessageHigh "source checking %d files" files.Length
             let committedChecksums = Git.getChecksums repoDir files
             let different = SortedSet(StringComparer.OrdinalIgnoreCase)
             for checksum, file in Git.computeChecksums files do

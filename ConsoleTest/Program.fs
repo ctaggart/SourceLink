@@ -1,4 +1,5 @@
 ﻿
+open System
 open System.Collections.Generic
 open System.IO
 open System.Text
@@ -177,22 +178,23 @@ let printNames file =
     for name in pdb.Info.StreamToPdbName.Values do
         printfn "%d %s" name.Stream name.Name 
 
-
 [<EntryPoint>]
 let main argv = 
+    
+    let a = @"C:\Projects\nuget\src\Core\Core.csproj"
+//    for d in getParentDirectories a do
+//        printfn "dir: %s" d
+    printfn "repo dir: %A" (Git.findRepo a)
 
-    let a1 = @"C:\Projects\libgit2sharp\LibGit2Sharp\bin\Release\LibGit2Sharp.1.pdb"
-    let a2 = @"C:\Projects\libgit2sharp\LibGit2Sharp\bin\Release\LibGit2Sharp.2.pdb"
-    let ass = @"C:\Projects\libgit2sharp\LibGit2Sharp\bin\Release\LibGit2Sharp.pdb.srcsrv.txt"
 
-    let b1 = @"C:\Projects\SourceLink\SourceLink\bin\Debug\SourceLink.1.pdb" // orig
-    let b2 = @"C:\Projects\SourceLink\SourceLink\bin\Debug\SourceLink.2.pdb" // this
-    let b3 = @"C:\Projects\SourceLink\SourceLink\bin\Debug\SourceLink.3.pdb" // pdbstr
-    let b4 = @"C:\Projects\SourceLink\SourceLink\bin\Debug\SourceLink.4.pdb" // pdbstr with free stream 0
-    let bss = @"C:\Projects\SourceLink\SourceLink\bin\Debug\srcsrv.txt"
+//    let b1 = @"C:\Projects\SourceLink\SourceLink\bin\Debug\SourceLink.1.pdb" // orig
+//    let b2 = @"C:\Projects\SourceLink\SourceLink\bin\Debug\SourceLink.2.pdb" // this
+//    let b3 = @"C:\Projects\SourceLink\SourceLink\bin\Debug\SourceLink.3.pdb" // pdbstr
+//    let b4 = @"C:\Projects\SourceLink\SourceLink\bin\Debug\SourceLink.4.pdb" // pdbstr with free stream 0
+//    let bss = @"C:\Projects\SourceLink\SourceLink\bin\Debug\srcsrv.txt"
 
-    copyTo a1 a2
-    PdbFile.WriteSrcSrvFileTo ass a2
+//    copyTo a1 a2
+//    PdbFile.WriteSrcSrvFileTo ass a2
 
 //    printSrcSrv file3
 //    printDia file2s

@@ -23,3 +23,11 @@ let readLines (bytes:byte[]) =
             yield sr.ReadLine()
     }
     |> Seq.toArray
+
+let getParentDirectories file =
+    seq {
+        let path = ref (Path.GetDirectoryName file)
+        while false = String.IsNullOrEmpty !path do
+            yield !path
+            path := Path.GetDirectoryName !path
+    }

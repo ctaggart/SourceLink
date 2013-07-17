@@ -26,6 +26,16 @@ let computeChecksums files =
     )
     |> Seq.toArray
 
+let isRepo dir =
+    try
+        use repo = new Repository(dir)
+        true
+    with
+    | :? RepositoryNotFoundException -> false
+
+let findRepo file =
+    File.getParentDirectories file |> Seq.tryFind isRepo
+
 let getRevision dir =
     use repo = new Repository(dir)
     repo.Head.Tip.Sha

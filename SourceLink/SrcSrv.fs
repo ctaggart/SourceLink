@@ -6,6 +6,9 @@ open System.Collections.Generic
 open SourceLink
 open SourceLink.File
 
+let createSrcSrvTrg urlBase (revision:string) =
+    String.Format(urlBase, revision)
+
 let createSrcSrv urlBase (revision:string) (sourceFiles:IList<string*string>) =
     use ms = new MemoryStream()
     use sw = new StreamWriter(ms)

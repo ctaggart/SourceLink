@@ -15,5 +15,5 @@ let getCompiles (file:string) (excludes:ISet<string>) =
     |> Seq.filter (fun i -> i.ItemType = "Compile")
     |> Seq.map (fun i -> i.EvaluatedInclude)
     |> Seq.filter (fun path -> false = excludes.Contains path)
-    |> Seq.map (fun path -> pathCombine dir path )
+    |> Seq.map (fun path -> pathCombine dir path |> Path.GetFullPath)
     |> Seq.toArray

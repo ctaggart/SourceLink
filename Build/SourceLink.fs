@@ -6,6 +6,7 @@ open Microsoft.Build.Framework
 open LibGit2Sharp
 open System.Collections.Generic
 open SourceLink
+open SourceLink.SrcSrv
 
 type SourceLink() =
     inherit SourceCheck()
@@ -28,7 +29,7 @@ type SourceLink() =
         if false = x.HasErrors then
             try
                 let revision = Git.getRevision repoDir
-                x.MessageHigh "pdb source linking revision %s in %s" revision x.RepoUrl
+                x.MessageHigh "source linking %s to %s" pdbFile (createSrcSrvTrg x.RepoUrl revision)
 
                 let files = x.GetSourceFiles()
                 let fileChecksums = File.computeChecksums files

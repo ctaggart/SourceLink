@@ -5,8 +5,6 @@
 
   <PropertyGroup>
     <BuildDependsOn>SourceCheck;$(BuildDependsOn);SourceLink</BuildDependsOn>
-    <SourceLinkRepoDir Condition="$(SourceLinkRepoDir) == '' And $(SolutionDir) != '*Undefined*' And $(SolutionDir) != ''">$(SolutionDir)</SourceLinkRepoDir>
-    <SourceLinkRepoDir Condition="$(SourceLinkRepoDir) == ''">$(MSBuildProjectDirectory)</SourceLinkRepoDir>
   </PropertyGroup>
   
   <Target Name="SourceCheck" Condition="$(SourceLink) == 'true'">
