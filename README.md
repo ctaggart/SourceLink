@@ -5,7 +5,7 @@
 Provides MSBuild targets for source linking. Packages are [available on NuGet](http://nuget.org/packages/SourceLink.Build/). See my 2013-07-15 blog titled ["Source Linking"](http://blog.ctaggart.com/2013/07/source-linking.html).
 Other related posts are under the ["pdb"](http://blog.ctaggart.com/search/label/pdb) label.
 
-<img src="https://raw.github.com/ctaggart/SourceLink/master/NuGet.Core-build.png">
+
 
 ## Using with Git
 
@@ -13,6 +13,8 @@ Other related posts are under the ["pdb"](http://blog.ctaggart.com/search/label/
 <SourceLinkRepoUrl>https://raw.github.com/ctaggart/nuget/{0}/%var2%</SourceLinkRepoUrl>
 <SourceLink Condition="'$(Configuration)'=='Release'">true</SourceLink>
 ```
+
+<img src="https://raw.github.com/ctaggart/SourceLink/master/NuGet.Core-build.png">
 
 It is simple to use it with your git repository. Install the package and add a couple of properties to your project file to specify the repository URL and to enable it. The "Source Linking" blog post gives details. Here are some examples of how you can get it working with clones of these projects. I'm hoping some of these projects will begin using SourceLink.
 
