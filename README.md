@@ -1,4 +1,4 @@
-<img src="https://raw.github.com/ctaggart/SourceLink/master/SourceLink128.jpg" style="float:right">
+<div style="float:right"><img src="https://raw.github.com/ctaggart/SourceLink/master/SourceLink128.jpg"></div>
 # SourceLink
 
 Provides MSBuild targets for source linking. Packages are [available on NuGet](http://nuget.org/packages/SourceLink.Build/). See my 2013-07-15 blog titled ["Source Linking"](http://blog.ctaggart.com/2013/07/source-linking.html).
