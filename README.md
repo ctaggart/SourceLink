@@ -1,6 +1,7 @@
-<img src="https://raw.github.com/ctaggart/SourceLink/master/SourceLink128.jpg" align="right">
+
 # SourceLink
 
+<img src="https://raw.github.com/ctaggart/SourceLink/master/SourceLink128.jpg" align="right">
 Provides MSBuild targets for source linking. Packages are [available on NuGet](http://nuget.org/packages/SourceLink.Build/). See my 2013-07-15 blog titled ["Source Linking"](http://blog.ctaggart.com/2013/07/source-linking.html).
 Other related posts are under the ["pdb"](http://blog.ctaggart.com/search/label/pdb) label.
 
