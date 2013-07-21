@@ -60,12 +60,12 @@
     <Compile Include="Program.fs" />
     <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="..\packages\LibGit2Sharp.0.12.0.0\NativeBinaries\x86\git2-9d9fff3.dll">
-      <Link>git2-9d9fff3.dll</Link>
+    <None Include="..\packages\LibGit2Sharp.0.13.0.0\NativeBinaries\x86\git2-7940036.dll">
+      <Link>git2-7940036.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="..\packages\LibGit2Sharp.0.12.0.0\NativeBinaries\x86\git2-9d9fff3.pdb">
-      <Link>git2-9d9fff3.pdb</Link>
+    <None Include="..\packages\LibGit2Sharp.0.13.0.0\NativeBinaries\x86\git2-7940036.pdb">
+      <Link>git2-7940036.pdb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
