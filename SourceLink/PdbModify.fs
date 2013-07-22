@@ -56,17 +56,26 @@ let createInfoBytes (info:PdbInfo) =
         bw.Write 0x0uy // null char
 
     bw.Write names.Length
-    let nameIndexMax = info.NameIndexMax
+    let nameIndexMax = info.FlagIndexMax
     if names.Length > nameIndexMax then
         failwithf "names.Length > nameIndexMax"
     bw.Write nameIndexMax
     
+    // reindex flags in stream order
+    let fi = ref 0
+    info.ClearFlags()
+    for name in info.StreamToPdbName.Values do
+        name.FlagIndex <- !fi
+        info.AddFlag name
+        incr fi
+
     let flags =
         let flags = Array.create info.FlagCount 0
-        for i in 0 .. names.Length-1 do
-            let a = i / 32
-            let b = 1 <<< (i % 32)
-            flags.[a] <- flags.[a] ||| b
+        for i in 0 .. nameIndexMax - 1 do
+            if info.FlagIndexes.Contains i then
+                let a = i / 32
+                let b = 1 <<< (i % 32)
+                flags.[a] <- flags.[a] ||| b
         flags
     
     bw.Write info.FlagCount
@@ -74,10 +83,12 @@ let createInfoBytes (info:PdbInfo) =
         bw.Write flag
     bw.Write 0
 
-    for name in names do
-        let position = nameToPosition.[name.Name]
-        bw.Write position
-        bw.Write name.Stream
+    for i in 0 .. nameIndexMax - 1 do
+        if info.FlagIndexes.Contains i then
+            let name = info.FlagIndexToPdbName.[i]
+            let position = nameToPosition.[name.Name]
+            bw.Write position
+            bw.Write name.Stream
 
     bw.Write info.Tail
 

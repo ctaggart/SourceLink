@@ -11,7 +11,7 @@ open SourceLink.SrcSrv
 open Microsoft.Dia
 open SourceLink.Dia
 
-let printChecksums proj =
+let printChecksumsProj proj =
     let compiles = Proj.getCompiles proj (HashSet())
     for checksum, file in Git.computeChecksums compiles do
         printfn "%s %s"checksum file
@@ -24,8 +24,9 @@ let printChecksumsGit dir files =
     for checksum in Git.getChecksums dir files do
         printfn "%s"checksum
 
-let printChecksumsPdb (file:PdbFile) =
-    let checksums = PdbChecksums(file)
+let printChecksumsPdb path =
+    use pdb = new PdbFile(path)
+    let checksums = PdbChecksums(pdb)
     for KeyValue(filename, checksum) in checksums.FilenameToChecksum do
         printfn "%s %s" checksum filename
 
@@ -61,6 +62,9 @@ let diffBytes (a:byte[]) (b:byte[]) =
 
 let diffFiles a b =
     diffBytes (File.ReadAllBytes a) (File.ReadAllBytes b)
+
+let diffFilesForStream a b stream =
+    diffFiles (a+"."+stream) (b+"."+stream)
 
 let copyTo file copy =
     if File.Exists copy then File.Delete copy
@@ -131,8 +135,8 @@ let diffInfoStreams a b =
         printfn "Signature %A <> %A" ia.Guid ib.Guid
     if ia.Age <> ib.Age then
         printfn "Signature %d <> %d" ia.Age ib.Age
-    if ia.NameIndexMax <> ib.NameIndexMax then
-        printfn "NameIndexMax %d <> %d" ia.NameIndexMax ib.NameIndexMax
+    if ia.FlagIndexMax <> ib.FlagIndexMax then
+        printfn "NameIndexMax %d <> %d" ia.FlagIndexMax ib.FlagIndexMax
     if false = ia.SrcSrv.CollectionEquals ib.SrcSrv then
         printfn "SrcSrv %A <> %A" ia.SrcSrv ib.SrcSrv
     if false = ia.Tail.CollectionEquals ib.Tail then
@@ -150,6 +154,33 @@ let diffInfoStreams a b =
     for n in ib.NameToPdbName.Values do
         if false = ia.NameToPdbName.ContainsKey n.Name then
             printfn "name only in B %s" n.Name
+
+    let an = fa.Root.Streams.Count
+    let bn = fb.Root.Streams.Count
+    if an <> bn then
+        printfn "# of streams: %d <> %d" an bn
+    let n = if an <= bn then an else bn
+    for i in 0..n-1 do
+        let sa = fa.Root.Streams.[i]
+        let sb = fb.Root.Streams.[i]
+        if sa.Pages.Length <> sb.Pages.Length then
+            printfn "# of pages in stream %d, %d <> %d" i sa.Pages.Length sb.Pages.Length
+    
+    // flag indexes
+    let an = ia.FlagIndexMax
+    let bn = ib.FlagIndexMax
+    if an <> bn then
+        printfn "# of flags: %d <> %d" an bn
+    let n = if an <= bn then an else bn
+    for i in 0..n-1 do
+        let ahas = ia.FlagIndexes.Contains i
+        let bhas = ib.FlagIndexes.Contains i
+        if ahas && not bhas then
+            let pn = ia.FlagIndexToPdbName.[i]
+            printfn "a has flag %d for %s" i pn.Name
+        else if not ahas && bhas then
+            let pn = ib.FlagIndexToPdbName.[i]
+            printfn "b has flag %d for %s" i pn.Name
 
     printfn "done compairing info streams"
 
@@ -173,42 +204,94 @@ let printSrcSrv file =
     for line in PdbFile.ReadSrcSrvLines file do
         printfn "%s" line
 
-let printNames file =
+let printNamesByStream file =
     use pdb = new PdbFile(file)
     for name in pdb.Info.StreamToPdbName.Values do
-        printfn "%d %s" name.Stream name.Name 
+        printfn "%3d %3d %s" name.FlagIndex name.Stream name.Name 
+
+let printNamesByFlagIndex file =
+    use pdb = new PdbFile(file)
+    for name in pdb.Info.FlagIndexToPdbName.Values do
+        printfn "%3d %3d %s" name.FlagIndex name.Stream name.Name 
 
 [<EntryPoint>]
 let main argv = 
     
-    let a = @"C:\Projects\nuget\src\Core\Core.csproj"
-//    for d in getParentDirectories a do
-//        printfn "dir: %s" d
-    printfn "repo dir: %A" (Git.findRepo a)
+    let af = @"C:\Projects\pdb\Autofac.pdb\D77905B67A5046138298AF1CC87D57D51\Autofac.pdb"
 
+    let sl = @"C:\Projects\SourceLink\SourceLink\obj\Debug\SourceLink.pdb"
+    let sl1 = @"C:\Projects\SourceLink\SourceLink\obj\Debug\SourceLink.1.pdb"
+    let sl2 = @"C:\Projects\SourceLink\SourceLink\obj\Debug\SourceLink.2.pdb"
 
-//    let b1 = @"C:\Projects\SourceLink\SourceLink\bin\Debug\SourceLink.1.pdb" // orig
-//    let b2 = @"C:\Projects\SourceLink\SourceLink\bin\Debug\SourceLink.2.pdb" // this
-//    let b3 = @"C:\Projects\SourceLink\SourceLink\bin\Debug\SourceLink.3.pdb" // pdbstr
-//    let b4 = @"C:\Projects\SourceLink\SourceLink\bin\Debug\SourceLink.4.pdb" // pdbstr with free stream 0
-//    let bss = @"C:\Projects\SourceLink\SourceLink\bin\Debug\srcsrv.txt"
+    let core = @"C:\Projects\fsharp\lib\release\4.0\FSharp.Core.pdb"
 
-//    copyTo a1 a2
-//    PdbFile.WriteSrcSrvFileTo ass a2
+    let data = @"C:\Projects\FSharp.Data\src\bin\Release\FSharp.Data.pdb"
+    let data1 = @"C:\Projects\FSharp.Data\src\bin\Release\FSharp.Data.1.pdb"
+    let data2 = @"C:\Projects\FSharp.Data\src\bin\Release\FSharp.Data.2.pdb"
+    let data3 = @"C:\Projects\FSharp.Data\src\bin\Release\FSharp.Data.3.pdb"
+    let data4 = @"C:\Projects\FSharp.Data\src\bin\Release\FSharp.Data.4.pdb"
+    let data5 = @"C:\Projects\FSharp.Data\src\bin\Release\FSharp.Data.5.pdb"
+    let datass = @"C:\Projects\FSharp.Data\src\bin\Release\FSharp.Data.pdb.srcsrv.txt"
 
-//    printSrcSrv file3
-//    printDia file2s
-    
+    let edt1 = @"C:\Projects\FSharp.Data\src\bin\sl5-compiler\Release\FSharp.Data.Experimental.DesignTime.1.pdb"
+    let edt2 = @"C:\Projects\FSharp.Data\src\bin\sl5-compiler\Release\FSharp.Data.Experimental.DesignTime.2.pdb"
+    // pdbstr -w -s:srcsrv -i:FSharp.Data.Experimental.DesignTime.pdb.srcsrv.txt -p:FSharp.Data.Experimental.DesignTime.3.pdb
+    // pdbstr -r -s:srcsrv -p:FSharp.Data.Experimental.DesignTime.3.pdb
+    let edt3 = @"C:\Projects\FSharp.Data\src\bin\sl5-compiler\Release\FSharp.Data.Experimental.DesignTime.3.pdb"
+    let edt4 = @"C:\Projects\FSharp.Data\src\bin\sl5-compiler\Release\FSharp.Data.Experimental.DesignTime.4.pdb"
+    let edtss = @"C:\Projects\FSharp.Data\src\bin\sl5-compiler\Release\FSharp.Data.Experimental.DesignTime.pdb.srcsrv.txt"
+
+    let dt1 = @"C:\Projects\FSharp.Data\src\bin\Release\FSharp.Data.DesignTime.1.pdb"
+    // pdbstr -w -s:srcsrv -i:FSharp.Data.DesignTime.pdb.srcsrv.txt -p:FSharp.Data.DesignTime.3.pdb
+    // pdbstr -r -s:srcsrv -p:FSharp.Data.DesignTime.3.pdb
+    let dt3 = @"C:\Projects\FSharp.Data\src\bin\Release\FSharp.Data.DesignTime.3.pdb"
+
+    printNamesByFlagIndex data
+
+//    diffFilesForStream data3 data5 "root"
+//    diffInfoStreams data3 data5
+//    printSrcSrv data4
+
+//    diffStreamPages data2 data3
+//    diffStreamBytes data2 data3
+
+//    printChecksumsPdb data2
+
+//    copyTo data2 data4
 //    do
-//        use pdb = new PdbFile(b4)
+//        use pdb = new PdbFile(data4)
+//        pdb.Defrag()
+    
+//    copyTo data3 data5
+//    do
+//        use pdb = new PdbFile(data5)
 //        pdb.Defrag()
 
-//    do
-//        use pdb = new PdbFile(b4)
-//        printStreamPages pdb
+//    copyTo edt1 edt4
+//    PdbFile.WriteSrcSrvFileTo edtss edt4
+//    printNamesByFlagIndex edt4
 
-//    diffStreamBytes b2 b4
-//    diffFiles (b2+".1") (b4+".1")
-//    printNames a2
-    
+//    diffStreamBytes data4 data5
+//    diffFilesForStream data4 data5 "1"
+//    diffInfoStreams data4 data5
+//    printfn "data4"
+
+//    printfn "data5"
+//    printNamesByFlagIndex data5
+//    do
+//        use pdb = new PdbFile(af)
+//        printfn "name count %d" pdb.Info.NameToPdbName.Count // pdb.Info.FlagIndexes.Count
+//    printNamesByFlagIndex af
+
+//    printNamesByFlagIndex data3
+//    printfn ""
+//    printNamesByFlagIndex dt3
+
+//    let lg2 = @"C:\Projects\libgit2sharp\LibGit2Sharp\bin\Release\LibGit2Sharp.pdb"
+//    let lg3 = @"C:\Projects\libgit2sharp\LibGit2Sharp\obj\Release\LibGit2Sharp.pdb"
+//    printNamesByFlagIndex lg2
+//    printNamesByFlagIndex 
+//    diffInfoStreams lg2 lg3
+//    diffStreamBytes lg2 lg3
+
     0 // exit code

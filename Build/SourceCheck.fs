@@ -18,9 +18,12 @@ type SourceCheck() =
 
     member val Exclude = String.Empty with set, get
     
+    member internal x.GetProjectFile() =
+        x.ProjectFile |> Path.GetFullPath
+
     member internal x.GetRepoDir() =
         if String.IsNullOrEmpty x.RepoDir then
-            let repo = Git.findRepo x.ProjectFile
+            let repo = Git.findRepo (x.GetProjectFile())
             if repo.IsSome then repo.Value else failwithf "unable to find git repository"
         else
             let repo =
