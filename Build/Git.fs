@@ -6,7 +6,6 @@ open System.Text
 open LibGit2Sharp
 open System.Collections.Generic
 open SourceLink
-open SourceLink.Extension
 open SourceLink.Exception
 
 let concatBytes (a:byte[]) (b:byte[]) =

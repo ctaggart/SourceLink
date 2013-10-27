@@ -5,7 +5,6 @@ open System.IO
 open System.Text
 open SourceLink
 open SourceLink.Build
-open SourceLink.Extension
 open SourceLink.PdbModify
 open SourceLink.SrcSrv
 open Microsoft.Dia

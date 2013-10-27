@@ -4,7 +4,6 @@ open System
 open System.IO
 open System.Collections.Generic
 open System.Text
-open SourceLink.Extension
 open SourceLink.Exception
 open SourceLink.File
 open SourceLink.PdbModify

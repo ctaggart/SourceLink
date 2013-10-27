@@ -1,33 +1,37 @@
-﻿module SourceLink.File
+﻿namespace SourceLink
 
 open System
 open System.IO
 open System.Collections.Generic
 
-let srcsrv = "srcsrv"
+module Path =
+    let combine a b = Path.Combine(a,b)
 
-let computeChecksums files =
-    use md5 = Security.Cryptography.MD5.Create()
-    let computeHash file =
-        use fs = File.OpenRead file
-        md5.ComputeHash fs
-    let checksums = Dictionary<string, string>()
-    for f in files do
-        checksums.[f |> computeHash |> Hex.encode] <- f
-    checksums
+module File =
+    let srcsrv = "srcsrv"
 
-let readLines (bytes:byte[]) =
-    use sr = new StreamReader(new MemoryStream(bytes))
-    seq {
-        while not sr.EndOfStream do
-            yield sr.ReadLine()
-    }
-    |> Seq.toArray
+    let computeChecksums files =
+        use md5 = Security.Cryptography.MD5.Create()
+        let computeHash file =
+            use fs = File.OpenRead file
+            md5.ComputeHash fs
+        let checksums = Dictionary<string, string>()
+        for f in files do
+            checksums.[f |> computeHash |> Hex.encode] <- f
+        checksums
 
-let getParentDirectories file =
-    seq {
-        let path = ref (Path.GetDirectoryName file)
-        while false = String.IsNullOrEmpty !path do
-            yield !path
-            path := Path.GetDirectoryName !path
-    }
+    let readLines (bytes:byte[]) =
+        use sr = new StreamReader(new MemoryStream(bytes))
+        seq {
+            while not sr.EndOfStream do
+                yield sr.ReadLine()
+        }
+        |> Seq.toArray
+
+    let getParentDirectories file =
+        seq {
+            let path = ref (Path.GetDirectoryName file)
+            while false = String.IsNullOrEmpty !path do
+                yield !path
+                path := Path.GetDirectoryName !path
+        }

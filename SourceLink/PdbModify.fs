@@ -4,7 +4,6 @@ open System.IO
 open System.Text
 open System.Collections.Generic
 open SourceLink
-open SourceLink.Extension
 open SourceLink.Exception
 
 let createRootPageBytes (pdbStream:PdbStream) =

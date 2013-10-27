@@ -3,7 +3,6 @@
 open Mono.Cecil
 open System
 open System.Globalization
-open SourceLink.Extension
 
 let toString bytes = Text.Encoding.UTF8.GetString bytes
 
