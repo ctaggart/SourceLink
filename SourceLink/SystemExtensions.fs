@@ -13,6 +13,8 @@ module SystemExtensions =
         let s = dt.ToString fmt
         if dt.Kind = DateTimeKind.Utc then s + "Z" else s
 
+    let strcmpi a b = StringComparer.OrdinalIgnoreCase.Compare(a, b)
+
     type DateTime with
         member x.IsoDateTime with get() = zulu x DateTimeFormatInfo.InvariantInfo.SortableDateTimePattern
         member x.IsoDate with get() = zulu x "yyyy'-'MM'-'dd"
@@ -61,5 +63,11 @@ module SystemExtensions =
         member x.WriteBytes (bytes:byte[]) = x.Write(bytes, 0, bytes.Length)
         member x.WriteBytesAt bytes (position:int) = x.Position <- int64 position; x.WriteBytes bytes
 
-    type Uri with
-        member x.Escaped with get() = Uri.EscapeUriString (x.ToString())
+    type IDictionary<'K,'V> with
+        member x.Get key =
+            let mutable value = Unchecked.defaultof<'V>
+            if x.TryGetValue(key, &value) then value |> Some else None
+        member x.Set key (value:option<'V>) =
+            match value with
+            | Some v -> x.[key] <- v
+            | None -> x.Remove key |> ignore
