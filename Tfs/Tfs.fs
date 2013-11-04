@@ -69,7 +69,8 @@ type IWorkspaceTemplate with
     member x.FirstMapping
         with get() =
             x.Mappings |> Seq.find (fun m -> m.MappingType = WorkspaceMappingType.Map)
-    member x.SourceDirMapping
+    /// returns the Source Control Folder mapped to the Build Agent Folder $(SourceDir)
+    member x.SourceDir
         with get() =
             match x.Mappings |> Seq.tryFind (fun m -> m.LocalItem <> null && m.LocalItem.Equals("$(SourceDir)", StringComparison.OrdinalIgnoreCase)) with
             | Some m -> Some m.ServerItem
@@ -133,6 +134,34 @@ type TfsProcessParameters(prms:(IDictionary<string,obj>)) =
     member x.BuildSettings 
         with get() = match x.Get "BuildSettings" with | Some o -> o :?> BuildSettings |> Some | None -> None
         and set (value:option<BuildSettings>) = match value with | Some v -> x.["BuildSettings"] <- v | None -> x.Remove "BuildSettings"
+    member x.ProjectsToBuild
+        with get() =
+            if x.BuildSettings.IsNone then None 
+            else if x.BuildSettings.Value.HasProjectsToBuild = false then None
+            else
+                let projects = x.BuildSettings.Value.ProjectsToBuild.ToArray()
+                if projects.Length = 0 then None else Some projects
+    member x.PlatformConfigurations
+        with get() =
+            if x.BuildSettings.IsNone then None 
+            else if x.BuildSettings.Value.HasPlatformConfigurations = false then None
+            else
+                let configurations = x.BuildSettings.Value.PlatformConfigurations.ToArray()
+                if configurations.Length = 0 then None else Some configurations
+    /// Some if only one project, else None
+    member x.ProjectToBuild
+        with get() =
+            let ps = x.ProjectsToBuild
+            if ps.IsNone then None
+            else if ps.Value.Length = 1 then Some ps.Value.[0]
+            else None
+    /// Some if only one platform configuration, else None
+    member x.PlatformConfiguration
+        with get() =
+            let pcs = x.PlatformConfigurations
+            if pcs.IsNone then None
+            else if pcs.Value.Length = 1 then Some pcs.Value.[0]
+            else None
     member x.TestSpecs 
         with get() = match x.Get "TestSpecs" with | Some o -> o :?> TestSpecList |> Some | None -> None
         and set (value:option<TestSpecList>) = match value with | Some v -> x.["TestSpecs"] <- v | None -> x.Remove "TestSpecs"
@@ -176,8 +205,21 @@ type TfsProcessParameters(prms:(IDictionary<string,obj>)) =
         and set (value:option<bool>) = match value with | Some v -> x.["CleanRepository"] <- v | None -> x.Remove "CleanRepository"
 
 type IBuildDefinition with
-    member x.GetParameters() = TfsProcessParameters(x.ProcessParameters |> WorkflowHelpers.DeserializeProcessParameters)
-    member x.SetParameters (v:TfsProcessParameters) = x.ProcessParameters <- WorkflowHelpers.SerializeProcessParameters v.Dictionary
+    member x.Parameters
+        with get() = TfsProcessParameters(x.ProcessParameters |> WorkflowHelpers.DeserializeProcessParameters)
+        and set (v:TfsProcessParameters) = x.ProcessParameters <- WorkflowHelpers.SerializeProcessParameters v.Dictionary
+
+type VersionControlServer with
+    member x.CreateLocalWorkspace name =
+        let wsp = CreateWorkspaceParameters name
+        wsp.Location <- Nullable WorkspaceLocation.Local
+        x.CreateWorkspace wsp
+    member x.GetWorkspaceByName name =
+        let owner = System.Security.Principal.WindowsIdentity.GetCurrent().Name
+        x.GetWorkspace(name, owner)
+    member x.DeleteWorkspaceByName name =
+        let owner = System.Security.Principal.WindowsIdentity.GetCurrent().Name
+        x.DeleteWorkspace(name, owner)
 
 /// wraps a project collection and team project
 type TfsProject(uri:string) =
@@ -229,8 +271,3 @@ type TfsProject(uri:string) =
     interface IDisposable with member x.Dispose() = x.Dispose() 
     override x.Finalize() = x.Dispose()
 
-type VersionControlServer with
-    member x.CreateLocalWorkspace name =
-        let wsp = CreateWorkspaceParameters name
-        wsp.Location <- Nullable WorkspaceLocation.Local
-        x.CreateWorkspace wsp

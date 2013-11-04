@@ -71,3 +71,4 @@ module SystemExtensions =
             match value with
             | Some v -> x.[key] <- v
             | None -> x.Remove key |> ignore
+        member x.KeyValues = x |> Seq.map (fun pair -> pair.Key, pair.Value)
