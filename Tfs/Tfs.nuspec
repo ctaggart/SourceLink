@@ -1,0 +1,34 @@
+﻿<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata minClientVersion="2.5">
+    <id>SourceLink.Tfs</id>
+    <version>0.0.0</version>
+    <title>SourceLink.Tfs</title>
+    <authors>Cameron Taggart</authors>
+    <!--<summary></summary>-->
+    <description>F# helpers and activities for TFS 2013</description>
+    <projectUrl>https://github.com/ctaggart/SourceLink</projectUrl>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <iconUrl>https://github.com/ctaggart/SourceLink/raw/50ac7c82a8d4296265808cc773ce02982be304e3/SourceLink128.jpg</iconUrl>
+    @dependencies@
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="FSharp.Core"/>
+      <frameworkAssembly assemblyName="Microsoft.TeamFoundation.Build.Client"/>
+      <frameworkAssembly assemblyName="Microsoft.TeamFoundation.Build.Workflow"/>
+      <frameworkAssembly assemblyName="Microsoft.TeamFoundation.Client"/>
+      <frameworkAssembly assemblyName="Microsoft.TeamFoundation.Common"/>
+      <frameworkAssembly assemblyName="Microsoft.TeamFoundation.TestManagement.Client"/>
+      <frameworkAssembly assemblyName="Microsoft.TeamFoundation.VersionControl.Client"/>
+      <frameworkAssembly assemblyName="Microsoft.TeamFoundation.VersionControl.Common"/>
+      <frameworkAssembly assemblyName="Microsoft.TeamFoundation.WorkItemTracking.Client"/>
+      <frameworkAssembly assemblyName="Microsoft.VisualStudio.Services.Common"/>
+      <frameworkAssembly assemblyName="System.Activities"/>
+      <frameworkAssembly assemblyName="System.Xml"/>
+    </frameworkAssemblies>
+  </metadata>
+  <files>
+    <file src="SourceLink.Tfs.dll" target="lib\net45"/>
+    <file src="SourceLink.Tfs.pdb" target="lib\net45"/>
+    <file src="SourceLink.Tfs.xml" target="lib\net45"/>
+  </files>
+</package>

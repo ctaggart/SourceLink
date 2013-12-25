@@ -36,13 +36,14 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DocumentationFile>bin\Release\SourceLink.Build.xml</DocumentationFile>
     <Prefer32Bit>true</Prefer32Bit>
+    <NoWarn>2003</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Private>True</Private>
     </Reference>
     <Reference Include="LibGit2Sharp">
-      <HintPath>..\packages\LibGit2Sharp.0.13.0.0\lib\net35\LibGit2Sharp.dll</HintPath>
+      <HintPath>..\packages\LibGit2Sharp.0.14.1.0\lib\net35\LibGit2Sharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Build" />
@@ -60,9 +61,14 @@
     <Compile Include="Task.fs" />
     <Compile Include="SourceCheck.fs" />
     <Compile Include="SourceLink.fs" />
+    <Compile Include="AssemblyInfo.fs" />
     <None Include="App.config" />
-    <None Include="Build.nuspec" />
-    <None Include="SourceLink.Build.targets" />
+    <None Include="Build.nuspec">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="SourceLink.Build.targets">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="nuspec.2011.8.xsd" />
   </ItemGroup>
   <ItemGroup>

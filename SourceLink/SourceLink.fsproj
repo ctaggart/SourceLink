@@ -21,7 +21,9 @@
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Debug\SourceLink.XML</DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
+    <NoWarn>2003</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,7 +32,8 @@
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Release\SourceLink.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\SourceLink.xml</DocumentationFile>
+    <NoWarn>2003</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
@@ -58,18 +61,17 @@
     <Compile Include="PdbFile.fs" />
     <Compile Include="PdbChecksums.fs" />
     <Compile Include="SrcSrv.fs" />
-    <None Include="..\packages\LibGit2Sharp.0.13.0.0\NativeBinaries\x86\git2-7940036.dll">
-      <Link>git2-7940036.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\packages\LibGit2Sharp.0.13.0.0\NativeBinaries\x86\git2-7940036.pdb">
-      <Link>git2-7940036.pdb</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <Compile Include="Process.fs" />
+    <Compile Include="AssemblyInfo.fs" />
+    <None Include="packages.config" />
+    <None Include="SourceLink.nuspec" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="LibGit2Sharp">
+      <HintPath>..\packages\LibGit2Sharp.0.14.1.0\lib\net35\LibGit2Sharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="mscorlib" />
