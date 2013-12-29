@@ -1,9 +1,9 @@
-﻿namespace SourceLink.TfsActivities
+﻿namespace SourceLink.Tfs.Activities
 
 open System
 open System.Activities
-open Microsoft.TeamFoundation.Build.Workflow.Activities
 open Microsoft.TeamFoundation.Build.Client
+open SourceLink
 open SourceLink.Tfs
 
 [<BuildActivity(HostEnvironmentOption.Agent)>]
@@ -17,10 +17,10 @@ type Process() =
 
     override x.CacheMetadata(metadata:CodeActivityMetadata) : unit =
         base.CacheMetadata metadata
-        metadata.RequireExtension typeof<IBuildDetail>
+        metadata.RequireBuildDetail()
 
     override x.Execute(context:CodeActivityContext) : unit =
-        let build = context.GetExtension<IBuildDetail>()
+        let build = context.BuildDetail
 
         let workdir =
             let wd = x.WorkingDirectory.Get context
@@ -40,7 +40,7 @@ type Process() =
             p.Arguments <- arguments
         if String.IsNullOrEmpty workdir = false then 
             p.WorkingDirectory <- workdir
-        let bm s = context.TrackBuildMessage(s, BuildMessageImportance.High)
+        let bm s = context.MessageHigh "%s" s
         p.Stdout |> Observable.add bm
         p.Stderr |> Observable.add bm
         try

@@ -23,6 +23,7 @@
       <frameworkAssembly assemblyName="Microsoft.TeamFoundation.WorkItemTracking.Client"/>
       <frameworkAssembly assemblyName="Microsoft.VisualStudio.Services.Common"/>
       <frameworkAssembly assemblyName="System.Activities"/>
+      <frameworkAssembly assemblyName="System.Net.Http"/>
       <frameworkAssembly assemblyName="System.Xml"/>
     </frameworkAssemblies>
   </metadata>
@@ -30,5 +31,6 @@
     <file src="SourceLink.Tfs.dll" target="lib\net45"/>
     <file src="SourceLink.Tfs.pdb" target="lib\net45"/>
     <file src="SourceLink.Tfs.xml" target="lib\net45"/>
+    <file src="AssembliesFramework.fsx" target=""/>
   </files>
 </package>

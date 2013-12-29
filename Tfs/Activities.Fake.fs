@@ -1,11 +1,11 @@
-﻿namespace SourceLink.TfsActivities
+﻿namespace SourceLink.Tfs.Activities
 
 open System
 open System.IO
 open System.Activities
-open Microsoft.TeamFoundation.Build.Workflow.Activities
 open Microsoft.TeamFoundation.Build.Client
-open SourceLink.Tfs
+open SourceLink
+open SourceLink.Tfs.Activities
 
 type Fake() = 
     inherit CodeActivity()
@@ -24,12 +24,12 @@ type Fake() =
 
     override x.CacheMetadata(metadata:CodeActivityMetadata) : unit =
         base.CacheMetadata metadata
-        metadata.RequireExtension typeof<IBuildDetail>
-        metadata.RequireExtension typeof<IBuildAgent>
+        metadata.RequireBuildDetail()
+        metadata.RequireBuildAgent()
 
     override x.Execute(context:CodeActivityContext) : unit =
-        let build = context.GetExtension<IBuildDetail>()
-        let agent = context.GetExtension<IBuildAgent>()
+        let build = context.BuildDetail
+        let agent = context.BuildAgent
 
         let workdir = x.WorkingDirectory.Get context
 
@@ -64,7 +64,7 @@ type Fake() =
         
         if String.IsNullOrEmpty workdir = false then 
             p.WorkingDirectory <- workdir
-        let bm s = context.TrackBuildMessage(s, BuildMessageImportance.High)
+        let bm s = context.MessageHigh "%s" s
         p.Stdout |> Observable.add bm
         p.Stderr |> Observable.add bm
         try
