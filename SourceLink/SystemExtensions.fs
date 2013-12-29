@@ -72,3 +72,13 @@ module SystemExtensions =
             | Some v -> x.[key] <- v
             | None -> x.Remove key |> ignore
         member x.KeyValues = x |> Seq.map (fun pair -> pair.Key, pair.Value)
+
+    /// Deletes a directory and its contents.
+    /// It does not throw an exception if the directory does not exist.
+    let rec rmdir dir =
+        if Directory.Exists dir then
+            for f in Directory.EnumerateFiles dir do
+                File.Delete f
+            for d in Directory.EnumerateDirectories dir do
+                rmdir d
+            Directory.Delete dir
