@@ -5,6 +5,7 @@ open System.IO
 open System.Activities
 open Microsoft.TeamFoundation.Build.Client
 open SourceLink
+open SourceLink.Tfs
 open SourceLink.Tfs.Activities
 
 type Fake() = 
@@ -48,14 +49,17 @@ type Fake() =
             let buildFsx = x.BuildFsx.Get context
             if String.IsNullOrEmpty buildFsx then "build.fsx" else buildFsx
         
-        let tfsProjectCollection = build.BuildServer.TeamProjectCollection.Uri.AbsoluteUri
+        let tfs = build.BuildServer.TeamProjectCollection
+
+        let tfsUri = tfs.Uri.AbsoluteUri
+        let tfsUser = tfs.ClientCredentials.Federated.TokenValue
         let tfsBuild = build.Uri.AbsoluteUri
         let tfsAgent = agent.Uri.AbsoluteUri
         let arguments =
             let args =
                 let args = x.Arguments.Get context
                 if String.IsNullOrEmpty args then "" else sprintf " %s" args 
-            sprintf "%s tfsProjectCollection=\"%s\" tfsBuild=\"%s\" tfsAgent=\"%s\"%s" buildFsx tfsProjectCollection tfsBuild tfsAgent args
+            sprintf "%s tfsUri=\"%s\" tfsUser=\"%s\" tfsBuild=\"%s\" tfsAgent=\"%s\"%s" buildFsx tfsUri tfsUser tfsBuild tfsAgent args
         context.MessageHigh "%s>%s %s" workdir filename arguments
 
         let p = SourceLink.Process()

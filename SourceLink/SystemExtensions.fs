@@ -82,3 +82,5 @@ module SystemExtensions =
             for d in Directory.EnumerateDirectories dir do
                 rmdir d
             Directory.Delete dir
+
+    let toUri s = Uri s
