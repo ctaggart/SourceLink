@@ -52,7 +52,7 @@ type Fake() =
         let tfs = build.BuildServer.TeamProjectCollection
 
         let tfsUri = tfs.Uri.AbsoluteUri
-        let tfsUser = tfs.ClientCredentials.Federated.TokenValue
+        let tfsUser = tfs.ClientCredentials.Federated.TokenValue |> Text.Encoding.UTF8.GetBytes |> Hex.encode
         let tfsBuild = build.Uri.AbsoluteUri
         let tfsAgent = agent.Uri.AbsoluteUri
         let arguments =
