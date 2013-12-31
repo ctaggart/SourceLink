@@ -17,8 +17,8 @@ module SystemExtensions =
         static member cmpi a b = StringComparer.OrdinalIgnoreCase.Compare(a, b)
 
     type Uri with
-        /// to a Uri from a string, allows piping
-        static member ``to`` s = Uri s
+        /// create a Uri from a string, allows piping
+        static member from s = Uri s
 
     let private zulu (dt:DateTime) (fmt:string) =
         let s = dt.ToString fmt
@@ -65,7 +65,7 @@ module SystemExtensions =
         member x.WriteGuid (guid:Guid) = x.Write (guid.ToByteArray())
 
     type StringBuilder with
-        member x.Appendf format = Printf.bprintf format
+        member x.Appendf format = Printf.ksprintf (fun s -> x.Append s |> ignore) format
         member x.String with get() = x.ToString()
 
     /// debug printfn to System.Diagnostics.Debug

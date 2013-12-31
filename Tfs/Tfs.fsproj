@@ -54,11 +54,12 @@
   <ItemGroup>
     <Compile Include="TfsProcessParameters.fs" />
     <Compile Include="TfsConnection.fs" />
-    <Compile Include="TfsBuild.fs" />
+    <Compile Include="TfsBuildServer.fs" />
     <Compile Include="TfsVersionControl.fs" />
     <Compile Include="TfsCredentialStorage.fs" />
     <Compile Include="TfsUser.fs" />
     <Compile Include="TfsProject.fs" />
+    <Compile Include="TfsBuild.fs" />
     <Compile Include="TfsActivities.fs" />
     <Compile Include="Activities.Process.fs" />
     <Compile Include="Activities.Fake.fs" />

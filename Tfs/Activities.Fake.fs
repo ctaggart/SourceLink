@@ -57,7 +57,7 @@ type Fake() =
             let args =
                 let args = x.Arguments.Get context
                 if String.IsNullOrEmpty args then "" else sprintf " %s" args 
-            sprintf "%s tfsUri=\"%s\" tfsUser=\"%s\" tfsBuild=\"%s\" tfsAgent=\"%s\"%s" buildFsx tfsUri tfsUser tfsBuild tfsAgent args
+            sprintf "%s tfsUri=\"%s\" tfsUser=\"%s\" tfsAgent=\"%s\" tfsBuild=\"%s\"%s" buildFsx tfsUri tfsUser tfsAgent tfsBuild args
         context.MessageHigh "%s>%s %s" workdir filename arguments
 
         let p = SourceLink.Process()

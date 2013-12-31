@@ -1,6 +1,7 @@
 #r @"packages\FAKE.2.4.2.0\tools\FakeLib.dll"
 
 open System
+open System.IO
 open Fake
 open Fake.AssemblyInfoFile
 
@@ -38,6 +39,11 @@ Target "AssemblyInfo" (fun _ ->
         Attribute.FileVersion versionFile
         Attribute.InformationalVersion versionInfo
         ]
+
+    use fs = new StreamWriter(@"TFS\Assemblies.fsx")
+    "#load \"AssembliesFramework.fsx" |> fs.WriteLine
+    sprintf "#r @\"packages\SourceLink.%s\lib\net45\SourceLink.dll" versionNuget |> fs.WriteLine
+    sprintf "#r @\"packages\SourceLink.Tfs.%s\lib\net45\SourceLink.dll" versionNuget |> fs.WriteLine
 )
 
 Target "Build" (fun _ ->
