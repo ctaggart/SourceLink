@@ -4,13 +4,19 @@ open System
 open Microsoft.TeamFoundation.Build.Client
 
 type TfsBuild(project:TfsProject, agent:IBuildAgent, build:IBuildDetail) =
-
+    
+    // from FAKE scripts
     new(tfsUri:string, tfsUser:string, tfsAgent:string, tfsBuild:string) =
         let user = tfsUser |> Hex.decode |> Text.Encoding.UTF8.GetString |> TfsUser.FromSimpleWebToken
         let tp = new TfsProject(Uri tfsUri, user)
         let bs = tp.Tfs.BuildServer
         let agent = tfsAgent |> Uri.from |> bs.GetBuildAgent
         let build = tfsBuild |> Uri.from |> bs.GetBuild
+        new TfsBuild(tp, agent, build)
+
+    // from TFS Activities
+    new(agent:IBuildAgent, build:IBuildDetail) =
+        let tp = new TfsProject(build.BuildServer.TeamProjectCollection, build.TeamProject)
         new TfsBuild(tp, agent, build)
 
     member x.Project with get() = project
