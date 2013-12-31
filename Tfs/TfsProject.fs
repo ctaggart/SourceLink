@@ -34,5 +34,5 @@ type TfsProject(tfs:Tfs, project:string) =
         use tfs = tfs
         GC.SuppressFinalize x
     interface IDisposable with member x.Dispose() = x.Dispose() 
-    override x.Finalize() = x.Dispose()
+//    override x.Finalize() = x.Dispose()
 
