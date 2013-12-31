@@ -38,7 +38,6 @@ type Fake() =
             else
                 let fakeDir = findFake workdir
                 if fakeDir = None then
-//                    context.FailBuildWith "unable to find FAKE.exe"
                     "FAKE.exe" // will need to be on the PATH
                 else
                     Path.Combine(fakeDir.Value, @"tools\FAKE.exe")
@@ -58,7 +57,7 @@ type Fake() =
                 let args = x.Arguments.Get context
                 if String.IsNullOrEmpty args then "" else sprintf " %s" args 
             sprintf "%s tfsUri=\"%s\" tfsUser=\"%s\" tfsAgent=\"%s\" tfsBuild=\"%s\"%s" buildFsx tfsUri tfsUser tfsAgent tfsBuild args
-        context.MessageHigh "%s>%s %s" workdir filename arguments
+        context.MessageNormal "%s>%s %s" workdir filename arguments
 
         let p = SourceLink.Process()
         p.FileName <- filename
