@@ -1,4 +1,4 @@
-﻿namespace SourceLink.Tfs
+﻿namespace SourceLink
 
 open System
 open System.Collections.Generic

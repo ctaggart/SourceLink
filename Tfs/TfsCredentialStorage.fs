@@ -1,5 +1,5 @@
 ﻿[<AutoOpen>]
-module SourceLink.Tfs.TfsCredentialStorage
+module SourceLink.TfsCredentialStorage
 
 open System
 open System.Reflection

@@ -1,10 +1,9 @@
-﻿namespace SourceLink.Tfs.Activities
+﻿namespace SourceLink.Activities
 
 open System
 open System.Activities
 open Microsoft.TeamFoundation.Build.Client
 open SourceLink
-open SourceLink.Tfs
 
 [<BuildActivity(HostEnvironmentOption.Agent)>]
 type Process() = 
