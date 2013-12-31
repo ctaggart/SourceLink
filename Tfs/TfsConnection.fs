@@ -1,8 +1,6 @@
 ﻿[<AutoOpen>]
-module SourceLink.Tfs.TfsConnection
+module SourceLink.TfsConnection
 
-open System
-open System.Collections.Generic
 open Microsoft.TeamFoundation
 open Microsoft.TeamFoundation.Client // requires adding references to System.Drawing and System.Windows.Forms
 open Microsoft.TeamFoundation.Framework.Client
@@ -21,7 +19,7 @@ type TfsConnection with
     member x.EventService with get() = x.GetService<IEventService>()
     member x.SecurityService with get() = x.GetService<ISecurityService>()
     member x.LocationService with get() = x.GetService<ILocationService>()
-    member x.HyperlinkService with get() = x.GetService<Client.TswaClientHyperlinkService>()
+    member x.HyperlinkService with get() = x.GetService<TswaClientHyperlinkService>()
     member x.AdministrationService with get() = x.GetService<IAdministrationService>()
 
 type TfsConfigurationServer with

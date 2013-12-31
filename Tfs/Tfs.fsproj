@@ -66,6 +66,7 @@
     <None Include="AssembliesFramework.fsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Assemblies.fsx" />
     <None Include="Tfs.nuspec" />
   </ItemGroup>
   <ItemGroup>

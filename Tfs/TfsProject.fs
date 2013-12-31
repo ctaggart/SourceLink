@@ -1,7 +1,6 @@
-﻿namespace SourceLink.Tfs
+﻿namespace SourceLink
 
 open System
-open SourceLink
 
 /// wraps a project collection and team project
 type TfsProject(tfs:Tfs, project:string) =

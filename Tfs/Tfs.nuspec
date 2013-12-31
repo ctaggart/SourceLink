@@ -32,5 +32,6 @@
     <file src="SourceLink.Tfs.pdb" target="lib\net45"/>
     <file src="SourceLink.Tfs.xml" target="lib\net45"/>
     <file src="AssembliesFramework.fsx" target=""/>
+    <file src="Assemblies.fsx" target=""/>
   </files>
 </package>

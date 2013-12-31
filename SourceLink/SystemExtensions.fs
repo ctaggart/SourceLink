@@ -9,11 +9,20 @@ module SystemExtensions =
     open System.IO
     open System.Text
 
+    type String with
+        // 2005-05 New Recommendations for Using Strings in Microsoft .NET 2.0 http://msdn.microsoft.com/en-us/library/ms973919.aspx
+        /// string comparison, similar to strcmp
+        static member cmp a b = StringComparer.Ordinal.Compare(a, b)
+        /// string comparison ignoring case, similar to strcmpi
+        static member cmpi a b = StringComparer.OrdinalIgnoreCase.Compare(a, b)
+
+    type Uri with
+        /// to a Uri from a string, allows piping
+        static member ``to`` s = Uri s
+
     let private zulu (dt:DateTime) (fmt:string) =
         let s = dt.ToString fmt
         if dt.Kind = DateTimeKind.Utc then s + "Z" else s
-
-    let strcmpi a b = StringComparer.OrdinalIgnoreCase.Compare(a, b)
 
     type DateTime with
         member x.IsoDateTime with get() = zulu x DateTimeFormatInfo.InvariantInfo.SortableDateTimePattern
@@ -56,8 +65,11 @@ module SystemExtensions =
         member x.WriteGuid (guid:Guid) = x.Write (guid.ToByteArray())
 
     type StringBuilder with
-        member x.Appendf format = Printf.ksprintf (fun s -> x.Append s |> ignore) format
+        member x.Appendf format = Printf.bprintf format
         member x.String with get() = x.ToString()
+
+    /// debug printfn to System.Diagnostics.Debug
+    let dprintfn format = Printf.ksprintf (fun message -> System.Diagnostics.Debug.Print message) format
 
     type FileStream with
         member x.WriteBytes (bytes:byte[]) = x.Write(bytes, 0, bytes.Length)
@@ -73,9 +85,7 @@ module SystemExtensions =
             | None -> x.Remove key |> ignore
         member x.KeyValues = x |> Seq.map (fun pair -> pair.Key, pair.Value)
 
-    /// Deletes a directory and its contents.
-    /// It does not throw an exception if the directory does not exist.
-    let rec rmdir dir =
+    let rec private rmdir dir =
         if Directory.Exists dir then
             for f in Directory.EnumerateFiles dir do
                 File.Delete f
@@ -83,4 +93,8 @@ module SystemExtensions =
                 rmdir d
             Directory.Delete dir
 
-    let toUri s = Uri s
+    type Directory with
+        /// deletes a directory and its contents recursively, no exception if the directory does not exist
+        static member DeleteRec dir = rmdir dir
+
+

@@ -1,5 +1,5 @@
 ﻿[<AutoOpen>]
-module SourceLink.Tfs.TfsVersionControl
+module SourceLink.TfsVersionControl
 
 open System
 open Microsoft.TeamFoundation.VersionControl.Client

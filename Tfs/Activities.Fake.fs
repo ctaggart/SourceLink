@@ -1,12 +1,10 @@
-﻿namespace SourceLink.Tfs.Activities
+﻿namespace SourceLink.Activities
 
 open System
 open System.IO
 open System.Activities
 open Microsoft.TeamFoundation.Build.Client
 open SourceLink
-open SourceLink.Tfs
-open SourceLink.Tfs.Activities
 
 type Fake() = 
     inherit CodeActivity()

@@ -1,5 +1,5 @@
 ﻿[<AutoOpen>]
-module SourceLink.Tfs.TfsBuild
+module SourceLink.TfsBuild
 
 open System
 open Microsoft.TeamFoundation.Build.Client
