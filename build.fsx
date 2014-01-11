@@ -43,7 +43,7 @@ Target "AssemblyInfo" (fun _ ->
     use fs = new StreamWriter(@"TFS\Assemblies.fsx")
     "#load \"AssembliesFramework.fsx\"" |> fs.WriteLine
     "#I __SOURCE_DIRECTORY__" |> fs.WriteLine
-    sprintf "#r \"packages\\SourceLink.%s\\lib\\Net45\\SourceLink.dll\"" versionNuget |> fs.WriteLine
+    sprintf "#r \"..\..\packages\\SourceLink.%s\\lib\\Net45\\SourceLink.dll\"" versionNuget |> fs.WriteLine
     sprintf "#r \"lib\\Net45\\SourceLink.Tfs.dll\"" |> fs.WriteLine
 )
 
