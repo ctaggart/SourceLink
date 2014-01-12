@@ -64,17 +64,8 @@ Target "Build" (fun _ ->
     |> ignore
 )
 
-type TfsProcessParameters with
-    member x.NuGetApiKey with get() = match x.Get "NuGetApiKey" with | Some o -> o :?> string |> Some | None -> None
-
 Target "NuGet" (fun _ ->
     let bin = if isTfs then "../bin" else "bin"
-    let apiKey =
-        if isTfs then
-            use tb = getTfsBuild()
-            tb.Build.BuildDefinition.Parameters.NuGetApiKey.Value
-        else ""
-    let publish = false // String.IsNullOrEmpty apiKey = false
     Directory.CreateDirectory bin |> ignore
 
     NuGet (fun p -> 
@@ -82,8 +73,6 @@ Target "NuGet" (fun _ ->
         Version = versionNuget
         WorkingDir = "SourceLink/bin/Release"
         OutputPath = bin
-        AccessKey = apiKey
-        Publish = publish
         DependenciesByFramework =
         [{ 
             FrameworkVersion = "net45"
@@ -100,8 +89,6 @@ Target "NuGet" (fun _ ->
         Version = versionNuget
         WorkingDir = "Build/bin/Release"
         OutputPath = bin
-        AccessKey = apiKey
-        Publish = publish
     }) "Build/Build.nuspec"
 
     NuGet (fun p -> 
@@ -109,8 +96,6 @@ Target "NuGet" (fun _ ->
         Version = versionNuget
         WorkingDir = "Tfs/bin/Release"
         OutputPath = bin
-        AccessKey = apiKey
-        Publish = publish
         DependenciesByFramework =
         [{ 
             FrameworkVersion = "net45"
