@@ -1,5 +1,5 @@
 ﻿<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
-  <metadata minClientVersion="2.5">
+  <metadata minClientVersion="2.7">
     <id>SourceLink</id>
     <version>0.0.0</version>
     <title>SourceLink</title>
@@ -12,12 +12,12 @@
     <iconUrl>https://github.com/ctaggart/SourceLink/raw/50ac7c82a8d4296265808cc773ce02982be304e3/SourceLink128.jpg</iconUrl>
     @dependencies@
     <frameworkAssemblies>
-      <frameworkAssembly assemblyName="FSharp.Core"/>
+      <frameworkAssembly assemblyName="FSharp.Core" />
     </frameworkAssemblies>
   </metadata>
   <files>
-    <file src="SourceLink.dll" target="lib\net45"/>
-    <file src="SourceLink.pdb" target="lib\net45"/>
-    <file src="SourceLink.xml" target="lib\net45"/>
+    <file src="SourceLink.dll" target="lib\net45" />
+    <file src="SourceLink.pdb" target="lib\net45" />
+    <file src="SourceLink.xml" target="lib\net45" />
   </files>
 </package>

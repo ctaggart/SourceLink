@@ -28,7 +28,8 @@ type SourceLink() =
         
         if false = x.HasErrors then
             try
-                let revision = Git.getRevision repoDir
+                use repo = new GitRepo(repoDir)
+                let revision = repo.Revision
                 x.MessageHigh "source linking %s to %s" pdbFile (createSrcSrvTrg x.RepoUrl revision)
 
                 let files = x.GetSourceFiles()

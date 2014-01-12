@@ -4,7 +4,6 @@ open System.IO
 open System.Text
 open System.Collections.Generic
 open SourceLink
-open SourceLink.Exception
 
 let createRootPageBytes (pdbStream:PdbStream) =
     use ms = new MemoryStream()
@@ -57,7 +56,7 @@ let createInfoBytes (info:PdbInfo) =
     bw.Write names.Length
     let nameIndexMax = info.FlagIndexMax
     if names.Length > nameIndexMax then
-        failwithf "names.Length > nameIndexMax"
+        Ex.failwithf "names.Length > nameIndexMax"
     bw.Write nameIndexMax
     
     // reindex flags in stream order

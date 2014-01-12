@@ -1,11 +1,13 @@
-#r @"packages\FAKE.2.4.2.0\tools\FakeLib.dll"
+#r @"packages\FAKE.2.4.8.0\tools\FakeLib.dll"
+#load "packages\SourceLink.Tfs.0.3.0-a1401121926\Assemblies.fsx"
 
 open System
 open System.IO
 open Fake
 open Fake.AssemblyInfoFile
+open SourceLink
 
-let versionAssembly = "0.3.0" // change when compatability if broken
+let versionAssembly = "0.3.0" // change when compatability is broken
 let versionFile = "0.3.0"
 let versionPre = "a" // emtpy, a for alpha, b for beta
 
@@ -14,10 +16,19 @@ let versionPreFull = if versionPre.Length = 0 then "" else sprintf "%s%s" versio
 let versionInfo = sprintf "%s %s %s" versionAssembly (start.ToString "yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'") "" // TODO full git checksum
 let versionNuget = if versionPreFull.Length = 0 then versionFile else sprintf "%s-%s" versionFile versionPreFull
 
+let isTfs = hasBuildParam "tfsBuild"
+let getTfsBuild() = new TfsBuild(getBuildParam "tfsUri", getBuildParam "tfsUser", getBuildParam "tfsAgent", getBuildParam "tfsBuild")
+
 Target "Clean" (fun _ -> 
     !! "**/bin/"
     ++ "**/obj/" 
     |> CleanDirs 
+)
+
+Target "BuildNumber" (fun _ -> 
+    use tb = getTfsBuild()
+    tb.Build.BuildNumber <- sprintf "SourceLink.%s" versionNuget
+    tb.Build.Save()
 )
 
 Target "AssemblyInfo" (fun _ ->
@@ -48,53 +59,71 @@ Target "AssemblyInfo" (fun _ ->
 )
 
 Target "Build" (fun _ ->
-    { BaseDirectory = __SOURCE_DIRECTORY__
-      Includes = ["SourceLink.sln"]
-      Excludes = [] } 
+    !! "SourceLink.sln"
     |> MSBuildRelease "" "Rebuild"
     |> ignore
 )
 
+type TfsProcessParameters with
+    member x.NuGetApiKey with get() = match x.Get "NuGetApiKey" with | Some o -> o :?> string |> Some | None -> None
+
 Target "NuGet" (fun _ ->
+    let bin = if isTfs then "../bin" else "bin"
+    let apiKey =
+        if isTfs then
+            use tb = getTfsBuild()
+            tb.Build.BuildDefinition.Parameters.NuGetApiKey.Value
+        else ""
+    let publish = false // String.IsNullOrEmpty apiKey = false
+    Directory.CreateDirectory bin |> ignore
+
     NuGet (fun p -> 
     { p with
         Version = versionNuget
         WorkingDir = "SourceLink/bin/Release"
-        OutputPath = "SourceLink/bin/Release"
+        OutputPath = bin
+        AccessKey = apiKey
+        Publish = publish
         DependenciesByFramework =
         [{ 
             FrameworkVersion = "net45"
             Dependencies =
             [
-                "LibGit2Sharp", GetPackageVersion "packages/" "LibGit2Sharp"
+                "LibGit2Sharp", sprintf "[%s]" (GetPackageVersion "packages/" "LibGit2Sharp") // exact version
             ]
         }]
+        
     }) "SourceLink/SourceLink.nuspec"
 
     NuGet (fun p -> 
     { p with
         Version = versionNuget
         WorkingDir = "Build/bin/Release"
-        OutputPath = "Build/bin/Release"
+        OutputPath = bin
+        AccessKey = apiKey
+        Publish = publish
     }) "Build/Build.nuspec"
 
     NuGet (fun p -> 
     { p with
         Version = versionNuget
         WorkingDir = "Tfs/bin/Release"
-        OutputPath = "Tfs/bin/Release"
+        OutputPath = bin
+        AccessKey = apiKey
+        Publish = publish
         DependenciesByFramework =
         [{ 
             FrameworkVersion = "net45"
             Dependencies =
             [
-                "SourceLink", versionNuget
+                "SourceLink", sprintf "[%s]" versionNuget // exact version
             ]
         }]
     }) "Tfs/Tfs.nuspec"
 )
 
 "Clean"
+    =?> ("BuildNumber", isTfs)
     ==> "AssemblyInfo"
     ==> "Build"
     ==> "NuGet"

@@ -2,7 +2,6 @@
 
 open System
 open System.Collections.Generic
-open SourceLink.Exception
 
 type PdbChecksums(file:PdbFile) =
     
@@ -20,7 +19,7 @@ type PdbChecksums(file:PdbFile) =
                 filenameToChecksum.[filename] <- checksum
                 checksumToFilename.[checksum] <- filename
 //            else
-//                failwithf "unable to read checksum for %s" filename
+//                Ex.failwithf "unable to read checksum for %s" filename
         )
 
     member x.FilenameToChecksum with get() = filenameToChecksum :> IDictionary<string,string>

@@ -2,6 +2,7 @@
 
 open System
 open Microsoft.TeamFoundation.Build.Client
+open Microsoft.TeamFoundation.Build.Workflow
 
 type TfsBuild(project:TfsProject, agent:IBuildAgent, build:IBuildDetail) =
     
@@ -23,6 +24,14 @@ type TfsBuild(project:TfsProject, agent:IBuildAgent, build:IBuildDetail) =
     member x.Project with get() = project
     member x.Agent with get() = agent
     member x.Build with get() = build
+    
+    member x.Parameters
+        with get() =
+            let ps = x.Build.BuildDefinition.ProcessParameters |> WorkflowHelpers.DeserializeProcessParameters
+            x.Build.ProcessParameters |> WorkflowHelpers.DeserializeProcessParameters |> ps.AddAll
+            TfsProcessParameters(ps)
+
+    member x.BuildDirectory with get() = agent.GetExpandedBuildDirectory build.BuildDefinition
 
     member x.Dispose() =
         use project = project

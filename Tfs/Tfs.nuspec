@@ -12,26 +12,26 @@
     <iconUrl>https://github.com/ctaggart/SourceLink/raw/50ac7c82a8d4296265808cc773ce02982be304e3/SourceLink128.jpg</iconUrl>
     @dependencies@
     <frameworkAssemblies>
-      <frameworkAssembly assemblyName="FSharp.Core"/>
-      <frameworkAssembly assemblyName="Microsoft.TeamFoundation.Build.Client"/>
-      <frameworkAssembly assemblyName="Microsoft.TeamFoundation.Build.Workflow"/>
-      <frameworkAssembly assemblyName="Microsoft.TeamFoundation.Client"/>
-      <frameworkAssembly assemblyName="Microsoft.TeamFoundation.Common"/>
-      <frameworkAssembly assemblyName="Microsoft.TeamFoundation.TestManagement.Client"/>
-      <frameworkAssembly assemblyName="Microsoft.TeamFoundation.VersionControl.Client"/>
-      <frameworkAssembly assemblyName="Microsoft.TeamFoundation.VersionControl.Common"/>
-      <frameworkAssembly assemblyName="Microsoft.TeamFoundation.WorkItemTracking.Client"/>
-      <frameworkAssembly assemblyName="Microsoft.VisualStudio.Services.Common"/>
-      <frameworkAssembly assemblyName="System.Activities"/>
-      <frameworkAssembly assemblyName="System.Net.Http"/>
-      <frameworkAssembly assemblyName="System.Xml"/>
+      <frameworkAssembly assemblyName="FSharp.Core" />
+      <frameworkAssembly assemblyName="Microsoft.TeamFoundation.Build.Client" />
+      <frameworkAssembly assemblyName="Microsoft.TeamFoundation.Build.Workflow" />
+      <frameworkAssembly assemblyName="Microsoft.TeamFoundation.Client" />
+      <frameworkAssembly assemblyName="Microsoft.TeamFoundation.Common" />
+      <frameworkAssembly assemblyName="Microsoft.TeamFoundation.TestManagement.Client" />
+      <frameworkAssembly assemblyName="Microsoft.TeamFoundation.VersionControl.Client" />
+      <frameworkAssembly assemblyName="Microsoft.TeamFoundation.VersionControl.Common" />
+      <frameworkAssembly assemblyName="Microsoft.TeamFoundation.WorkItemTracking.Client" />
+      <frameworkAssembly assemblyName="Microsoft.VisualStudio.Services.Common" />
+      <frameworkAssembly assemblyName="System.Activities" />
+      <frameworkAssembly assemblyName="System.Net.Http" />
+      <frameworkAssembly assemblyName="System.Xml" />
     </frameworkAssemblies>
   </metadata>
   <files>
-    <file src="SourceLink.Tfs.dll" target="lib\net45"/>
-    <file src="SourceLink.Tfs.pdb" target="lib\net45"/>
-    <file src="SourceLink.Tfs.xml" target="lib\net45"/>
-    <file src="AssembliesFramework.fsx" target=""/>
-    <file src="Assemblies.fsx" target=""/>
+    <file src="SourceLink.Tfs.dll" target="lib\net45" />
+    <file src="SourceLink.Tfs.pdb" target="lib\net45" />
+    <file src="SourceLink.Tfs.xml" target="lib\net45" />
+    <file src="AssembliesFramework.fsx" target="" />
+    <file src="Assemblies.fsx" target="" />
   </files>
 </package>

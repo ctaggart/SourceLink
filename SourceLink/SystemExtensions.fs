@@ -10,6 +10,11 @@ module SystemExtensions =
     open System.Text
 
     type String with
+        member x.ToUtf8 with get() = Text.Encoding.UTF8.GetBytes x
+        member x.EqualsI b = x.Equals(b, StringComparison.OrdinalIgnoreCase)
+        member x.UpperI with get() = x.ToUpperInvariant()
+        member x.LowerI with get() = x.ToLowerInvariant()
+
         // 2005-05 New Recommendations for Using Strings in Microsoft .NET 2.0 http://msdn.microsoft.com/en-us/library/ms973919.aspx
         /// string comparison, similar to strcmp
         static member cmp a b = StringComparer.Ordinal.Compare(a, b)
@@ -29,11 +34,7 @@ module SystemExtensions =
         member x.IsoDate with get() = zulu x "yyyy'-'MM'-'dd"
 
     type Guid with
-        member x.ToStringN with get() = x.ToString("N").ToUpperInvariant()
-
-    type String with
-        member x.ToUtf8 with get() = Text.Encoding.UTF8.GetBytes x
-        member x.EqualsI b = x.Equals(b, StringComparison.OrdinalIgnoreCase)
+        member x.ToStringN with get() = x.ToString "N"
 
     type ICollection<'T> with
         // similar to linq SequenceEquals
@@ -81,6 +82,7 @@ module SystemExtensions =
             | Some v -> x.[key] <- v
             | None -> x.Remove key |> ignore
         member x.KeyValues = x |> Seq.map (fun pair -> pair.Key, pair.Value)
+        member x.AddAll d = d |> Seq.iter (fun (KeyValue(k,v)) -> x.[k] <- v)
 
     let rec private rmdir dir =
         if Directory.Exists dir then
@@ -94,4 +96,15 @@ module SystemExtensions =
         /// deletes a directory and its contents recursively, no exception if the directory does not exist
         static member DeleteRec dir = rmdir dir
 
+    type Path with
+        static member combine path1 path2 = Path.Combine(path1, path2)
 
+    type File with
+        static member copy src dest = File.Copy(src, dest)
+
+    type Byte with
+        static member concat (a:byte[]) (b:byte[]) =
+            let c = Array.create (a.Length + b.Length) 0uy
+            Buffer.BlockCopy(a, 0, c, 0, a.Length)
+            Buffer.BlockCopy(b, 0, c, a.Length, b.Length)
+            c

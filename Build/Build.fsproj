@@ -44,7 +44,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="LibGit2Sharp">
-      <HintPath>..\packages\LibGit2Sharp.0.14.1.0\lib\net35\LibGit2Sharp.dll</HintPath>
+      <HintPath>..\packages\LibGit2Sharp.0.15.0.0\lib\net35\LibGit2Sharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Build" />
@@ -57,7 +57,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Git.fs" />
     <Compile Include="Proj.fs" />
     <Compile Include="Task.fs" />
     <Compile Include="SourceCheck.fs" />
@@ -70,7 +69,7 @@
     <None Include="SourceLink.Build.targets">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="nuspec.2011.8.xsd" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SourceLink\SourceLink.fsproj">
@@ -95,11 +94,13 @@
     </Otherwise>
   </Choose>
   <Import Project="$(FSharpTargetsPath)" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <PropertyGroup>
+    <PostBuildEvent>
+      if not exist "$(TargetDir)NativeBinaries" md "$(TargetDir)NativeBinaries"
+      if not exist "$(TargetDir)NativeBinaries\x86" md "$(TargetDir)NativeBinaries\x86"
+      xcopy /s /y "$(SolutionDir)packages\LibGit2Sharp.0.15.0.0\lib\net35\NativeBinaries\x86\*.*" "$(TargetDir)NativeBinaries\x86"
+      if not exist "$(TargetDir)NativeBinaries\amd64" md "$(TargetDir)NativeBinaries\amd64"
+      xcopy /s /y "$(SolutionDir)packages\LibGit2Sharp.0.15.0.0\lib\net35\NativeBinaries\amd64\*.*" "$(TargetDir)NativeBinaries\amd64"
+    </PostBuildEvent>
+  </PropertyGroup>
 </Project>

@@ -12,15 +12,16 @@ open SourceLink.Dia
 
 let printChecksumsProj proj =
     let compiles = Proj.getCompiles proj (HashSet())
-    for checksum, file in Git.computeChecksums compiles do
+    for checksum, file in GitRepo.ComputeChecksums compiles do
         printfn "%s %s"checksum file
 
 let printRevision dir =
-    let r = Git.getRevision dir
-    printfn "revision: %s" r
+    use repo = new GitRepo(dir)
+    printfn "revision: %s" repo.Revision
 
 let printChecksumsGit dir files =
-    for checksum in Git.getChecksums dir files do
+    use repo = new GitRepo(dir)
+    for checksum in repo.GetChecksums files do
         printfn "%s"checksum
 
 let printChecksumsPdb path =
@@ -216,36 +217,38 @@ let printNamesByFlagIndex file =
 [<EntryPoint>]
 let main argv = 
     
-    let af = @"C:\Projects\pdb\Autofac.pdb\D77905B67A5046138298AF1CC87D57D51\Autofac.pdb"
+    printRevision @"C:\Projects\SourceLink"
 
-    let sl = @"C:\Projects\SourceLink\SourceLink\obj\Debug\SourceLink.pdb"
-    let sl1 = @"C:\Projects\SourceLink\SourceLink\obj\Debug\SourceLink.1.pdb"
-    let sl2 = @"C:\Projects\SourceLink\SourceLink\obj\Debug\SourceLink.2.pdb"
-
-    let core = @"C:\Projects\fsharp\lib\release\4.0\FSharp.Core.pdb"
-
-    let data = @"C:\Projects\FSharp.Data\src\bin\Release\FSharp.Data.pdb"
-    let data1 = @"C:\Projects\FSharp.Data\src\bin\Release\FSharp.Data.1.pdb"
-    let data2 = @"C:\Projects\FSharp.Data\src\bin\Release\FSharp.Data.2.pdb"
-    let data3 = @"C:\Projects\FSharp.Data\src\bin\Release\FSharp.Data.3.pdb"
-    let data4 = @"C:\Projects\FSharp.Data\src\bin\Release\FSharp.Data.4.pdb"
-    let data5 = @"C:\Projects\FSharp.Data\src\bin\Release\FSharp.Data.5.pdb"
-    let datass = @"C:\Projects\FSharp.Data\src\bin\Release\FSharp.Data.pdb.srcsrv.txt"
-
-    let edt1 = @"C:\Projects\FSharp.Data\src\bin\sl5-compiler\Release\FSharp.Data.Experimental.DesignTime.1.pdb"
-    let edt2 = @"C:\Projects\FSharp.Data\src\bin\sl5-compiler\Release\FSharp.Data.Experimental.DesignTime.2.pdb"
-    // pdbstr -w -s:srcsrv -i:FSharp.Data.Experimental.DesignTime.pdb.srcsrv.txt -p:FSharp.Data.Experimental.DesignTime.3.pdb
-    // pdbstr -r -s:srcsrv -p:FSharp.Data.Experimental.DesignTime.3.pdb
-    let edt3 = @"C:\Projects\FSharp.Data\src\bin\sl5-compiler\Release\FSharp.Data.Experimental.DesignTime.3.pdb"
-    let edt4 = @"C:\Projects\FSharp.Data\src\bin\sl5-compiler\Release\FSharp.Data.Experimental.DesignTime.4.pdb"
-    let edtss = @"C:\Projects\FSharp.Data\src\bin\sl5-compiler\Release\FSharp.Data.Experimental.DesignTime.pdb.srcsrv.txt"
-
-    let dt1 = @"C:\Projects\FSharp.Data\src\bin\Release\FSharp.Data.DesignTime.1.pdb"
-    // pdbstr -w -s:srcsrv -i:FSharp.Data.DesignTime.pdb.srcsrv.txt -p:FSharp.Data.DesignTime.3.pdb
-    // pdbstr -r -s:srcsrv -p:FSharp.Data.DesignTime.3.pdb
-    let dt3 = @"C:\Projects\FSharp.Data\src\bin\Release\FSharp.Data.DesignTime.3.pdb"
-
-    printNamesByFlagIndex data
+//    let af = @"C:\Projects\pdb\Autofac.pdb\D77905B67A5046138298AF1CC87D57D51\Autofac.pdb"
+//
+//    let sl = @"C:\Projects\SourceLink\SourceLink\obj\Debug\SourceLink.pdb"
+//    let sl1 = @"C:\Projects\SourceLink\SourceLink\obj\Debug\SourceLink.1.pdb"
+//    let sl2 = @"C:\Projects\SourceLink\SourceLink\obj\Debug\SourceLink.2.pdb"
+//
+//    let core = @"C:\Projects\fsharp\lib\release\4.0\FSharp.Core.pdb"
+//
+//    let data = @"C:\Projects\FSharp.Data\src\bin\Release\FSharp.Data.pdb"
+//    let data1 = @"C:\Projects\FSharp.Data\src\bin\Release\FSharp.Data.1.pdb"
+//    let data2 = @"C:\Projects\FSharp.Data\src\bin\Release\FSharp.Data.2.pdb"
+//    let data3 = @"C:\Projects\FSharp.Data\src\bin\Release\FSharp.Data.3.pdb"
+//    let data4 = @"C:\Projects\FSharp.Data\src\bin\Release\FSharp.Data.4.pdb"
+//    let data5 = @"C:\Projects\FSharp.Data\src\bin\Release\FSharp.Data.5.pdb"
+//    let datass = @"C:\Projects\FSharp.Data\src\bin\Release\FSharp.Data.pdb.srcsrv.txt"
+//
+//    let edt1 = @"C:\Projects\FSharp.Data\src\bin\sl5-compiler\Release\FSharp.Data.Experimental.DesignTime.1.pdb"
+//    let edt2 = @"C:\Projects\FSharp.Data\src\bin\sl5-compiler\Release\FSharp.Data.Experimental.DesignTime.2.pdb"
+//    // pdbstr -w -s:srcsrv -i:FSharp.Data.Experimental.DesignTime.pdb.srcsrv.txt -p:FSharp.Data.Experimental.DesignTime.3.pdb
+//    // pdbstr -r -s:srcsrv -p:FSharp.Data.Experimental.DesignTime.3.pdb
+//    let edt3 = @"C:\Projects\FSharp.Data\src\bin\sl5-compiler\Release\FSharp.Data.Experimental.DesignTime.3.pdb"
+//    let edt4 = @"C:\Projects\FSharp.Data\src\bin\sl5-compiler\Release\FSharp.Data.Experimental.DesignTime.4.pdb"
+//    let edtss = @"C:\Projects\FSharp.Data\src\bin\sl5-compiler\Release\FSharp.Data.Experimental.DesignTime.pdb.srcsrv.txt"
+//
+//    let dt1 = @"C:\Projects\FSharp.Data\src\bin\Release\FSharp.Data.DesignTime.1.pdb"
+//    // pdbstr -w -s:srcsrv -i:FSharp.Data.DesignTime.pdb.srcsrv.txt -p:FSharp.Data.DesignTime.3.pdb
+//    // pdbstr -r -s:srcsrv -p:FSharp.Data.DesignTime.3.pdb
+//    let dt3 = @"C:\Projects\FSharp.Data\src\bin\Release\FSharp.Data.DesignTime.3.pdb"
+//
+//    printNamesByFlagIndex data
 
 //    diffFilesForStream data3 data5 "root"
 //    diffInfoStreams data3 data5

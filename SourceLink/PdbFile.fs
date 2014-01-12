@@ -4,7 +4,6 @@ open System
 open System.IO
 open System.Collections.Generic
 open System.Text
-open SourceLink.Exception
 open SourceLink.File
 open SourceLink.PdbModify
 
@@ -21,7 +20,7 @@ type PdbFile(file) =
         let c1A = char 0x1A // ctrl+z substitute character
         let msf = sprintf "Microsoft C/C++ MSF 7.00%c%c%cDS%c%c%c" c0D c0A c1A c00 c00 c00
         if false = msf.ToUtf8.CollectionEquals (br.ReadBytes 32) then
-            failwithf "pdb header didn't match"
+            Ex.failwithf "pdb header didn't match"
     
     // read rest of header
     let pageByteCount = br.ReadInt32() // 0x20
@@ -34,9 +33,9 @@ type PdbFile(file) =
     do // check pdb
         let length = int fs.Length
         do if length % pageByteCount <> 0 then
-            failwithf "pdb length %% bytes per page <> 0, %d, %d" length pageByteCount
+            Ex.failwithf "pdb length %% bytes per page <> 0, %d, %d" length pageByteCount
         if length / pageByteCount <> pageCount then
-            failwithf "pdb length does not match page count, length: %d, bytes per page: %d, page count: %d" length pageByteCount pageCount
+            Ex.failwithf "pdb length does not match page count, length: %d, bytes per page: %d, page count: %d" length pageByteCount pageCount
 
     // reading functions
     let countPages nBytes = (nBytes + pageByteCount - 1) / pageByteCount
@@ -45,7 +44,7 @@ type PdbFile(file) =
     let readPage (bytes:byte[]) page offset count =
         goToPage page
         let read = br.Read(bytes, offset, count)
-        if read <> count then failwithf "tried reading %d bytes at offset %d, but only read %d" count offset read
+        if read <> count then Ex.failwithf "tried reading %d bytes at offset %d, but only read %d" count offset read
     let readStreamBytes (stream:PdbStream) =
         let bytes = Array.create stream.ByteCount 0uy
         let pages = stream.Pages
@@ -118,7 +117,7 @@ type PdbFile(file) =
                 name.Stream <- br.ReadInt32()
                 positions.Add(position, name)
         if positions.Count <> nameCount then
-            failwithf "names count, %d <> %d" positions.Count nameCount
+            Ex.failwithf "names count, %d <> %d" positions.Count nameCount
         let tailByteCount = root.Streams.[1].ByteCount - br.Position
         info.Tail <- br.ReadBytes tailByteCount
         for position, name in positions do
@@ -171,7 +170,7 @@ type PdbFile(file) =
     member x.FreePages pages =
         for page in pages do
             if page = 0 then
-                failwithf "cannot free page 0"
+                Ex.failwithf "cannot free page 0"
             if false = freePages.Contains page then
                 goToPage page
                 fs.WriteBytes zerosPage

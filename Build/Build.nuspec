@@ -13,10 +13,12 @@
     <dependencies/>
   </metadata>
   <files>
-    <file src="*.dll" target="build"/>
-    <file src="*.dll.config" target="build"/>
-    <file src="*.pdb" target="build"/>
-    <file src="*.xml" target="build"/>
-    <file src="SourceLink.Build.targets" target="build"/>
+    <file src="*.dll" target="build" />
+    <!--<file src="*.dll.config" target="build" />-->
+    <file src="NativeBinaries\amd64\*.dll" target="build\NativeBinaries\amd64" />
+    <file src="NativeBinaries\x86\*.dll" target="build\NativeBinaries\x86" />
+    <!--<file src="*.pdb" target="build" />-->
+    <!--<file src="*.xml" target="build" />-->
+    <file src="SourceLink.Build.targets" target="build" />
   </files>
 </package>

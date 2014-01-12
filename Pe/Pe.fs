@@ -22,7 +22,7 @@ type PeInfo() =
     member val File = String.Empty with set, get
     member val Guid = Guid() with set, get
     member val Age = 0u with set, get
-    member x.Id with get() = x.Guid.ToStringN + x.Age.ToString()
+    member x.Id with get() = x.Guid.ToStringN.UpperI + x.Age.ToString()
     member val DateTime = unixEpoch with set, get
     member val Pdb = String.Empty with set, get
 

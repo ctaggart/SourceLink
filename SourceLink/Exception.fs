@@ -5,5 +5,5 @@ open System
 type SourceLinkException(msg) =
     inherit Exception(msg)
 
-module Exception =
+module Ex =
     let failwithf fmt  = Printf.ksprintf (fun s -> SourceLinkException s |> raise) fmt

@@ -4,9 +4,6 @@ open System
 open System.IO
 open System.Collections.Generic
 
-module Path =
-    let combine a b = Path.Combine(a,b)
-
 module File =
     let srcsrv = "srcsrv"
 
