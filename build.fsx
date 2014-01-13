@@ -1,5 +1,5 @@
 #r "packages\FAKE.2.4.8.0\Tools\FakeLib.dll"
-#load "packages\SourceLink.Tfs.0.3.0-a1401130230-37deff95\Fake.fsx"
+#load "packages\SourceLink.Tfs.0.3.0-a1401130302-659cb0f8\Fake.fsx"
 
 open System
 open System.IO
