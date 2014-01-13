@@ -64,7 +64,6 @@
     <Compile Include="SrcSrv.fs" />
     <Compile Include="Process.fs" />
     <Compile Include="VsProject.fs" />
-    <Compile Include="PdbLinker.fs" />
     <Compile Include="AssemblyInfo.fs" />
     <None Include="SourceLink.nuspec" />
     <None Include="packages.config" />
