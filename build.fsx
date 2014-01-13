@@ -1,5 +1,5 @@
-#r @"packages\FAKE.2.4.8.0\tools\FakeLib.dll"
-#load "packages\SourceLink.Tfs.0.3.0-a1401121926\Assemblies.fsx"
+#r "packages\FAKE.2.4.8.0\Tools\FakeLib.dll"
+#load "packages\SourceLink.Tfs.0.3.0-a1401130230-37deff95\Fake.fsx"
 
 open System
 open System.IO
@@ -7,17 +7,15 @@ open Fake
 open Fake.AssemblyInfoFile
 open SourceLink
 
-let versionAssembly = "0.3.0" // change when compatability is broken
-let versionFile = "0.3.0"
+let versionAssembly = "0.3.0" // change when incompatible
+let versionFile = "0.3.0" // matches nuget version
 let versionPre = "a" // emtpy, a for alpha, b for beta
 
-let start = DateTime.UtcNow
-let versionPreFull = if versionPre.Length = 0 then "" else sprintf "%s%s" versionPre (start.ToString "yyMMddHHmm") // pre-release, only allows 20 chars, TODO append 8 chars of 40 char git checksum hash "-a1312241626-dcc582c2"
-let versionInfo = sprintf "%s %s %s" versionAssembly (start.ToString "yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'") "" // TODO full git checksum
-let versionNuget = if versionPreFull.Length = 0 then versionFile else sprintf "%s-%s" versionFile versionPreFull
-
-let isTfs = hasBuildParam "tfsBuild"
-let getTfsBuild() = new TfsBuild(getBuildParam "tfsUri", getBuildParam "tfsUser", getBuildParam "tfsAgent", getBuildParam "tfsBuild")
+let repo = new GitRepo(__SOURCE_DIRECTORY__)
+let dt = DateTime.UtcNow
+let versionInfo = sprintf "%s %s %s" versionAssembly (dt.ToString "yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'") repo.Revision
+// pre-release limited to 20 chars after the dash, using 10 for the date and first 8 of revision "-a1312241626-dcc582c2"
+let versionNuget = if versionPre.Length = 0 then versionFile else sprintf "%s-%s%s-%s" versionFile versionPre (dt.ToString "yyMMddHHmm") (repo.Revision.Substring(0,8))
 
 Target "Clean" (fun _ -> 
     !! "**/bin/"
@@ -54,6 +52,7 @@ Target "AssemblyInfo" (fun _ ->
     use fs = new StreamWriter(@"TFS\Assemblies.fsx")
     "#load \"AssembliesFramework.fsx\"" |> fs.WriteLine
     "#I __SOURCE_DIRECTORY__" |> fs.WriteLine
+    sprintf "#r \"..\\..\\packages\\LibGit2Sharp.0.15.0.0\\lib\\Net35\\LibGit2Sharp.dll\"" |> fs.WriteLine
     sprintf "#r \"..\..\packages\\SourceLink.%s\\lib\\Net45\\SourceLink.dll\"" versionNuget |> fs.WriteLine
     sprintf "#r \"lib\\Net45\\SourceLink.Tfs.dll\"" |> fs.WriteLine
 )
@@ -62,6 +61,17 @@ Target "Build" (fun _ ->
     !! "SourceLink.sln"
     |> MSBuildRelease "" "Rebuild"
     |> ignore
+)
+
+Target "SourceLink" (fun _ ->
+    !! "Tfs\Tfs.fsproj" 
+//    ++ "SourceLink\SourceLink.fsproj"
+    |> Seq.iter (fun proj ->
+        logfn "verifyChecksums for %s" (Path.GetFileName proj)
+        let p = VsProject proj
+        let files = p.Compiles -- "**\AssemblyInfo.fs"
+        verifyChecksums repo files
+    )
 )
 
 Target "NuGet" (fun _ ->
@@ -111,6 +121,7 @@ Target "NuGet" (fun _ ->
     =?> ("BuildNumber", isTfs)
     ==> "AssemblyInfo"
     ==> "Build"
+    ==> "SourceLink"
     ==> "NuGet"
 
 RunTargetOrDefault "NuGet"

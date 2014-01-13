@@ -9,3 +9,4 @@
 #r "Microsoft.VisualStudio.Services.Common"
 #r "System.Net.Http"
 #r "System.Xml"
+#r "Microsoft.Build"

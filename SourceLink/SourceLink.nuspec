@@ -13,6 +13,7 @@
     @dependencies@
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="FSharp.Core" />
+      <frameworkAssembly assemblyName="Microsoft.Build" />
     </frameworkAssemblies>
   </metadata>
   <files>

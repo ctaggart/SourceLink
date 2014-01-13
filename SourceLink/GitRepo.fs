@@ -58,6 +58,15 @@ type GitRepo(dir) =
         )
         checksums
 
+    /// returns a sorted list of files with checksums that do not match
+    member x.VerifyChecksums files =
+        let committed = x.GetChecksums files
+        let different = SortedSet(StringComparer.OrdinalIgnoreCase)
+        for checksum, file in GitRepo.ComputeChecksums files do
+            if false = committed.Contains checksum then
+                different.Add file |> ignore
+        different |> Array.ofSeq
+
     static member IsRepo dir =
         try
             use repo = new Repository(dir)

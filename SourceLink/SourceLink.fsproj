@@ -56,13 +56,15 @@
     <Compile Include="Hex.fs" />
     <Compile Include="File.fs" />
     <Compile Include="Exception.fs" />
-    <Compile Include="Git.fs" />
+    <Compile Include="GitRepo.fs" />
     <Compile Include="PdbInfo.fs" />
     <Compile Include="PdbModify.fs" />
     <Compile Include="PdbFile.fs" />
     <Compile Include="PdbChecksums.fs" />
     <Compile Include="SrcSrv.fs" />
     <Compile Include="Process.fs" />
+    <Compile Include="VsProject.fs" />
+    <Compile Include="PdbLinker.fs" />
     <Compile Include="AssemblyInfo.fs" />
     <None Include="SourceLink.nuspec" />
     <None Include="packages.config" />
@@ -75,6 +77,7 @@
       <HintPath>..\packages\LibGit2Sharp.0.15.0.0\lib\net35\LibGit2Sharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.Build" />
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Core" />

@@ -45,13 +45,9 @@ type SourceCheck() =
             let files = x.GetSourceFiles()
             x.MessageHigh "source checking %d files" files.Length
             use repo = new GitRepo(repoDir)
-            let committedChecksums = repo.GetChecksums files
-            let different = SortedSet(StringComparer.OrdinalIgnoreCase)
-            for checksum, file in GitRepo.ComputeChecksums files do
-                if false = committedChecksums.Contains checksum then
-                    different.Add file |> ignore
-            if different.Count > 0 then
-                x.Error "%d source files do not have matching checksums in the git repository" different.Count
+            let different = repo.VerifyChecksums files
+            if different.Length > 0 then
+                x.Error "%d source files do not have matching checksums in the git repository" different.Length
                 for file in different do
                     x.Error "no checksum match found for %s" file
         with
