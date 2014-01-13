@@ -80,7 +80,14 @@ type IDictionary<'K,'V> with
         | Some v -> x.[key] <- v
         | None -> x.Remove key |> ignore
     member x.KeyValues = x |> Seq.map (fun pair -> pair.Key, pair.Value)
-    member x.AddAll d = d |> Seq.iter (fun (KeyValue(k,v)) -> x.[k] <- v)
+    member x.AddAll keyValues = keyValues |> Seq.iter (fun (KeyValue(k,v)) -> x.[k] <- v)
+    member x.AddAll tuples = tuples |> Seq.iter (fun (k,v) -> x.[k] <- v)
+
+type Dictionary<'K,'V> with
+    static member ofTuples (tuples:seq<_*_>) = 
+        let d = Dictionary()
+        d.AddAll tuples
+        d
 
 let rec private rmdir dir =
     if Directory.Exists dir then
