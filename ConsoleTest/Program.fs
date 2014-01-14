@@ -1,34 +1,12 @@
-﻿
-open System
+﻿open System
 open System.Collections.Generic
 open System.IO
 open System.Text
 open SourceLink
-open SourceLink.Build
 open SourceLink.PdbModify
 open SourceLink.SrcSrv
 open Microsoft.Dia
 open SourceLink.Dia
-
-let printChecksumsProj proj =
-    let compiles = Proj.getCompiles proj (HashSet())
-    for checksum, file in GitRepo.ComputeChecksums compiles do
-        printfn "%s %s"checksum file
-
-let printRevision dir =
-    use repo = new GitRepo(dir)
-    printfn "revision: %s" repo.Revision
-
-let printChecksumsGit dir files =
-    use repo = new GitRepo(dir)
-    for checksum in repo.GetChecksums files do
-        printfn "%s"checksum
-
-let printChecksumsPdb path =
-    use pdb = new PdbFile(path)
-    let checksums = PdbChecksums(pdb)
-    for KeyValue(filename, checksum) in checksums.FilenameToChecksum do
-        printfn "%s %s" checksum filename
 
 let pagesToString (pages:int[]) =
     let sb = StringBuilder()
@@ -37,7 +15,8 @@ let pagesToString (pages:int[]) =
         sb.Appendf "%X " p
     sb.ToString()
 
-let printStreamPages (file:PdbFile) =
+let printStreamPages file =
+    use file = new PdbFile(file)
     printfn "root page is %X" file.RootPage
     printfn "root stream, %d bytes, %s" file.RootPdbStream.ByteCount (pagesToString file.RootPdbStream.Pages)
     let root = file.Root
@@ -45,7 +24,8 @@ let printStreamPages (file:PdbFile) =
         let s = root.Streams.[i]
         printfn "stream %d, %d bytes, %s" i s.ByteCount (pagesToString s.Pages)
 
-let printOrphanedPages (file:PdbFile) =
+let printOrphanedPages file =
+    use file = new PdbFile(file)
     for page in file.OrphanedPages do
         printf "%x " page
     printfn ""
@@ -216,84 +196,10 @@ let printNamesByFlagIndex file =
 
 [<EntryPoint>]
 let main argv = 
-    
-    printRevision @"C:\Projects\SourceLink"
+//    printChecksumsGit (Path.combine __SOURCE_DIRECTORY__ "..") (Path.combine __SOURCE_DIRECTORY__ @"..\Tfs\Tfs.fsproj")
 
-//    let af = @"C:\Projects\pdb\Autofac.pdb\D77905B67A5046138298AF1CC87D57D51\Autofac.pdb"
-//
-//    let sl = @"C:\Projects\SourceLink\SourceLink\obj\Debug\SourceLink.pdb"
-//    let sl1 = @"C:\Projects\SourceLink\SourceLink\obj\Debug\SourceLink.1.pdb"
-//    let sl2 = @"C:\Projects\SourceLink\SourceLink\obj\Debug\SourceLink.2.pdb"
-//
-//    let core = @"C:\Projects\fsharp\lib\release\4.0\FSharp.Core.pdb"
-//
-//    let data = @"C:\Projects\FSharp.Data\src\bin\Release\FSharp.Data.pdb"
-//    let data1 = @"C:\Projects\FSharp.Data\src\bin\Release\FSharp.Data.1.pdb"
-//    let data2 = @"C:\Projects\FSharp.Data\src\bin\Release\FSharp.Data.2.pdb"
-//    let data3 = @"C:\Projects\FSharp.Data\src\bin\Release\FSharp.Data.3.pdb"
-//    let data4 = @"C:\Projects\FSharp.Data\src\bin\Release\FSharp.Data.4.pdb"
-//    let data5 = @"C:\Projects\FSharp.Data\src\bin\Release\FSharp.Data.5.pdb"
-//    let datass = @"C:\Projects\FSharp.Data\src\bin\Release\FSharp.Data.pdb.srcsrv.txt"
-//
-//    let edt1 = @"C:\Projects\FSharp.Data\src\bin\sl5-compiler\Release\FSharp.Data.Experimental.DesignTime.1.pdb"
-//    let edt2 = @"C:\Projects\FSharp.Data\src\bin\sl5-compiler\Release\FSharp.Data.Experimental.DesignTime.2.pdb"
-//    // pdbstr -w -s:srcsrv -i:FSharp.Data.Experimental.DesignTime.pdb.srcsrv.txt -p:FSharp.Data.Experimental.DesignTime.3.pdb
-//    // pdbstr -r -s:srcsrv -p:FSharp.Data.Experimental.DesignTime.3.pdb
-//    let edt3 = @"C:\Projects\FSharp.Data\src\bin\sl5-compiler\Release\FSharp.Data.Experimental.DesignTime.3.pdb"
-//    let edt4 = @"C:\Projects\FSharp.Data\src\bin\sl5-compiler\Release\FSharp.Data.Experimental.DesignTime.4.pdb"
-//    let edtss = @"C:\Projects\FSharp.Data\src\bin\sl5-compiler\Release\FSharp.Data.Experimental.DesignTime.pdb.srcsrv.txt"
-//
-//    let dt1 = @"C:\Projects\FSharp.Data\src\bin\Release\FSharp.Data.DesignTime.1.pdb"
-//    // pdbstr -w -s:srcsrv -i:FSharp.Data.DesignTime.pdb.srcsrv.txt -p:FSharp.Data.DesignTime.3.pdb
-//    // pdbstr -r -s:srcsrv -p:FSharp.Data.DesignTime.3.pdb
-//    let dt3 = @"C:\Projects\FSharp.Data\src\bin\Release\FSharp.Data.DesignTime.3.pdb"
-//
-//    printNamesByFlagIndex data
-
-//    diffFilesForStream data3 data5 "root"
-//    diffInfoStreams data3 data5
-//    printSrcSrv data4
-
-//    diffStreamPages data2 data3
-//    diffStreamBytes data2 data3
-
-//    printChecksumsPdb data2
-
-//    copyTo data2 data4
-//    do
-//        use pdb = new PdbFile(data4)
-//        pdb.Defrag()
-    
-//    copyTo data3 data5
-//    do
-//        use pdb = new PdbFile(data5)
-//        pdb.Defrag()
-
-//    copyTo edt1 edt4
-//    PdbFile.WriteSrcSrvFileTo edtss edt4
-//    printNamesByFlagIndex edt4
-
-//    diffStreamBytes data4 data5
-//    diffFilesForStream data4 data5 "1"
-//    diffInfoStreams data4 data5
-//    printfn "data4"
-
-//    printfn "data5"
-//    printNamesByFlagIndex data5
-//    do
-//        use pdb = new PdbFile(af)
-//        printfn "name count %d" pdb.Info.NameToPdbName.Count // pdb.Info.FlagIndexes.Count
-//    printNamesByFlagIndex af
-
-//    printNamesByFlagIndex data3
-//    printfn ""
-//    printNamesByFlagIndex dt3
-
-//    let lg2 = @"C:\Projects\libgit2sharp\LibGit2Sharp\bin\Release\LibGit2Sharp.pdb"
-//    let lg3 = @"C:\Projects\libgit2sharp\LibGit2Sharp\obj\Release\LibGit2Sharp.pdb"
-//    printNamesByFlagIndex lg2
-//    printNamesByFlagIndex 
-//    diffInfoStreams lg2 lg3
-//    diffStreamBytes lg2 lg3
-
-    0 // exit code
+    let pdb = Path.combine __SOURCE_DIRECTORY__ @"..\Tfs\bin\Debug\SourceLink.Tfs.pdb"
+    printNamesByFlagIndex pdb
+    printStreamPages pdb
+    printOrphanedPages pdb
+    0

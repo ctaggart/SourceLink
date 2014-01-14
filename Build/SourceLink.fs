@@ -31,37 +31,30 @@ type SourceLink() =
                 use repo = new GitRepo(repoDir)
                 let revision = repo.Revision
                 x.MessageHigh "source linking %s to %s" pdbFile (createSrcSrvTrg x.RepoUrl revision)
-
                 let files = x.GetSourceFiles()
-                let fileChecksums = File.computeChecksums files
-
-                let sourceFiles = SortedDictionary(StringComparer.OrdinalIgnoreCase) // file, path
-                let missingFiles = SortedDictionary(StringComparer.OrdinalIgnoreCase) // file, checksum
-
                 use pdb = new PdbFile(pdbFile)
-                let pdbChecksums = PdbChecksums(pdb)
-                for checksum in pdbChecksums.ChecksumToFilename.Keys do
-                    let file = fileChecksums.[checksum]
-                    if fileChecksums.ContainsKey checksum then
-                        let path = file.Substring(repoDir.Length+1).Replace('\\','/')
-                        sourceFiles.Add(file,path)
-                    else
-                        missingFiles.Add(file,checksum)
-
-                if missingFiles.Count > 0 then
-                    x.Error "cannot find %d source files" missingFiles.Count
-                    for KeyValue(file, checksum) in missingFiles do
+                let missing = pdb.VerifyChecksums files
+                if missing.Count > 0 then
+                    x.Error "cannot find %d source files" missing.Count
+                    for file, checksum in missing.KeyValues do
                         x.Error "cannot find %s with checksum of %s" file checksum
 
-                if false = x.HasErrors then
-                    let srcFiles = sourceFiles |> Seq.map (fun (KeyValue(file,path)) -> file, path) |> Seq.toArray
-                    let srcsrv = SrcSrv.createSrcSrv x.RepoUrl revision srcFiles
-                    if x.WriteSrcSrvTxt then
-                        File.WriteAllBytes(pdbFile + ".srcsrv.txt", srcsrv)
-                    pdb.FreeInfo()
-                    pdb.WriteSrcSrv srcsrv
-                    pdb.Info.Age <- pdb.Info.Age + 1
-                    pdb.SaveInfo()
+                  
+
+//                if false = x.HasErrors then
+
+//                    let path = file.Substring(repoDir.Length+1).Replace('\\','/')
+//                    let srcFiles = sourceFiles |> Seq.map (fun (KeyValue(file,path)) -> file, path) |> Seq.toArray
+
+                      // create SrcSrv
+//                    let srcsrv = SrcSrv.createSrcSrv x.RepoUrl revision srcFiles
+//                    if x.WriteSrcSrvTxt then File.WriteAllBytes(pdbFile + ".srcsrv.txt", srcsrv)
+
+                      // modify pdb file, use pdbstr if found
+//                    pdb.FreeInfo()
+//                    pdb.WriteSrcSrv srcsrv
+//                    pdb.Info.Age <- pdb.Info.Age + 1
+//                    pdb.SaveInfo()
                 
             with
             | :? RepositoryNotFoundException as ex -> x.Error "%s" ex.Message

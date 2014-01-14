@@ -103,6 +103,8 @@ type Directory with
 
 type Path with
     static member combine path1 path2 = Path.Combine(path1, path2)
+    /// gets the absolute path, no trailing slash if it is a directory
+    static member absolute path = (Path.GetFullPath path).TrimEnd [|'\\'|]
 
 type File with
     static member copy src dest = File.Copy(src, dest)

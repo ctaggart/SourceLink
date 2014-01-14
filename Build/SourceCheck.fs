@@ -23,13 +23,14 @@ type SourceCheck() =
     member internal x.GetRepoDir() =
         if String.IsNullOrEmpty x.RepoDir then
             let repo = GitRepo.Find (x.GetProjectFile())
-            if repo.IsSome then repo.Value else Ex.failwithf "unable to find git repository"
+            if repo.IsSome then repo.Value |> Path.absolute
+            else Ex.failwithf "unable to find git repository"
         else
             let repo =
                 if Path.IsPathRooted x.RepoDir then
-                    x.RepoDir.TrimEnd [|'\\'|]
+                    x.RepoDir |> Path.absolute
                 else
-                    Path.Combine(Path.GetDirectoryName x.ProjectFile, x.RepoDir).TrimEnd [|'\\'|] |> Path.GetFullPath
+                    Path.Combine(Path.GetDirectoryName x.ProjectFile, x.RepoDir) |> Path.absolute
             if GitRepo.IsRepo repo then repo else Ex.failwithf "git repository not found at %s" repo
 
     member internal x.GetSourceFiles() =

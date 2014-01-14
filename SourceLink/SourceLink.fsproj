@@ -49,6 +49,7 @@
     <Compile Include="PdbInfo.fs" />
     <Compile Include="PdbModify.fs" />
     <Compile Include="PdbFile.fs" />
+    <Compile Include="Crypto.fs" />
     <Compile Include="PdbChecksums.fs" />
     <Compile Include="SrcSrv.fs" />
     <Compile Include="Process.fs" />

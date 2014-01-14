@@ -5,7 +5,7 @@
 open Fake
 open SourceLink
 
-let isTfs = hasBuildParam "tfsBuild"
+let isTfsBuild = hasBuildParam "tfsBuild"
 let getTfsBuild() = new TfsBuild(getBuildParam "tfsUri", getBuildParam "tfsUser", getBuildParam "tfsAgent", getBuildParam "tfsBuild")
 
 type Microsoft.Build.Evaluation.Project with

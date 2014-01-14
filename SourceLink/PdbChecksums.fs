@@ -1,27 +1,38 @@
-﻿namespace SourceLink
+﻿[<AutoOpen>]
+module SourceLink.PdbChecksums
 
 open System
 open System.Collections.Generic
 
-type PdbChecksums(file:PdbFile) =
+type PdbFile with
     
-    let filenameToChecksum = SortedDictionary(StringComparer.OrdinalIgnoreCase)
-    let checksumToFilename = Dictionary(StringComparer.OrdinalIgnoreCase)
-    do // read checksums
-        let prefix = "/src/files/"
-        file.Info.NameToPdbName.Values
-        |> Seq.filter (fun name -> name.Name.StartsWith prefix)
-        |> Seq.iter (fun name ->
-            let bytes = file.ReadStreamBytes name.Stream
-            let filename = name.Name.Substring prefix.Length
-            if bytes.Length = 0x58 then
-                let checksum = bytes.[0x48..0x57] |> Hex.encode
-                filenameToChecksum.[filename] <- checksum
-                checksumToFilename.[checksum] <- filename
-//            else
-//                Ex.failwithf "unable to read checksum for %s" filename
-        )
+    member x.Files
+        with get() = 
+            let prefix = "/src/files/"
+            x.Info.NameToPdbName.Values
+            |> Seq.filter (fun pdbName -> pdbName.Name.StartsWith prefix)
+            |> Seq.map (fun pdbName -> pdbName.Name.Substring prefix.Length, x.ReadStreamBytes pdbName.Stream)
+            |> Seq.filter (fun (file, bytes) -> bytes.Length = 0x58)
+            |> Seq.map (fun (file, bytes) -> file, bytes.[0x48..0x57])
 
-    member x.FilenameToChecksum with get() = filenameToChecksum :> IDictionary<string,string>
-    member x.ChecksumToFilename with get() = checksumToFilename :> IDictionary<string,string>
+    member x.Checksums
+        with get() =
+            let d = Dictionary(StringComparer.OrdinalIgnoreCase)
+            x.Files
+            |> Seq.map (fun (file, hash) -> Hex.encode hash, file)
+            |> d.AddAll
+            d
 
+    member x.VerifyChecksums files =
+        let missing = SortedDictionary(StringComparer.OrdinalIgnoreCase) // file, checksum
+        let pdbChecksums = x.Checksums
+        let fileChecksums =
+            let d = Dictionary(StringComparer.OrdinalIgnoreCase)
+            Crypto.hashesMD5 files 
+            |> Seq.map (fun (hash, file) -> Hex.encode hash, file)
+            |> d.AddAll
+            d
+        for checksum, file in fileChecksums.KeyValues do
+            if pdbChecksums.ContainsKey checksum = false then
+                missing.[file] <- checksum
+        missing

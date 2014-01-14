@@ -34,3 +34,5 @@ type Project with
                 else Ex.failwithf "OutputType not matched: %s" ot
             let dir = Path.combine x.DirectoryPath x.OutputPath
             Path.combine dir (sprintf "%s%s" x.AssemblyName ext)
+
+    member x.OutputFilePdb with get() = Path.ChangeExtension(x.OutputFile, ".pdb")

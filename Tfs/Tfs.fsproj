@@ -59,7 +59,7 @@
     <None Include="Assemblies.fsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="FAKE.fsx">
+    <None Include="Fake.fsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Tfs.nuspec" />

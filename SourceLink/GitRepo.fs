@@ -15,7 +15,6 @@ type internal GitLib() =
     // similar to static initializer in LibGit2Sharp.Core.NativeMethods,
     // but it uses location of LibGit2Sharp.dll and AddDllDirectory instead of ExecutingAssembly and PATH
     static do
-        printfn "GitLib static init"
         try
             let dir = typeof<LibGit2SharpException>.Assembly.Location |> Path.GetDirectoryName
             let arch = if IntPtr.Size = 8 then "amd64" else "x86"
@@ -27,6 +26,7 @@ type internal GitLib() =
             | :? EntryPointNotFoundException -> Ex.failwithf "AddDllDirectory not found. Install KB2533623 update. http://support.microsoft.com/kb/2533623"
 
 type GitRepo(dir) =
+    let dir = Path.absolute dir
     let gl = new GitLib() // trigger static initializer
     let repo = new Repository(dir)
     
@@ -43,24 +43,28 @@ type GitRepo(dir) =
         )
         |> Seq.toArray
 
-    member x.GetChecksums files =
-        use repo = new Repository(dir)
-        let checksums = HashSet(StringComparer.OrdinalIgnoreCase)
-        files |> Seq.iter (fun (file:string) ->
+    member x.Checksums files =
+        files |> Seq.map (fun (file:string) ->
             let f =
                 if Path.IsPathRooted file then
                     file.Substring(dir.Length + 1)
                 else
                     file
             let ie = repo.Index.[f]
-            if ie <> null then
-                checksums.Add ie.Id.Sha |> ignore
+            if ie <> null then file, ie.Id.Sha
+            else file, ""
         )
-        checksums
+
+    member x.ChecksumSet files = 
+        let checksums = 
+            x.Checksums files
+            |> Seq.map snd
+            |> Seq.filter (not << String.IsNullOrEmpty)
+        HashSet(checksums, StringComparer.OrdinalIgnoreCase)
 
     /// returns a sorted list of files with checksums that do not match
     member x.VerifyChecksums files =
-        let committed = x.GetChecksums files
+        let committed = x.ChecksumSet files
         let different = SortedSet(StringComparer.OrdinalIgnoreCase)
         for checksum, file in GitRepo.ComputeChecksums files do
             if false = committed.Contains checksum then

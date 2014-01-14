@@ -61,17 +61,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Checksums.fs" />
     <Compile Include="Program.fs" />
     <None Include="App.config" />
     <None Include="packages.config" />
     <None Include="Git.fsx" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Build\Build.fsproj">
-      <Name>Build</Name>
-      <Project>{41ae9acc-1164-4886-8c85-eefbcb7ea5e0}</Project>
-      <Private>True</Private>
-    </ProjectReference>
     <ProjectReference Include="..\Dia\Dia.fsproj">
       <Name>Dia</Name>
       <Project>{dc0f48d4-3de6-41cf-b545-343de72af618}</Project>

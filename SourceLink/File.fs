@@ -6,16 +6,6 @@ open System.Collections.Generic
 
 let srcsrv = "srcsrv"
 
-let computeChecksums files =
-    use md5 = Security.Cryptography.MD5.Create()
-    let computeHash file =
-        use fs = File.OpenRead file
-        md5.ComputeHash fs
-    let checksums = Dictionary<string, string>()
-    for f in files do
-        checksums.[f |> computeHash |> Hex.encode] <- f
-    checksums
-
 let readLines (bytes:byte[]) =
     use sr = new StreamReader(new MemoryStream(bytes))
     seq {
@@ -24,6 +14,7 @@ let readLines (bytes:byte[]) =
     }
     |> Seq.toArray
 
+// File.GetParents
 let getParentDirectories file =
     seq {
         let path = ref (Path.GetDirectoryName file)
