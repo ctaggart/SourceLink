@@ -25,11 +25,11 @@ type TfsBuild(project:TfsProject, agent:IBuildAgent, build:IBuildDetail) =
     member x.Agent with get() = agent
     member x.Build with get() = build
     
-    member x.Parameters
-        with get() =
-            let ps = x.Build.BuildDefinition.ProcessParameters |> WorkflowHelpers.DeserializeProcessParameters
-            x.Build.ProcessParameters |> WorkflowHelpers.DeserializeProcessParameters |> ps.AddAll
-            TfsProcessParameters(ps)
+    /// deserializes the xml of parameters, BuildDefinition then Build parameters
+    member x.GetParameters() =
+        let ps = x.Build.BuildDefinition.ProcessParameters |> WorkflowHelpers.DeserializeProcessParameters
+        x.Build.ProcessParameters |> WorkflowHelpers.DeserializeProcessParameters |> ps.AddAll
+        TfsProcessParameters(ps)
 
     member x.BuildDirectory with get() = agent.GetExpandedBuildDirectory build.BuildDefinition
 

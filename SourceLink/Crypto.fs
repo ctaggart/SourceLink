@@ -14,7 +14,7 @@ let hashMD5 file =
 
 let hashesMD5 files =
     use ha = MD5.Create()
-    files |> Seq.map (hash ha)
+    files |> Seq.map (hash ha) |> Array.ofSeq
 
 let hashSHA1 file =
     use ha = SHA1.Create()
@@ -22,4 +22,4 @@ let hashSHA1 file =
 
 let hashesSHA1 files =
     use ha = SHA1.Create()
-    files |> Seq.map (hash ha)
+    files |> Seq.map (hash ha) |> Array.ofSeq

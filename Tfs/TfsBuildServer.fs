@@ -28,10 +28,11 @@ type IBuildServer with
     member x.GetProcessTemplate project serverPath = x.QueryProcessTemplates project |> Seq.tryFind (fun pt -> pt.ServerPath.EqualsI serverPath)
             
 type IBuildDefinition with
-    member x.Parameters
-        with get() = TfsProcessParameters(x.ProcessParameters |> WorkflowHelpers.DeserializeProcessParameters)
-        and set (v:TfsProcessParameters) = x.ProcessParameters <- WorkflowHelpers.SerializeProcessParameters v.Dictionary
+    /// deserializes the xml of parameters
+    member x.GetParameters() = TfsProcessParameters(x.ProcessParameters |> WorkflowHelpers.DeserializeProcessParameters)
+    /// serializes the xml of parameters
+    member x.SetParameters (v:TfsProcessParameters) = x.ProcessParameters <- WorkflowHelpers.SerializeProcessParameters v.Dictionary
 
 type IBuildDetail with
-    member x.Parameters
-        with get() = TfsProcessParameters(x.ProcessParameters |> WorkflowHelpers.DeserializeProcessParameters)
+    /// deserializes the xml of parameters
+    member x.GetParameters() = TfsProcessParameters(x.ProcessParameters |> WorkflowHelpers.DeserializeProcessParameters)

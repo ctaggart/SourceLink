@@ -36,3 +36,13 @@ type Project with
             Path.combine dir (sprintf "%s%s" x.AssemblyName ext)
 
     member x.OutputFilePdb with get() = Path.ChangeExtension(x.OutputFile, ".pdb")
+
+    member x.VerifyPdbChecksums (files:seq<string>) = 
+        use pdb = new PdbFile(x.OutputFilePdb)
+        pdb.VerifyChecksums files
+
+    // TODO set properties for configuration
+    member x.SourceLink rawUrl revision paths =
+        use pdb = new PdbFile(x.OutputFilePdb)
+        pdb.WriteSrcSrvToFile rawUrl revision paths
+        pdb.SetSrcSrv()

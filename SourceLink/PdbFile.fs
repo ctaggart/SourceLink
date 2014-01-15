@@ -7,9 +7,9 @@ open System.Text
 open SourceLink.File
 open SourceLink.PdbModify
 
-type PdbFile(file) =
+type PdbFile(path) =
     
-    let fs = File.Open(file, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite)
+    let fs = File.Open(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite)
     let br = new BinaryReader(fs, Encoding.UTF8, true)
     let bw = new BinaryWriter(fs, Encoding.UTF8, true)
 
@@ -154,7 +154,8 @@ type PdbFile(file) =
     interface IDisposable with member x.Dispose() = x.Dispose() 
     override x.Finalize() = x.Dispose()
 
-    member x.File with get() = file
+    member x.Path with get() = path
+    member x.PathSrcSrv with get() = path + ".srcsrv"
     member x.ReadPdbStreamBytes pdbStream = readStreamBytes pdbStream
     member x.ReadStreamBytes stream = readStreamBytes root.Streams.[stream]
     member x.Info with get() = info
@@ -307,3 +308,9 @@ type PdbFile(file) =
         use pdb = new PdbFile(file)
         if pdb.HasSrcSrv then pdb.ReadStreamBytes pdb.SrcSrv |> readLines else [||]
          
+    /// The raw URL to get the source code.
+    /// It becomes the SRVSRVTRG, the source server target.
+    /// {0} will be substituted with the revision.
+    /// %var2% will get evaluated to the file paths passed in.
+    /// https://raw.github.com/ctaggart/SourceLink/{0}/%var2%
+    member val RawUrl:option<string> = None with get, set
