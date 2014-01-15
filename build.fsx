@@ -1,5 +1,5 @@
 #r "packages\FAKE.2.4.8.0\Tools\FakeLib.dll"
-#load "packages\SourceLink.Tfs.0.3.0-a1401140733-9a37f32d\Fake.fsx"
+#load "packages\SourceLink.Tfs.0.3.0-a1401150358-9809e651\Fake.fsx"
 
 open System
 open System.IO
@@ -68,11 +68,11 @@ Target "SourceLink" (fun _ ->
 //    ++ "SourceLink\SourceLink.fsproj"
     |> Seq.iter (fun proj ->
         // verifyGitChecksums
-        logfn "verifyChecksums for %s" (Path.GetFileName proj)
-        let p = VsProject.Load proj ["Configuration","Release"]
-        let files = p.Compiles -- "**\AssemblyInfo.fs"
-        verifyChecksums repo files
-        logfn "OutputFile: %s" p.OutputFile
+//        logfn "verifyChecksums for %s" (Path.GetFileName proj)
+//        let p = VsProject.Load proj ["Configuration","Release"]
+//        let files = p.Compiles -- "**\AssemblyInfo.fs"
+//        verifyChecksums repo files
+//        logfn "OutputFile: %s" p.OutputFile
 
         // verifyPdbChecksums
 //        let pdb = p.OutputFilePdb

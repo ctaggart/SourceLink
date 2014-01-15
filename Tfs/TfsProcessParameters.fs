@@ -61,6 +61,13 @@ type TfsProcessParameters(prms:(IDictionary<string,obj>)) =
             else
                 let projects = x.BuildSettings.Value.ProjectsToBuild.ToArray()
                 if projects.Length = 0 then None else Some projects
+        and set (projects:option<string[]>) =
+            if projects.IsNone then
+                if x.BuildSettings.IsSome then
+                    x.BuildSettings.Value.ProjectsToBuild.Clear()
+            else
+                if x.BuildSettings.IsNone then x.BuildSettings <- BuildSettings() |> Some
+                x.BuildSettings.Value.ProjectsToBuild <- StringList projects.Value
     member x.PlatformConfigurations
         with get() =
             if x.BuildSettings.IsNone then None 
@@ -82,6 +89,9 @@ type TfsProcessParameters(prms:(IDictionary<string,obj>)) =
             if ps.IsNone then None
             else if ps.Value.Length = 1 then Some ps.Value.[0]
             else None
+        and set (project:option<string>) =
+            if project.IsNone then x.ProjectsToBuild <- None
+            else x.ProjectsToBuild <- Some [|project.Value|]
     /// Some if only one platform configuration, else None
     member x.PlatformConfiguration
         with get() =
