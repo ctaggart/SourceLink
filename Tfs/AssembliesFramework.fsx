@@ -10,3 +10,4 @@
 #r "System.Net.Http"
 #r "System.Xml"
 #r "Microsoft.Build"
+#r "System.Activities"

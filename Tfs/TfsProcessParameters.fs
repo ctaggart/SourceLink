@@ -68,6 +68,13 @@ type TfsProcessParameters(prms:(IDictionary<string,obj>)) =
             else
                 let configurations = x.BuildSettings.Value.PlatformConfigurations.ToArray()
                 if configurations.Length = 0 then None else Some configurations
+        and set (pcs:option<PlatformConfiguration[]>) =
+            if pcs.IsNone then
+                if x.BuildSettings.IsSome then
+                    x.BuildSettings.Value.PlatformConfigurations.Clear()
+            else
+                if x.BuildSettings.IsNone then x.BuildSettings <- BuildSettings() |> Some
+                x.BuildSettings.Value.PlatformConfigurations <- PlatformConfigurationList pcs.Value
     /// Some if only one project, else None
     member x.ProjectToBuild
         with get() =
@@ -82,6 +89,9 @@ type TfsProcessParameters(prms:(IDictionary<string,obj>)) =
             if pcs.IsNone then None
             else if pcs.Value.Length = 1 then Some pcs.Value.[0]
             else None
+        and set (pc:option<PlatformConfiguration>) =
+            if pc.IsNone then x.PlatformConfigurations <- None
+            else x.PlatformConfigurations <- Some [|pc.Value|]
     member x.TestSpecs 
         with get() = match x.Get "TestSpecs" with | Some o -> o :?> TestSpecList |> Some | None -> None
         and set (value:option<TestSpecList>) = match value with | Some v -> x.["TestSpecs"] <- v | None -> x.Remove "TestSpecs"
