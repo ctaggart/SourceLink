@@ -23,10 +23,10 @@ type SourceLink() =
         let repoDir = x.GetRepoDir()
         let pdbFile = Path.ChangeExtension(x.TargetPath, ".pdb")
         
-        if false = File.Exists pdbFile then
+        if File.Exists pdbFile = false then
             x.Error "can not find pdb: %s" pdbFile
         
-        if false = x.HasErrors then
+        if x.HasErrors = false then
             try
                 use repo = new GitRepo(repoDir)
                 let revision = repo.Revision
@@ -39,22 +39,9 @@ type SourceLink() =
                     for file, checksum in missing.KeyValues do
                         x.Error "cannot find %s with checksum of %s" file checksum
 
-                  
-
-//                if false = x.HasErrors then
-
-//                    let path = file.Substring(repoDir.Length+1).Replace('\\','/')
-//                    let srcFiles = sourceFiles |> Seq.map (fun (KeyValue(file,path)) -> file, path) |> Seq.toArray
-
-                      // create SrcSrv
-//                    let srcsrv = SrcSrv.createSrcSrv x.RepoUrl revision srcFiles
-//                    if x.WriteSrcSrvTxt then File.WriteAllBytes(pdbFile + ".srcsrv.txt", srcsrv)
-
-                      // modify pdb file, use pdbstr if found
-//                    pdb.FreeInfo()
-//                    pdb.WriteSrcSrv srcsrv
-//                    pdb.Info.Age <- pdb.Info.Age + 1
-//                    pdb.SaveInfo()
+                if x.HasErrors = false then
+                    pdb.WriteSrcSrvToFile x.RepoUrl revision (repo.Paths files)
+                    pdb.SetSrcSrv()
                 
             with
             | :? RepositoryNotFoundException as ex -> x.Error "%s" ex.Message

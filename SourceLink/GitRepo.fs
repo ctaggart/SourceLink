@@ -80,6 +80,8 @@ type GitRepo(dir) =
 
     static member Find file = File.getParentDirectories file |> Seq.tryFind GitRepo.IsRepo
 
+    member x.Paths (files:seq<string>) = files |> Seq.map (fun f -> f, f.Substring(dir.Length+1).Replace('\\','/'))
+
     member x.Dispose() =
         use repo = repo
         GC.SuppressFinalize x
