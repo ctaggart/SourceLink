@@ -1,5 +1,5 @@
 #r "packages\FAKE.2.4.8.0\Tools\FakeLib.dll"
-#load "packages\SourceLink.Fake.0.3.0-a1401160003-1bf54e92\Tools\Fake.fsx"
+#load "packages\SourceLink.Fake.0.3.0-a1401160010-f42a74a5\Tools\Fake.fsx"
 
 open System
 open System.IO
@@ -62,7 +62,7 @@ Target "SourceLink" (fun _ ->
     |> Seq.iter (fun proj ->
         let p = VsProject.Load proj ["Configuration","Release"]
         let files = p.Compiles -- "**\AssemblyInfo.fs"
-//        verifyGitChecksums repo files
+        verifyGitChecksums repo files
         verifyPdbChecksums p files
         p.SourceLink "https://raw.github.com/ctaggart/SourceLink/{0}/%var2%" repo.Revision (repo.Paths files)
         let cmd = @"C:\Program Files (x86)\Windows Kits\8.0\Debuggers\x64\srcsrv\pdbstr.exe"
