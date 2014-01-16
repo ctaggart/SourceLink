@@ -65,10 +65,12 @@ Target "SourceLink" (fun _ ->
         verifyGitChecksums repo files
         verifyPdbChecksums p files
         p.SourceLink "https://raw.github.com/ctaggart/SourceLink/{0}/%var2%" repo.Revision (repo.Paths files)
-        let cmd = @"C:\Program Files (x86)\Windows Kits\8.0\Debuggers\x64\srcsrv\pdbstr.exe"
+        let cmd =
+            if isTfsBuild then @"C:\Program Files\Microsoft Team Foundation Server 12.0\Tools\pdbstr.exe"
+            else @"C:\Program Files (x86)\Windows Kits\8.0\Debuggers\x64\srcsrv\pdbstr.exe"
         let args = sprintf "-w -s:srcsrv -i:%s -p:%s" (Path.GetFileName p.OutputFilePdbSrcSrv) (Path.GetFileName p.OutputFilePdb)
+        logfn "exec %s, %s, %s" cmd args p.OutputDirectory
         Shell.Exec(cmd, args, p.OutputDirectory) |> ignore
-        ()
     )
 )
 
