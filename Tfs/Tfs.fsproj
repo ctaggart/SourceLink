@@ -53,15 +53,6 @@
     <Compile Include="Activities.Process.fs" />
     <Compile Include="Activities.Fake.fs" />
     <Compile Include="AssemblyInfo.fs" />
-    <None Include="AssembliesFramework.fsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Assemblies.fsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Fake.fsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="Tfs.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>

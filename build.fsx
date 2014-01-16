@@ -1,5 +1,5 @@
 #r "packages\FAKE.2.4.8.0\Tools\FakeLib.dll"
-#load "packages\SourceLink.Tfs.0.3.0-a1401150837-89c6abbd\Fake.fsx"
+#load "packages\SourceLink.Fake.0.3.0-a1401160003-1bf54e92\Tools\Fake.fsx"
 
 open System
 open System.IO
@@ -48,13 +48,6 @@ Target "AssemblyInfo" (fun _ ->
         Attribute.FileVersion versionFile
         Attribute.InformationalVersion versionInfo
         ]
-
-    use fs = new StreamWriter(@"TFS\Assemblies.fsx")
-    "#load \"AssembliesFramework.fsx\"" |> fs.WriteLine
-    "#I __SOURCE_DIRECTORY__" |> fs.WriteLine
-    sprintf "#r \"..\\..\\packages\\LibGit2Sharp.0.15.0.0\\lib\\Net35\\LibGit2Sharp.dll\"" |> fs.WriteLine
-    sprintf "#r \"..\..\packages\\SourceLink.%s\\lib\\Net45\\SourceLink.dll\"" versionNuget |> fs.WriteLine
-    sprintf "#r \"lib\\Net45\\SourceLink.Tfs.dll\"" |> fs.WriteLine
 )
 
 Target "Build" (fun _ ->
@@ -65,13 +58,16 @@ Target "Build" (fun _ ->
 
 Target "SourceLink" (fun _ ->
     !! "Tfs\Tfs.fsproj" 
-//    ++ "SourceLink\SourceLink.fsproj"
+    ++ "SourceLink\SourceLink.fsproj"
     |> Seq.iter (fun proj ->
         let p = VsProject.Load proj ["Configuration","Release"]
         let files = p.Compiles -- "**\AssemblyInfo.fs"
 //        verifyGitChecksums repo files
         verifyPdbChecksums p files
         p.SourceLink "https://raw.github.com/ctaggart/SourceLink/{0}/%var2%" repo.Revision (repo.Paths files)
+        let cmd = @"C:\Program Files (x86)\Windows Kits\8.0\Debuggers\x64\srcsrv\pdbstr.exe"
+        let args = sprintf "-w -s:srcsrv -i:%s -p:%s" (Path.GetFileName p.OutputFilePdbSrcSrv) (Path.GetFileName p.OutputFilePdb)
+        Shell.Exec(cmd, args, p.OutputDirectory) |> ignore
         ()
     )
 )
@@ -99,13 +95,6 @@ Target "NuGet" (fun _ ->
     NuGet (fun p -> 
     { p with
         Version = versionNuget
-        WorkingDir = "Build/bin/Release"
-        OutputPath = bin
-    }) "Build/Build.nuspec"
-
-    NuGet (fun p -> 
-    { p with
-        Version = versionNuget
         WorkingDir = "Tfs/bin/Release"
         OutputPath = bin
         DependenciesByFramework =
@@ -117,6 +106,28 @@ Target "NuGet" (fun _ ->
             ]
         }]
     }) "Tfs/Tfs.nuspec"
+
+    NuGet (fun p -> 
+    { p with
+        Version = versionNuget
+        WorkingDir = "Build/bin/Release"
+        OutputPath = bin
+    }) "Build/Build.nuspec"
+
+    NuGet (fun p -> 
+    { p with
+        Version = versionNuget
+        WorkingDir = "Fake"
+        OutputPath = bin
+        DependenciesByFramework =
+        [{ 
+            FrameworkVersion = "net45"
+            Dependencies =
+            [
+                "SourceLink.Tfs", sprintf "[%s]" versionNuget // exact version
+            ]
+        }]
+    }) "Fake/Fake.nuspec"
 )
 
 "Clean"

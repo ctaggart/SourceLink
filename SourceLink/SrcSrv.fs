@@ -29,8 +29,12 @@ type PdbFile with
         File.WriteAllBytes(x.PathSrcSrv, PdbFile.CreateSrcSrv repoUrl revision paths)
 
     member x.SetSrcSrv() =
-        // TODO use pdbstr
-        x.FreeInfo()
-        File.ReadAllBytes x.PathSrcSrv |> x.WriteSrcSrv
-        x.Info.Age <- x.Info.Age + 1
-        x.SaveInfo()
+//        // TODO use pdbstr
+
+        // TODO internal pdbstr functionality
+        // need to fix https://github.com/ctaggart/SourceLink/issues/6
+//        x.FreeInfo()
+//        File.ReadAllBytes x.PathSrcSrv |> x.WriteSrcSrv
+//        x.Info.Age <- x.Info.Age + 1
+//        x.SaveInfo()
+        ()

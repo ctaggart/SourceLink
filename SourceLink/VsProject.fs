@@ -34,8 +34,10 @@ type Project with
                 else Ex.failwithf "OutputType not matched: %s" ot
             let dir = Path.combine x.DirectoryPath x.OutputPath
             Path.combine dir (sprintf "%s%s" x.AssemblyName ext)
+    member x.OutputDirectory with get() = Path.GetDirectoryName x.OutputFile
 
     member x.OutputFilePdb with get() = Path.ChangeExtension(x.OutputFile, ".pdb")
+    member x.OutputFilePdbSrcSrv with get() = x.OutputFilePdb + ".srcsrv"
 
     member x.VerifyPdbChecksums (files:seq<string>) = 
         use pdb = new PdbFile(x.OutputFilePdb)
@@ -45,4 +47,4 @@ type Project with
     member x.SourceLink rawUrl revision paths =
         use pdb = new PdbFile(x.OutputFilePdb)
         pdb.WriteSrcSrvToFile rawUrl revision paths
-        pdb.SetSrcSrv()
+//        pdb.SetSrcSrv()

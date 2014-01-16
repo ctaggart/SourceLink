@@ -2,23 +2,17 @@
   <metadata minClientVersion="2.7">
     <id>SourceLink.Build</id>
     <version>0.0.0</version>
-    <title>SourceLink MSBuild Targets</title>
     <authors>Cameron Taggart</authors>
-    <!--<summary></summary>-->
-    <description>MSBuild targets for source linking .NET pdb files</description>
+    <description>source linking .NET pdb files with MSBuild</description>
     <projectUrl>https://github.com/ctaggart/SourceLink</projectUrl>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <iconUrl>https://github.com/ctaggart/SourceLink/raw/50ac7c82a8d4296265808cc773ce02982be304e3/SourceLink128.jpg</iconUrl>
-    <dependencies/>
   </metadata>
   <files>
     <file src="*.dll" target="build" />
-    <!--<file src="*.dll.config" target="build" />-->
     <file src="NativeBinaries\amd64\*.dll" target="build\NativeBinaries\amd64" />
     <file src="NativeBinaries\x86\*.dll" target="build\NativeBinaries\x86" />
-    <!--<file src="*.pdb" target="build" />-->
-    <!--<file src="*.xml" target="build" />-->
     <file src="SourceLink.Build.targets" target="build" />
   </files>
 </package>

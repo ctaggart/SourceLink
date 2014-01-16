@@ -1,10 +1,7 @@
-﻿#I __SOURCE_DIRECTORY__
-//#r "..\packages\FAKE.2.4.8.0\Tools\FakeLib.dll" // for dev
-//#load "..\packages\SourceLink.Tfs.0.3.0-a1401150752-89c6abbd\Assemblies.fsx" // for dev
-#load "Assemblies.fsx" // not for dev
+﻿#load "Assemblies.fsx"
 
-open Fake
 open SourceLink
+open Fake
 
 let isTfsBuild = hasBuildParam "tfsBuild"
 let getTfsBuild() = new TfsBuild(getBuildParam "tfsUri", getBuildParam "tfsUser", getBuildParam "tfsAgent", getBuildParam "tfsBuild")

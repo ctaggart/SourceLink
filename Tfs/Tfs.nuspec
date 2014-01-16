@@ -2,10 +2,8 @@
   <metadata minClientVersion="2.7">
     <id>SourceLink.Tfs</id>
     <version>0.0.0</version>
-    <title>SourceLink.Tfs</title>
     <authors>Cameron Taggart</authors>
-    <!--<summary></summary>-->
-    <description>F# helpers and activities for TFS 2013</description>
+    <description>TFS API helpers in F#</description>
     <projectUrl>https://github.com/ctaggart/SourceLink</projectUrl>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -31,8 +29,5 @@
     <file src="SourceLink.Tfs.dll" target="lib\net45" />
     <file src="SourceLink.Tfs.pdb" target="lib\net45" />
     <file src="SourceLink.Tfs.xml" target="lib\net45" />
-    <file src="AssembliesFramework.fsx" target="" />
-    <file src="Assemblies.fsx" target="" />
-    <file src="Fake.fsx" target="" />
   </files>
 </package>
