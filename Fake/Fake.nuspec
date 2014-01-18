@@ -7,7 +7,7 @@
     <projectUrl>https://github.com/ctaggart/SourceLink</projectUrl>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <iconUrl>https://github.com/ctaggart/SourceLink/raw/50ac7c82a8d4296265808cc773ce02982be304e3/SourceLink128.jpg</iconUrl>
+    <iconUrl>http://ctaggart.github.io/SourceLink/SourceLink128.jpg</iconUrl>
   </metadata>
   <files>
     <file src="*.fsx" target="tools" />
