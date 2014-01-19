@@ -11,6 +11,7 @@
 #r "System.Xml"
 #r "Microsoft.Build"
 #r "System.Activities"
+#r "System.Configuration"
 
 #I __SOURCE_DIRECTORY__
 #r "SourceLink.dll"
