@@ -8,7 +8,7 @@
     <ProjectGuid>eb65a773-60b0-4739-9901-d4f8b2992bf9</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>Fake</RootNamespace>
-    <AssemblyName>Fake</AssemblyName>
+    <AssemblyName>SourceLink.Fake</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFSharpCoreVersion>4.3.1.0</TargetFSharpCoreVersion>
     <Name>Fake</Name>
@@ -46,6 +46,7 @@
     <None Include="Assemblies.fsx" />
     <None Include="Fake.fsx" />
     <None Include="Fake.nuspec" />
+    <None Include="VsoGit.xaml" />
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>

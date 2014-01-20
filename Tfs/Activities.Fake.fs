@@ -27,8 +27,7 @@ type Fake() =
         metadata.RequireBuildAgent()
 
     override x.Execute(context:CodeActivityContext) : unit =
-        let build = context.BuildDetail
-        let agent = context.BuildAgent
+        use tb = new TfsBuild(context.BuildAgent, context.BuildDetail)
 
         let workdir = x.WorkingDirectory.Get context
 
@@ -46,17 +45,20 @@ type Fake() =
             let buildFsx = x.BuildFsx.Get context
             if String.IsNullOrEmpty buildFsx then "build.fsx" else buildFsx
         
-        let tfs = build.BuildServer.TeamProjectCollection
+        let tfs = tb.Build.BuildServer.TeamProjectCollection
 
         let tfsUri = tfs.Uri.AbsoluteUri
         let tfsUser = tfs.ClientCredentials.Federated.TokenValue |> Text.Encoding.UTF8.GetBytes |> Hex.encode
-        let tfsBuild = build.Uri.AbsoluteUri
-        let tfsAgent = agent.Uri.AbsoluteUri
+        let tfsBuild = tb.Build.Uri.AbsoluteUri
+        let tfsAgent = tb.Agent.Uri.AbsoluteUri
         let arguments =
             let args =
                 let args = x.Arguments.Get context
                 if String.IsNullOrEmpty args then "" else sprintf " %s" args 
-            sprintf "%s tfsUri=\"%s\" tfsUser=\"%s\" tfsAgent=\"%s\" tfsBuild=\"%s\"%s" buildFsx tfsUri tfsUser tfsAgent tfsBuild args
+            let msBuildArgs = 
+                let args = tb.Parameters.MSBuildArguments
+                if args.IsNone then "" else sprintf " %s" args.Value
+            sprintf "%s%s%s tfsUri=\"%s\" tfsUser=\"%s\" tfsAgent=\"%s\" tfsBuild=\"%s\"" buildFsx msBuildArgs args tfsUri tfsUser tfsAgent tfsBuild 
         context.MessageNormal "%s>%s %s" workdir filename arguments
 
         let p = SourceLink.Process()

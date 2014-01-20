@@ -66,6 +66,7 @@
     <None Include="App.config" />
     <None Include="packages.config" />
     <None Include="Git.fsx" />
+    <None Include="BuildInfo.fsx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Dia\Dia.fsproj">

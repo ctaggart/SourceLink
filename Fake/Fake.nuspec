@@ -3,7 +3,7 @@
     <id>SourceLink.Fake</id>
     <version>0.0.0</version>
     <authors>Cameron Taggart</authors>
-    <description>source linking .NET pdb files with FAKE</description>
+    <description>source linking .NET pdb files with FAKE - F# Make</description>
     <projectUrl>https://github.com/ctaggart/SourceLink</projectUrl>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -13,10 +13,12 @@
     <file src="*.fsx" target="tools" />
     <file src="..\SourceLink\bin\Release\SourceLink.dll" target="tools" />
     <file src="..\SourceLink\bin\Release\SourceLink.pdb" target="tools" />
+    <file src="..\SourceLink\bin\Release\SourceLink.xml" target="tools" />
     <file src="..\SourceLink\bin\Release\LibGit2Sharp.dll" target="tools" />
     <file src="..\SourceLink\bin\Release\NativeBinaries\amd64\*.dll" target="tools\NativeBinaries\amd64" />
     <file src="..\SourceLink\bin\Release\NativeBinaries\x86\*.dll" target="tools\NativeBinaries\x86" />
     <file src="..\Tfs\bin\Release\SourceLink.Tfs.dll" target="tools" />
     <file src="..\Tfs\bin\Release\SourceLink.Tfs.pdb" target="tools" />
+    <file src="..\Tfs\bin\Release\SourceLink.Tfs.xml" target="tools" />
   </files>
 </package>

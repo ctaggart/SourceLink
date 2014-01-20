@@ -6,6 +6,12 @@ open Microsoft.TeamFoundation.Build.Workflow
 
 type TfsBuild(project:TfsProject, agent:IBuildAgent, build:IBuildDetail) =
     
+    /// deserializes the xml of parameters, BuildDefinition then Build parameters
+    let parameters = lazy (
+        let ps = build.BuildDefinition.ProcessParameters |> WorkflowHelpers.DeserializeProcessParameters
+        build.ProcessParameters |> WorkflowHelpers.DeserializeProcessParameters |> ps.AddAll
+        TfsProcessParameters(ps) )
+
     // from FAKE scripts
     new(tfsUri:string, tfsUser:string, tfsAgent:string, tfsBuild:string) =
         let user = tfsUser |> Hex.decode |> Text.Encoding.UTF8.GetString |> TfsUser.FromSimpleWebToken
@@ -24,13 +30,8 @@ type TfsBuild(project:TfsProject, agent:IBuildAgent, build:IBuildDetail) =
     member x.Project with get() = project
     member x.Agent with get() = agent
     member x.Build with get() = build
-    
-    /// deserializes the xml of parameters, BuildDefinition then Build parameters
-    member x.GetParameters() =
-        let ps = x.Build.BuildDefinition.ProcessParameters |> WorkflowHelpers.DeserializeProcessParameters
-        x.Build.ProcessParameters |> WorkflowHelpers.DeserializeProcessParameters |> ps.AddAll
-        TfsProcessParameters(ps)
-
+    /// parameters from the Build Definition and Build
+    member x.Parameters with get() = parameters.Value
     member x.BuildDirectory with get() = agent.GetExpandedBuildDirectory build.BuildDefinition
 
     member x.Dispose() =

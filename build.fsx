@@ -1,5 +1,5 @@
-#r "packages\FAKE.2.4.8.0\Tools\FakeLib.dll"
-#load "packages\SourceLink.Fake.0.3.0-a1401160102-fc7f738e\Tools\Fake.fsx"
+#r "packages/FAKE.2.4.8.0/tools/FakeLib.dll"
+#load "packages/SourceLink.Fake.0.3.0-a1401160102-fc7f738e/tools/Fake.fsx"
 
 open System
 open System.IO
@@ -57,11 +57,11 @@ Target "Build" (fun _ ->
 )
 
 Target "SourceLink" (fun _ ->
-    !! "Tfs\Tfs.fsproj" 
-    ++ "SourceLink\SourceLink.fsproj"
+    !! "Tfs/Tfs.fsproj" 
+    ++ "SourceLink/SourceLink.fsproj"
     |> Seq.iter (fun proj ->
         let p = VsProject.Load proj ["Configuration","Release"]
-        let files = p.Compiles -- "**\AssemblyInfo.fs"
+        let files = p.Compiles -- "**/AssemblyInfo.fs"
         verifyGitChecksums repo files
         verifyPdbChecksums p files
         p.SourceLink "https://raw.github.com/ctaggart/SourceLink/{0}/%var2%" repo.Revision (repo.Paths files)
@@ -121,14 +121,6 @@ Target "NuGet" (fun _ ->
         Version = versionNuget
         WorkingDir = "Fake"
         OutputPath = bin
-        DependenciesByFramework =
-        [{ 
-            FrameworkVersion = "net45"
-            Dependencies =
-            [
-                "SourceLink.Tfs", sprintf "[%s]" versionNuget // exact version
-            ]
-        }]
     }) "Fake/Fake.nuspec"
 )
 
@@ -136,7 +128,7 @@ Target "NuGet" (fun _ ->
     =?> ("BuildNumber", isTfsBuild)
     ==> "AssemblyInfo"
     ==> "Build"
-    ==> "SourceLink"
+    =?> ("SourceLink", isMono = false && hasBuildParam "skipSourceLink" = false)
     ==> "NuGet"
 
 RunTargetOrDefault "NuGet"
