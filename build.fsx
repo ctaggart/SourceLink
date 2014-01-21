@@ -62,7 +62,7 @@ Target "SourceLink" (fun _ ->
     |> Seq.iter (fun f ->
         let proj = VsProj.LoadRelease f
         let files = proj.Compiles -- "**/AssemblyInfo.fs"
-//        repo.VerifyChecksums files
+        repo.VerifyChecksums files
         proj.VerifyPdbChecksums files
         proj.CreateSrcSrv "https://raw.github.com/ctaggart/SourceLink/{0}/%var2%" repo.Revision (repo.Paths files)
 //        SrcSrv.write proj.OutputFilePdb proj.OutputFilePdbSrcSrv // internal bug
