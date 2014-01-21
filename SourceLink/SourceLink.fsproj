@@ -54,7 +54,8 @@
     <Compile Include="PdbChecksums.fs" />
     <Compile Include="SrcSrv.fs" />
     <Compile Include="Process.fs" />
-    <Compile Include="VsProject.fs" />
+    <Compile Include="VsProj.fs" />
+    <Compile Include="Pdbstr.fs" />
     <Compile Include="AssemblyInfo.fs" />
     <None Include="SourceLink.nuspec" />
     <None Include="packages.config" />

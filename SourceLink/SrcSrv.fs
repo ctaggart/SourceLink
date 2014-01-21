@@ -1,15 +1,13 @@
-﻿[<AutoOpen>]
-module SourceLink.SrcSrv
+﻿namespace SourceLink
 
 open System
 open System.IO
 
-let createSrcSrvTrg urlBase (revision:string) =
-    String.Format(urlBase, revision)
+module SrcSrv =
+    let createTrg rawUrl (revision:string) =
+        String.Format(rawUrl, revision)
 
-type PdbFile with
-    // http://blog.ctaggart.com/2013/07/source-linking.html
-    static member CreateSrcSrv rawUrl (revision:string) (paths:seq<string*string>) =
+    let create rawUrl (revision:string) (paths:seq<string*string>) =
         use ms = new MemoryStream()
         use sw = new StreamWriter(ms)
         let scheme = Uri(rawUrl).Scheme
@@ -17,7 +15,7 @@ type PdbFile with
         fprintfn sw "VERSION=1"
         fprintfn sw "SRCSRV: variables ------------------------------------------"
         fprintfn sw "SRCSRVVERCTRL=%s" scheme
-        fprintfn sw "SRCSRVTRG=%s" (String.Format(rawUrl, revision))
+        fprintfn sw "SRCSRVTRG=%s" (createTrg rawUrl revision)
         fprintfn sw "SRCSRV: source files ---------------------------------------"
         for file, path in paths do
             fprintfn sw "%s*%s" file path
@@ -25,16 +23,17 @@ type PdbFile with
         sw.Flush()
         ms.ToArray()
 
-    member x.WriteSrcSrvToFile repoUrl revision paths =
-        File.WriteAllBytes(x.PathSrcSrv, PdbFile.CreateSrcSrv repoUrl revision paths)
+    // TODO bug https://github.com/ctaggart/SourceLink/issues/6
+    /// writes the srcsrv file to the pdb without using pdbstr.exe
+    let write pdb srcsrv =
+        use pdb = new PdbFile(pdb)
+        pdb.FreeInfo()
+        pdb.WriteSrcSrv(File.ReadAllBytes srcsrv)
+        pdb.Info.Age <- pdb.Info.Age + 1
+        pdb.SaveInfo()
 
-    member x.SetSrcSrv() =
-//        // TODO use pdbstr
-
-        // TODO internal pdbstr functionality
-        // need to fix https://github.com/ctaggart/SourceLink/issues/6
-//        x.FreeInfo()
-//        File.ReadAllBytes x.PathSrcSrv |> x.WriteSrcSrv
-//        x.Info.Age <- x.Info.Age + 1
-//        x.SaveInfo()
-        ()
+[<AutoOpen>]
+module PdbFileCreateSrcSrv =
+    type PdbFile with
+        member x.CreateSrcSrv repoUrl revision paths =
+            File.WriteAllBytes(x.PathSrcSrv, SrcSrv.create repoUrl revision paths)

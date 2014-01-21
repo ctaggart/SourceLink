@@ -11,13 +11,13 @@ let printRevision dir =
     printfn "revision: %s" repo.Revision
 
 let printChecksumsGit dir proj =
-    let p = VsProject.Load proj ["Configuration", "Debug"]
+    let p = VsProj.Load proj ["Configuration", "Debug"]
     use repo = new GitRepo(dir)
     for file, checksum in repo.Checksums p.ItemsCompile do
         printfn "%s %s" file checksum
 
 let printChecksumsPdb proj =
-    let p = VsProject.Load proj ["Configuration", "Debug"]
+    let p = VsProj.Load proj ["Configuration", "Debug"]
     use pdb = new PdbFile(p.OutputFilePdb)
     for file, checksum in pdb.Files do
         printfn "%s %s" file (checksum |> Hex.encode)

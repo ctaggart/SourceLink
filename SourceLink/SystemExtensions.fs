@@ -107,7 +107,14 @@ type Path with
     static member absolute path = (Path.GetFullPath path).TrimEnd [|'\\'|]
 
 type File with
-    static member copy src dest = File.Copy(src, dest)
+    /// file copy, overwrite
+    static member copy src dest = File.Copy(src, dest, true)
+    /// file copy, throws if already exists
+    static member copyNo src dest = File.Copy(src, dest, false)
+    /// copies a file to the directory, overwrites
+    static member copyTo file dir = File.copy file (Path.combine dir (Path.GetFileName file))
+    /// copies a file to the directory, throws if already exists
+    static member copyToNo file dir = File.copyNo file (Path.combine dir (Path.GetFileName file))
 
 type Byte with
     static member concat (a:byte[]) (b:byte[]) =

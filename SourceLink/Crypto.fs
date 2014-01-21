@@ -1,5 +1,4 @@
-﻿
-module SourceLink.Crypto
+﻿module SourceLink.Crypto
 
 open System.IO
 open System.Security.Cryptography

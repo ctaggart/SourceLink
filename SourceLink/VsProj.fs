@@ -7,10 +7,11 @@ open Microsoft.Build.Evaluation
 open System.Collections.Generic
 open SourceLink
 
-type VsProject = Project // abbreviation
+type VsProj = Project // abbreviation
 
 type Project with
-    static member Load (projectFile:string) globalProps = Project(projectFile, globalProps |> Dictionary.ofTuples, null)
+    static member Load (proj:string) globalProps = Project(proj, globalProps |> Dictionary.ofTuples, null)
+    static member LoadRelease proj = Project.Load proj ["Configuration","Release"]
 
     /// full path for all "Compile" items
     member x.ItemsCompile
@@ -39,12 +40,9 @@ type Project with
     member x.OutputFilePdb with get() = Path.ChangeExtension(x.OutputFile, ".pdb")
     member x.OutputFilePdbSrcSrv with get() = x.OutputFilePdb + ".srcsrv"
 
-    member x.VerifyPdbChecksums (files:seq<string>) = 
+    member x.VerifyPdbFiles (files:seq<string>) = 
         use pdb = new PdbFile(x.OutputFilePdb)
         pdb.VerifyChecksums files
 
-    // TODO set properties for configuration
-    member x.SourceLink rawUrl revision paths =
-        use pdb = new PdbFile(x.OutputFilePdb)
-        pdb.WriteSrcSrvToFile rawUrl revision paths
-//        pdb.SetSrcSrv()
+    member x.CreateSrcSrv rawUrl revision paths =
+        File.WriteAllBytes(x.OutputFilePdbSrcSrv, SrcSrv.create rawUrl revision paths)

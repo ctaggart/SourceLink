@@ -30,21 +30,19 @@ type SourceLink() =
             try
                 use repo = new GitRepo(repoDir)
                 let revision = repo.Revision
-                x.MessageHigh "source linking %s to %s" pdbFile (createSrcSrvTrg x.RepoUrl revision)
+                x.MessageHigh "source linking %s to %s" pdbFile (SrcSrv.createTrg x.RepoUrl revision)
                 let files = x.GetSourceFiles()
-                use pdb = new PdbFile(pdbFile)
-                let missing = pdb.VerifyChecksums files
-                if missing.Count > 0 then
-                    x.Error "cannot find %d source files" missing.Count
-                    for file, checksum in missing.KeyValues do
-                        x.Error "cannot find %s with checksum of %s" file checksum
-
-                if x.HasErrors = false then
-                    pdb.WriteSrcSrvToFile x.RepoUrl revision (repo.Paths files)
-                    pdb.SetSrcSrv()
-                
+                do
+                    use pdb = new PdbFile(pdbFile)
+                    let missing = pdb.VerifyChecksums files
+                    if missing.Count > 0 then
+                        x.Error "cannot find %d source files" missing.Count
+                        for file, checksum in missing.KeyValues do
+                            x.Error "cannot find %s with checksum of %s" file checksum
+                    if x.HasErrors = false then
+                        pdb.CreateSrcSrv x.RepoUrl revision (repo.Paths files)
+                SrcSrv.write pdbFile (pdbFile + ".srcsrv")
             with
             | :? RepositoryNotFoundException as ex -> x.Error "%s" ex.Message
             | :? SourceLinkException as ex -> x.Error "%s" ex.Message
         not x.HasErrors
-    

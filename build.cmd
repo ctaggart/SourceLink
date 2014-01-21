@@ -1,2 +1,2 @@
 nuget.exe restore
-packages\FAKE.2.4.8.0\tools\FAKE.exe build.fsx %*
+packages\FAKE.2.6.0.0\tools\FAKE.exe build.fsx %*

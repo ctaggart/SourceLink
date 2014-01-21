@@ -63,7 +63,7 @@ type GitRepo(dir) =
         HashSet(checksums, StringComparer.OrdinalIgnoreCase)
 
     /// returns a sorted list of files with checksums that do not match
-    member x.VerifyChecksums files =
+    member x.VerifyFiles files =
         let committed = x.ChecksumSet files
         let different = SortedSet(StringComparer.OrdinalIgnoreCase)
         for checksum, file in GitRepo.ComputeChecksums files do
