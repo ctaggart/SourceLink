@@ -11,6 +11,7 @@
   </metadata>
   <files>
     <file src="*.fsx" target="tools" />
+    <file src="*.xaml" target="tools" />
     <file src="..\SourceLink\bin\Release\SourceLink.dll" target="tools" />
     <file src="..\SourceLink\bin\Release\SourceLink.pdb" target="tools" />
     <file src="..\SourceLink\bin\Release\SourceLink.xml" target="tools" />
