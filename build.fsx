@@ -1,5 +1,5 @@
 #r "packages/FAKE.2.6.0.0/tools/FakeLib.dll"
-#load "packages/SourceLink.Fake.0.3.0-a1401210630-e51f2c0b/tools/Fake.fsx"
+#load "packages/SourceLink.Fake.0.3.0-a1401221504-67fdce4f/tools/Fake.fsx"
 
 open System
 open System.IO
@@ -7,8 +7,9 @@ open Fake
 open Fake.AssemblyInfoFile
 open SourceLink
 
-let versionAssembly = "0.3.0" // change when incompatible
-let versionFile = "0.3.0" // matches nuget version
+let cfg = getBuildConfig __SOURCE_DIRECTORY__
+let versionAssembly = cfg.AppSettings.["versionAssembly"].Value // change when incompatible
+let versionFile = cfg.AppSettings.["versionFile"].Value // matches nuget version
 let versionPre = "a" // emtpy, a for alpha, b for beta
 
 let repo = new GitRepo(__SOURCE_DIRECTORY__)

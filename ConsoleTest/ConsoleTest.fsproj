@@ -74,6 +74,11 @@
       <Project>{dc0f48d4-3de6-41cf-b545-343de72af618}</Project>
       <Private>True</Private>
     </ProjectReference>
+    <ProjectReference Include="..\Git\Git.fsproj">
+      <Name>Git</Name>
+      <Project>{726a13b9-f319-40fa-aef6-fe629cfdaf6a}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\Pe\Pe.fsproj">
       <Name>Pe</Name>
       <Project>{12331d73-8eb9-4a60-9079-00d26b71a04b}</Project>

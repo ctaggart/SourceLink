@@ -73,6 +73,11 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Git\Git.fsproj">
+      <Name>Git</Name>
+      <Project>{726a13b9-f319-40fa-aef6-fe629cfdaf6a}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\SourceLink\SourceLink.fsproj">
       <Name>SourceLink</Name>
       <Project>{aaf1b8d7-791e-40f1-a278-9a16d9667866}</Project>

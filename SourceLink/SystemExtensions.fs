@@ -60,6 +60,15 @@ type BinaryReader with
         and set(i:int) = x.BaseStream.Position <- int64 i
     member x.Skip i = x.Position <- x.Position + i
 
+type StreamReader with
+    static member ReadLines (bytes:byte[]) =
+        use sr = new StreamReader(new MemoryStream(bytes))
+        seq {
+            while not sr.EndOfStream do
+                yield sr.ReadLine()
+        }
+        |> Seq.toArray
+
 type BinaryWriter with
     member x.WriteGuid (guid:Guid) = x.Write (guid.ToByteArray())
 
@@ -89,6 +98,10 @@ type Dictionary<'K,'V> with
         d.AddAll tuples
         d
 
+type HashSet<'T> with
+    static member ofSeq (s:seq<'T>) = HashSet s
+    static member ofSeqCmp (s, cmp) =  HashSet(s, cmp)
+
 let rec private rmdir dir =
     if Directory.Exists dir then
         for f in Directory.EnumerateFiles dir do
@@ -105,6 +118,13 @@ type Path with
     static member combine path1 path2 = Path.Combine(path1, path2)
     /// gets the absolute path, no trailing slash if it is a directory
     static member absolute path = (Path.GetFullPath path).TrimEnd [|'\\'|]
+    static member GetDirectoryNames file =
+        seq {
+            let path = ref (Path.GetDirectoryName file)
+            while false = String.IsNullOrEmpty !path do
+                yield !path
+                path := Path.GetDirectoryName !path
+        }
 
 type File with
     /// file copy, overwrite

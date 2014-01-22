@@ -9,6 +9,8 @@ let isTfsBuild = hasBuildParam "tfsBuild"
 let getTfsBuild() =
     if isTfsBuild then new TfsBuild(getBuildParam "tfsUri", getBuildParam "tfsUser", getBuildParam "tfsAgent", getBuildParam "tfsBuild")
     else Ex.failwithf "isTfsBuild = false"
+let getBuildConfig dir =
+    AppConfig.Get (Path.combine dir "build.config")
 
 type Microsoft.Build.Evaluation.Project with
     member x.Compiles : FileIncludes = {

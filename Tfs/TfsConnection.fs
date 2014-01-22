@@ -21,6 +21,8 @@ type TfsConnection with
     member x.LocationService with get() = x.GetService<ILocationService>()
     member x.HyperlinkService with get() = x.GetService<TswaClientHyperlinkService>()
     member x.AdministrationService with get() = x.GetService<IAdministrationService>()
+    member x.GitHttpClient with get() = x.GetClient<SourceControl.WebApi.GitHttpClient>()
+    member x.TfvcHttpClient with get() = x.GetClient<SourceControl.WebApi.TfvcHttpClient>()
 
 type TfsConfigurationServer with
     member x.ProjectCollectionService with get() = x.GetService<ITeamProjectCollectionService>()

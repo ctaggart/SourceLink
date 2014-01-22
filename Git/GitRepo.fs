@@ -78,7 +78,7 @@ type GitRepo(dir) =
         with
         | :? RepositoryNotFoundException -> false
 
-    static member Find file = File.getParentDirectories file |> Seq.tryFind GitRepo.IsRepo
+    static member Find file = Path.GetDirectoryNames file |> Seq.tryFind GitRepo.IsRepo
 
     member x.Paths (files:seq<string>) = files |> Seq.map (fun f -> f, f.Substring(dir.Length+1).Replace('\\','/'))
 

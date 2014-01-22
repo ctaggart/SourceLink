@@ -4,11 +4,10 @@ open System
 open System.IO
 open System.Collections.Generic
 open System.Text
-open SourceLink.File
 open SourceLink.PdbModify
 
 type PdbFile(path) =
-    
+    let srcsrv = "srcsrv"
     let fs = File.Open(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite)
     let br = new BinaryReader(fs, Encoding.UTF8, true)
     let bw = new BinaryWriter(fs, Encoding.UTF8, true)
@@ -306,7 +305,7 @@ type PdbFile(path) =
 
     static member ReadSrcSrvLines file =
         use pdb = new PdbFile(file)
-        if pdb.HasSrcSrv then pdb.ReadStreamBytes pdb.SrcSrv |> readLines else [||]
+        if pdb.HasSrcSrv then pdb.ReadStreamBytes pdb.SrcSrv |> StreamReader.ReadLines else [||]
          
     /// The raw URL to get the source code.
     /// It becomes the SRVSRVTRG, the source server target.
