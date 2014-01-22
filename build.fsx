@@ -80,15 +80,6 @@ Target "NuGet" (fun _ ->
         Version = versionNuget
         WorkingDir = "SourceLink/bin/Release"
         OutputPath = bin
-        DependenciesByFramework =
-        [{ 
-            FrameworkVersion = "net45"
-            Dependencies =
-            [
-                "LibGit2Sharp", sprintf "[%s]" (GetPackageVersion "packages/" "LibGit2Sharp") // exact version
-            ]
-        }]
-        
     }) "SourceLink/SourceLink.nuspec"
 
     NuGet (fun p -> 
