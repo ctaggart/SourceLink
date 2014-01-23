@@ -46,5 +46,5 @@ type Pdbstr with
         let cmd = cmd.Value
         let args = sprintf "-w -s:srcsrv -i:%s -p:%s" (Path.GetFileName srcsrv) (Path.GetFileName pdb)
         let workdir = Path.GetDirectoryName pdb
-        logfn "exec %s, %s, %s" cmd args workdir
+//        logfn "%s>%s %s" workdir cmd args
         Shell.Exec(cmd, args, workdir) |> ignore

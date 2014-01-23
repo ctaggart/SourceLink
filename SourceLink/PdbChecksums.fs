@@ -17,22 +17,22 @@ type PdbFile with
 
     member x.Checksums
         with get() =
-            let d = Dictionary(StringComparer.OrdinalIgnoreCase)
+            let d = Dictionary StringComparer.OrdinalIgnoreCase
             x.Files
             |> Seq.map (fun (file, hash) -> Hex.encode hash, file)
             |> d.AddAll
             d
 
     member x.VerifyChecksums files =
-        let missing = SortedDictionary(StringComparer.OrdinalIgnoreCase) // file, checksum
+        let missing = SortedDictionary StringComparer.OrdinalIgnoreCase // file, checksum
         let pdbChecksums = x.Checksums
         let fileChecksums =
-            let d = Dictionary(StringComparer.OrdinalIgnoreCase)
+            let d = Dictionary StringComparer.OrdinalIgnoreCase
             Crypto.hashesMD5 files 
             |> Seq.map (fun (hash, file) -> Hex.encode hash, file)
             |> d.AddAll
             d
-        for checksum, file in fileChecksums.KeyValues do
-            if pdbChecksums.ContainsKey checksum = false then
+        for checksum, file in pdbChecksums.KeyValues do
+            if fileChecksums.ContainsKey checksum = false then
                 missing.[file] <- checksum
         missing
