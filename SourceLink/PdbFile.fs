@@ -147,11 +147,9 @@ type PdbFile(path) =
 
     member x.Dispose() =
         use fs = fs
-        use br = br
-        use bw = bw
         GC.SuppressFinalize x
     interface IDisposable with member x.Dispose() = x.Dispose() 
-    override x.Finalize() = x.Dispose()
+//    override x.Finalize() = x.Dispose()
 
     member x.Path with get() = path
     member x.PathSrcSrv with get() = path + ".srcsrv"
