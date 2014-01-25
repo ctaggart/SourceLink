@@ -8,15 +8,16 @@ open Fake.AssemblyInfoFile
 open SourceLink
 
 let cfg = getBuildConfig __SOURCE_DIRECTORY__
-let versionAssembly = cfg.AppSettings.["versionAssembly"].Value // change when incompatible
-let versionFile = cfg.AppSettings.["versionFile"].Value // matches nuget version
-let versionPre = "a" // emtpy, a for alpha, b for beta
-
 let repo = new GitRepo(__SOURCE_DIRECTORY__)
 let dt = DateTime.UtcNow
+
+let versionAssembly = cfg.AppSettings.["versionAssembly"].Value // change when incompatible
+let versionFile = cfg.AppSettings.["versionFile"].Value // matches nuget version
+let prerelease =
+    if hasBuildParam "prerelease" then getBuildParam "prerelease"
+    else sprintf "a%s-%s" (dt.ToString "yyMMddHHmm") (repo.Revision.Substring(0,8)) // 20 char limit
 let versionInfo = sprintf "%s %s %s" versionAssembly (dt.ToString "yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'") repo.Revision
-// pre-release limited to 20 chars after the dash, using 10 for the date and first 8 of revision "-a1312241626-dcc582c2"
-let versionNuget = if versionPre.Length = 0 then versionFile else sprintf "%s-%s%s-%s" versionFile versionPre (dt.ToString "yyMMddHHmm") (repo.Revision.Substring(0,8))
+let buildVersion = if String.IsNullOrEmpty prerelease then versionFile else sprintf "%s-%s" versionFile prerelease
 
 Target "Clean" (fun _ -> 
     !! "**/bin/"
@@ -26,7 +27,7 @@ Target "Clean" (fun _ ->
 
 Target "BuildNumber" (fun _ -> 
     use tb = getTfsBuild()
-    tb.Build.BuildNumber <- sprintf "SourceLink.%s" versionNuget
+    tb.Build.BuildNumber <- sprintf "SourceLink.%s" buildVersion
     tb.Build.Save()
 )
 
@@ -58,8 +59,9 @@ Target "Build" (fun _ ->
 )
 
 Target "SourceLink" (fun _ ->
-#if MONO
-#else
+    #if MONO
+    ()
+    #else
     !! "Tfs/Tfs.fsproj" 
     ++ "SourceLink/SourceLink.fsproj"
     |> Seq.iter (fun f ->
@@ -71,7 +73,7 @@ Target "SourceLink" (fun _ ->
 //        SrcSrv.write proj.OutputFilePdb proj.OutputFilePdbSrcSrv // internal bug
         Pdbstr.exec proj.OutputFilePdb proj.OutputFilePdbSrcSrv
     )
-#endif
+    #endif
 )
 
 Target "NuGet" (fun _ ->
@@ -80,14 +82,14 @@ Target "NuGet" (fun _ ->
 
     NuGet (fun p -> 
     { p with
-        Version = versionNuget
+        Version = buildVersion
         WorkingDir = "SourceLink/bin/Release"
         OutputPath = bin
     }) "SourceLink/SourceLink.nuspec"
 
     NuGet (fun p -> 
     { p with
-        Version = versionNuget
+        Version = buildVersion
         WorkingDir = "Tfs/bin/Release"
         OutputPath = bin
         DependenciesByFramework =
@@ -95,21 +97,21 @@ Target "NuGet" (fun _ ->
             FrameworkVersion = "net45"
             Dependencies =
             [
-                "SourceLink", sprintf "[%s]" versionNuget // exact version
+                "SourceLink", sprintf "[%s]" buildVersion // exact version
             ]
         }]
     }) "Tfs/Tfs.nuspec"
 
 //    NuGet (fun p -> 
 //    { p with
-//        Version = versionNuget
+//        Version = buildVersion
 //        WorkingDir = "Build/bin/Release"
 //        OutputPath = bin
 //    }) "Build/Build.nuspec"
 
     NuGet (fun p -> 
     { p with
-        Version = versionNuget
+        Version = buildVersion
         WorkingDir = "Fake"
         OutputPath = bin
     }) "Fake/Fake.nuspec"

@@ -8,7 +8,7 @@ open SourceLink
 let isTfsBuild = hasBuildParam "tfsBuild"
 #if MONO
 #else
-let tfsBuild =
+let getTfsBuild() =
     if isTfsBuild then new TfsBuild(getBuildParam "tfsUri", getBuildParam "tfsUser", getBuildParam "tfsAgent", getBuildParam "tfsBuild")
     else Ex.failwithf "isTfsBuild = false"
 #endif
@@ -46,7 +46,8 @@ type Pdbstr with
     static member exec pdb srcsrv =
         let cmd = Pdbstr.tryFind()
         if cmd.IsNone then
-            Ex.failwithf "unable to find pdbstr.exe"
+//            Ex.failwithf "unable to find pdbstr.exe"
+            logfn "pdbstr.exe not found, install Debugging Tools for Windows"
         let cmd = cmd.Value
         let args = sprintf "-w -s:srcsrv -i:%s -p:%s" (Path.GetFileName srcsrv) (Path.GetFileName pdb)
         let workdir = Path.GetDirectoryName pdb
