@@ -25,6 +25,7 @@
     <DocumentationFile>
     </DocumentationFile>
     <NoWarn>2003</NoWarn>
+    <OtherFlags>--define:SOURCELINKDEV</OtherFlags>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -35,6 +36,7 @@
     <WarningLevel>3</WarningLevel>
     <DocumentationFile>bin\Release\SourceLink.xml</DocumentationFile>
     <NoWarn>2003</NoWarn>
+    <OtherFlags>--define:SOURCELINKDEV</OtherFlags>
   </PropertyGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>

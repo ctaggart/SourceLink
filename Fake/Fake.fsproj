@@ -31,7 +31,10 @@
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Release\Fake.XML</DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
+    <OtherFlags>
+    </OtherFlags>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
@@ -47,6 +50,8 @@
     <None Include="Fake.fsx" />
     <None Include="Fake.nuspec" />
     <None Include="VsoGit.xaml" />
+    <None Include="build.cmd" />
+    <None Include="build.sh" />
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>

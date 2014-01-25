@@ -22,7 +22,9 @@
     <mtbwa:AgentScope mtbwt:BuildTrackingParticipant.Importance="Low">
       <mtbac:InitializeEnvironment mtbwt:BuildTrackingParticipant.Importance="Low" />
       <mtbag:GitPull DisplayName="Git Pull" />
-      <sourcelink:Process DisplayName="NuGet Restore" FileName="C:\Program Files\Microsoft Team Foundation Server 12.0\Tools\NuGet.exe" Arguments="Restore" WorkingDirectory="C:\a\src" />
+      <sourcelink:Process DisplayName="NuGet Install FAKE" FileName="C:\Program Files\Microsoft Team Foundation Server 12.0\Tools\NuGet.exe" Arguments="install FAKE -OutputDirectory packages -ExcludeVersion" WorkingDirectory="C:\a\src" />
+      <sourcelink:Process DisplayName="NuGet Install SourceLink.Fake" FileName="C:\Program Files\Microsoft Team Foundation Server 12.0\Tools\NuGet.exe" Arguments="install SourceLink.Fake -OutputDirectory packages -ExcludeVersion" WorkingDirectory="C:\a\src" />
+      <sourcelink:Process DisplayName="NuGet Restore" FileName="C:\Program Files\Microsoft Team Foundation Server 12.0\Tools\NuGet.exe" Arguments="restore" WorkingDirectory="C:\a\src" />
       <sourcelink:Fake DisplayName="FAKE - F# Make" WorkingDirectory="C:\a\src" />
       <mtbac:DropBinaries DisplayName="Copy to Drop" />
     </mtbwa:AgentScope>

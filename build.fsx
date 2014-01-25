@@ -1,5 +1,5 @@
-#r "packages/FAKE.2.6.0.0/tools/FakeLib.dll"
-#load "packages/SourceLink.Fake.0.3.0-a1401221522-b7bd7f00/tools/Fake.fsx"
+#r "packages/FAKE/tools/FakeLib.dll"
+#load "packages/SourceLink.Fake/tools/Fake.fsx"
 
 open System
 open System.IO
@@ -58,6 +58,8 @@ Target "Build" (fun _ ->
 )
 
 Target "SourceLink" (fun _ ->
+#if MONO
+#else
     !! "Tfs/Tfs.fsproj" 
     ++ "SourceLink/SourceLink.fsproj"
     |> Seq.iter (fun f ->
@@ -69,6 +71,7 @@ Target "SourceLink" (fun _ ->
 //        SrcSrv.write proj.OutputFilePdb proj.OutputFilePdbSrcSrv // internal bug
         Pdbstr.exec proj.OutputFilePdb proj.OutputFilePdbSrcSrv
     )
+#endif
 )
 
 Target "NuGet" (fun _ ->
