@@ -63,7 +63,6 @@
   <ItemGroup>
     <Compile Include="Checksums.fs" />
     <Compile Include="Program.fs" />
-    <None Include="App.config" />
     <None Include="packages.config" />
     <None Include="Git.fsx" />
     <None Include="BuildInfo.fsx" />

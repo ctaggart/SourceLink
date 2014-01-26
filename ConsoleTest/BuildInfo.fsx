@@ -1,4 +1,4 @@
-﻿#load "../packages/SourceLink.Fake.0.3.0-a1401192141-19521509/tools/Assemblies.fsx"
+﻿#load "../packages/SourceLink.Fake/tools/Assemblies.fsx"
 open System
 open SourceLink
 let t = new Tfs(Uri "https://ctaggart.visualstudio.com/DefaultCollection")

@@ -198,8 +198,13 @@ let printNamesByFlagIndex file =
 let main argv = 
 //    printChecksumsGit (Path.combine __SOURCE_DIRECTORY__ "..") (Path.combine __SOURCE_DIRECTORY__ @"..\Tfs\Tfs.fsproj")
 
-    let pdb = Path.combine __SOURCE_DIRECTORY__ @"..\Tfs\bin\Debug\SourceLink.Tfs.pdb"
-    printNamesByFlagIndex pdb
-    printStreamPages pdb
-    printOrphanedPages pdb
+//    let pdb = Path.combine __SOURCE_DIRECTORY__ @"..\Tfs\bin\Debug\SourceLink.Tfs.pdb"
+//    printNamesByFlagIndex pdb
+//    printStreamPages pdb
+//    printOrphanedPages pdb
+
+    let pdb = Path.combine __SOURCE_DIRECTORY__ @"..\SourceLink\bin\Release\SourceLink.pdb"
+    let srcsrv = pdb + ".srcsrv"
+    SrcSrv.write pdb srcsrv
+
     0
