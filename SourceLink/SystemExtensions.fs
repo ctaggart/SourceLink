@@ -100,7 +100,11 @@ type Dictionary<'K,'V> with
 
 type HashSet<'T> with
     static member ofSeq (s:seq<'T>) = HashSet s
-    static member ofSeqCmp (s, cmp) =  HashSet(s, cmp)
+    static member ofSeqCmp cmp (seq:seq<'T>) = HashSet(seq, cmp)
+
+type SortedSet<'T> with
+    static member ofSeq (seq:seq<'T>) = SortedSet seq
+    static member ofSeqCmp cmp (seq:seq<'T>) = SortedSet(seq, cmp)
 
 let rec private rmdir dir =
     if Directory.Exists dir then
@@ -135,6 +139,14 @@ type File with
     static member copyTo file dir = File.copy file (Path.combine dir (Path.GetFileName file))
     /// copies a file to the directory, throws if already exists
     static member copyToNo file dir = File.copyNo file (Path.combine dir (Path.GetFileName file))
+
+type Directory with
+    static member entries path pattern = Directory.EnumerateFileSystemEntries(path, pattern, SearchOption.TopDirectoryOnly)
+    static member entriesRec path pattern = Directory.EnumerateFileSystemEntries(path, pattern, SearchOption.AllDirectories)
+    static member files path pattern = Directory.EnumerateFiles(path, pattern, SearchOption.TopDirectoryOnly)
+    static member filesRec path pattern = Directory.EnumerateFiles(path, pattern, SearchOption.AllDirectories)
+    static member dirs path pattern = Directory.EnumerateDirectories(path, pattern, SearchOption.TopDirectoryOnly)
+    static member dirsRec path pattern = Directory.EnumerateDirectories(path, pattern, SearchOption.AllDirectories)
 
 type Byte with
     static member concat (a:byte[]) (b:byte[]) =
