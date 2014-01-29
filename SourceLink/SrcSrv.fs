@@ -12,7 +12,7 @@ module SrcSrv =
         use sw = new StreamWriter(ms)
         let scheme = Uri(rawUrl).Scheme
         fprintfn sw "SRCSRV: ini ------------------------------------------------"
-        fprintfn sw "VERSION=1"
+        fprintfn sw "VERSION=2"
         fprintfn sw "SRCSRV: variables ------------------------------------------"
         fprintfn sw "SRCSRVVERCTRL=%s" scheme
         fprintfn sw "SRCSRVTRG=%s" (createTrg rawUrl revision)
