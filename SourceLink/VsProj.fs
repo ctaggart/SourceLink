@@ -10,7 +10,9 @@ open SourceLink
 type VsProj = Project // abbreviation
 
 type Project with
-    static member Load (proj:string) globalProps = Project(proj, globalProps |> Dictionary.ofTuples, null)
+    static member Load (proj:string) globalProps =
+        let pc = new ProjectCollection()
+        Project(proj, globalProps |> Dictionary.ofTuples, null, pc)
     static member LoadRelease proj = Project.Load proj ["Configuration","Release"]
 
     /// full path for all "Compile" items
