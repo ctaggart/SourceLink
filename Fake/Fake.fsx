@@ -43,13 +43,14 @@ type Microsoft.Build.Evaluation.Project with // VsProj
             failwith errMsg
 
 type Pdbstr with
-    static member exec pdb srcsrv =
-        let cmd = Pdbstr.tryFind()
-        if cmd.IsNone then
-//            Ex.failwithf "unable to find pdbstr.exe"
-            logfn "pdbstr.exe not found, install Debugging Tools for Windows"
-        let cmd = cmd.Value
+    static member execWith exe pdb srcsrv =
         let args = sprintf "-w -s:srcsrv -i:%s -p:%s" (Path.GetFileName srcsrv) (Path.GetFileName pdb)
         let workdir = Path.GetDirectoryName pdb
-        logfn "%s>%s %s" workdir cmd args
-        Shell.Exec(cmd, args, workdir) |> ignore
+        logfn "%s>%s %s" workdir exe args
+        Shell.Exec(exe, args, workdir) |> ignore
+    static member exec pdb srcsrv =
+        let exe = Pdbstr.tryFind()
+        if exe.IsNone then
+//            Ex.failwithf "unable to find pdbstr.exe"
+            logfn "pdbstr.exe not found, install Debugging Tools for Windows"
+        Pdbstr.execWith exe.Value pdb srcsrv
