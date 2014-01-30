@@ -18,6 +18,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{876D3926-2BE5-40B4-B9D4-1218875A3870}"
 	ProjectSection(SolutionItems) = preProject
 		build.cmd = build.cmd
+		build.config = build.config
 		build.fsx = build.fsx
 		build.sh = build.sh
 		README.md = README.md
