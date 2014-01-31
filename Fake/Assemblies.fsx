@@ -25,6 +25,7 @@
 #r "Microsoft.TeamFoundation.VersionControl.Common"
 #r "Microsoft.TeamFoundation.WorkItemTracking.Client"
 #r "Microsoft.VisualStudio.Services.Common"
+#r "Microsoft.TeamFoundation.SourceControl.WebApi"
 #endif
 
 //#r "../packages/SourceLink.Fake/tools/SourceLink.Tfs.dll" // in dev
