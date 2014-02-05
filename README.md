@@ -2,12 +2,12 @@
 # SourceLink
 
 <img src="http://ctaggart.github.io/SourceLink/SourceLink128.jpg" align="right">
-SourceLink is a .NET library that automates [source indexing](http://msdn.microsoft.com/en-us/library/windows/hardware/ff556898.aspx). It enables the source control system to be the [source server](http://msdn.microsoft.com/en-us/library/windows/desktop/ms680641.aspx) by indexing the pdb files with https links to the SCM. Access to the source code is controlled by the SCM.
+SourceLink is a .NET library that automates [source indexing](http://msdn.microsoft.com/en-us/library/windows/hardware/ff556898.aspx). It enables the source control management system to be the [source server](http://msdn.microsoft.com/en-us/library/windows/desktop/ms680641.aspx) by indexing the pdb files with https links to the SCM. Access to the source code is controlled by the SCM.
 
 In April of 2011, Buck Hodges [stated](http://blogs.msdn.com/b/buckh/archive/2011/04/11/making-debugging-easier-source-indexing-and-symbol-server.aspx) that "we are starting to have more and more tools that need access to the symbol file information and the original source code that was used for compilation". Visual Studio Debugging, Remote Debugger, IntelliTrace, Visual Studio Profiler, WinDBG all use [SymSrv.dll](http://msdn.microsoft.com/en-us/library/windows/desktop/ms681416.aspx) to obtain the source. "SymSrv can obtain symbol files from an HTTP or HTTPS source using the logon information provided by the operating system. SymSrv supports HTTPS sites protected by smartcards, certificates, and regular logins and passwords."
 
 ### Better than Traditional TFS Source Indexing
-Using web links for source indexing is better than having to run an executable to obtain the source. TFS TFVC source indexing requires tf.exe to be run each time a source file is needed. [TFS Git does not yet support](http://msdn.microsoft.com/en-us/library/vstudio/ms181368.aspx#tfvc_or_git_details) source indexing. SourceLink can be used with both TFS TFVC and TFS Git.
+SourceLink can be used to source index TFS Git code TFS TFVC code. TFS 2013 [does not yet support source indexing TFS Git code](http://msdn.microsoft.com/en-us/library/vstudio/ms181368.aspx#tfvc_or_git_details). SourceLink provides a solution for doing so. Traditional TFS TFVC source indexing requires tf.exe to be run each time a source file is needed. Using web links for source indexing is better than having to run an executable to obtain the source.
 
 ### Great for .NET Open Source 
 SourceLink is perfect for open source .NET projects. If you source index your pdb files using SourceLink and ship them in the NuGet packages, users of your project will be able to download the exact source on demand while debugging. SourceLink works with GitHub, Bitbucket, Google Project Hosting, and CodePlex. Git on CodePlex is the only option known not to work yet, so [vote here](https://codeplex.codeplex.com/workitem/26806).
@@ -34,12 +34,11 @@ FAKE builds can be integrated with several build servers. SourceLink.Fake enable
 
 ### Releases
 
-* 2014-01 SourceLink 0.3.x
-  * new [SourceLink.Fake](http://www.nuget.org/packages/SourceLink.Fake) package  
-  * new SourceLink.Tfs package
+* 2014-01 [SourceLink.Fake](http://www.nuget.org/packages/SourceLink.Fake) 0.3.x
+  * FAKE integration
+  * TFS integration
+  * pdbstr.exe used instead of modifying pdb directly
   * SourceLink.Build put aside for now in favor of SourceLink.Fake
-* 2013-07-17 SourceLink.Build 0.2.1 [issues](https://github.com/ctaggart/SourceLink/issues?milestone=1&state=closed)  
-  * fixed some relative path issues
-* 2013-07-15 [SourceLink.Build](http://www.nuget.org/packages/SourceLink.Build) 0.2  
-  * MSBuild task works with git
-
+* 2013-07 [SourceLink.Build](http://www.nuget.org/packages/SourceLink.Build) 0.2.x
+  * SourceLink distributed using NuGet 2.5 MSBuild Targets
+  * verify Git checksums using [LibGit2Sharp](http://libgit2.github.com/)
