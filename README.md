@@ -1,13 +1,25 @@
 
 # SourceLink
 
-<img src="http://ctaggart.github.io/SourceLink/SourceLink128.jpg" align="right">
-[SourceLink.Fake](http://www.nuget.org/packages/SourceLink.Fake) is a tools only NuGet package. It allows [FAKE - F# Make](http://fsharp.github.io/FAKE/) build scripts to do source linking. Source linking is source indexing, but only with http or https links. In April of 2011, Buck Hodges [stated](http://blogs.msdn.com/b/buckh/archive/2011/04/11/making-debugging-easier-source-indexing-and-symbol-server.aspx) that "we are starting to have more and more tools that need access to the symbol file information and the original source code that was used for compilation". Visual Studio Debugging, Remote Debugger, IntelliTrace, Visual Studio Profiler, WinDBG all use [SymSrv.dll](http://msdn.microsoft.com/en-us/library/windows/desktop/ms681416.aspx) to obtain the source. "SymSrv can obtain symbol files from an HTTP or HTTPS source using the logon information provided by the operating system. SymSrv supports HTTPS sites protected by smartcards, certificates, and regular logins and passwords." This works with both private and public repositories. It works with everything from your TFS server within your corporate intranet to your open source project on GitHub. CodePlex is the only major code hosting site to not yet support raw downloads, so please [vote here](https://codeplex.codeplex.com/workitem/26806).
+SourceLink is a .NET library that automates [source indexing](http://msdn.microsoft.com/en-us/library/windows/hardware/ff556898.aspx). It enables the source control system to be the [source server](http://msdn.microsoft.com/en-us/library/windows/desktop/ms680641.aspx) by indexing the pdb files with https links to the SCM. Access to the source code is controlled by the SCM.
 
-Packaged with SourceLink.Fake is a SourceLink.Tfs library. This libary allows:
-* easy access to TFS or [Visual Studio Online](http://www.visualstudio.com/) from F# Interactive and build scripts
-* TFS Activities for running FAKE from TFS or VSO Build
-* ability to use the Git library LibGit2Sharp from F# Interactive and build scripts
+In April of 2011, Buck Hodges [stated](http://blogs.msdn.com/b/buckh/archive/2011/04/11/making-debugging-easier-source-indexing-and-symbol-server.aspx) that "we are starting to have more and more tools that need access to the symbol file information and the original source code that was used for compilation". Visual Studio Debugging, Remote Debugger, IntelliTrace, Visual Studio Profiler, WinDBG all use [SymSrv.dll](http://msdn.microsoft.com/en-us/library/windows/desktop/ms681416.aspx) to obtain the source. "SymSrv can obtain symbol files from an HTTP or HTTPS source using the logon information provided by the operating system. SymSrv supports HTTPS sites protected by smartcards, certificates, and regular logins and passwords."
+
+### Better than Traditional TFS Source Indexing
+Using web links for source indexing is better than having to run an executable to obtain the source. TFS TFVC source indexing requires tf.exe to be run each time a source file is needed. [TFS Git does not yet support](http://msdn.microsoft.com/en-us/library/vstudio/ms181368.aspx#tfvc_or_git_details) source indexing. SourceLink can be used with both TFS TFVC and TFS Git.
+
+### Great for .NET Open Source 
+SourceLink is perfect for open source .NET projects. If you source index your pdb files using SourceLink and ship them in the NuGet packages, users of your project will be able to download the exact source on demand while debugging. SourceLink works with GitHub, Bitbucket, Google Project Hosting, and CodePlex. Git on CodePlex is the only option known not to work yet, so [vote here](https://codeplex.codeplex.com/workitem/26806).
+
+### How it Works
+SourceLink will create a text file next to the .pdb with an extension of .pdb.srcsrv and then run pdbstr.exe to do the source indexing. pdbstr.exe ships with TFS and [Debugging Tools for Windows](http://msdn.microsoft.com/en-us/windows/hardware/hh852365.aspx).
+
+### How to Use
+<img src="http://ctaggart.github.io/SourceLink/SourceLink128.jpg" align="right">
+[SourceLink.Fake](http://www.nuget.org/packages/SourceLink.Fake) is a tools only NuGet package. It is an add-on for [FAKE - F# Make](http://fsharp.github.io/FAKE/). 
+
+### Run FAKE from TFS or Visual Studio Online
+FAKE builds can be integrated with several build servers. SourceLink.Fake enables integration with TFS and [Visual Studio Online](http://www.visualstudio.com/). You can [code your TFS builds in F# instead of XAML](http://blog.ctaggart.com/2014/01/code-your-tfs-builds-in-f-instead-of.html). A helper library is provided that gives easy access to the entire TFS API from F# and F# Interactive.
 
 Please see my blog posts tagged with SourceLink for more details.
 http://blog.ctaggart.com/search/label/SourceLink
@@ -18,9 +30,10 @@ http://blog.ctaggart.com/search/label/SourceLink
 
 ### Releases
 
-* 2014-01 SourceLink 0.3.0 is in prerelease
+* 2014-01 SourceLink 0.3.x
   * new [SourceLink.Fake](http://www.nuget.org/packages/SourceLink.Fake) package  
   * new SourceLink.Tfs package
+  * SourceLink.Build put aside for now in favor of SourceLink.Fake
 * 2013-07-17 SourceLink.Build 0.2.1 [issues](https://github.com/ctaggart/SourceLink/issues?milestone=1&state=closed)  
   * fixed some relative path issues
 * 2013-07-15 [SourceLink.Build](http://www.nuget.org/packages/SourceLink.Build) 0.2  
