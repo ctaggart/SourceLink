@@ -46,7 +46,9 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assemblies.fsx" />
+    <None Include="SourceLink.fsx" />
+    <None Include="SourceLink.Tfs.Assemblies.fsx" />
+    <None Include="SourceLink.Tfs.fsx" />
     <None Include="Fake.fsx" />
     <None Include="Fake.nuspec" />
     <None Include="VsoGit.xaml" />
