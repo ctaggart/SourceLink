@@ -1,5 +1,5 @@
 #r "packages/FAKE/tools/FakeLib.dll"
-#load "packages/SourceLink.Fake/tools/Fake.fsx"
+#load "packages/SourceLink.Fake/tools/SourceLink.Tfs.fsx"
 
 open System
 open System.IO
