@@ -1,5 +1,5 @@
-*.cs     text eol=crlf diff=csharp
-*.fs     text eol=crlf
+*.cs     text eol=lf diff=csharp
+*.fs     text eol=lf
 *.sln    text eol=crlf merge=union
 *.csproj text merge=union
 *.fsproj text merge=union
