@@ -1,21 +1,12 @@
 language: objective-c
 
 env:
-  global:
-    - EnableNuGetPackageRestore=true
   matrix:
     - MONO_VERSION="3.2.5"
-
-branches:
-  only:
-  - master
 
 install:
   - wget "http://download.xamarin.com/MonoFrameworkMDK/Macx86/MonoFramework-MDK-${MONO_VERSION}.macos10.xamarin.x86.pkg"
   - sudo installer -pkg "MonoFramework-MDK-${MONO_VERSION}.macos10.xamarin.x86.pkg" -target /
-
-before_script:
-  - chmod +x build.sh
 
 script: 
   - ./build.sh Build 
