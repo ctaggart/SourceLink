@@ -53,9 +53,11 @@ Target "AssemblyInfo" (fun _ ->
 )
 
 Target "Build" (fun _ ->
-    !! "SourceLink.sln"
-    |> MSBuildRelease "" "Rebuild"
-    |> ignore
+    #if MONO
+    !! "SourceLink/SourceLink.fsproj" |> MSBuildRelease "" "Rebuild" |> ignore
+    #else
+    !! "SourceLink.sln" |> MSBuildRelease "" "Rebuild" |> ignore
+    #endif
 )
 
 Target "SourceLink" (fun _ ->
