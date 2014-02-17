@@ -10,7 +10,7 @@ type Configuration with
     static member Load (path:string) =
         let map = ExeConfigurationFileMap()
         map.ExeConfigFilename <- path
-        ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None, true) // preLoad
+        ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None) // preLoad=true param not available on Mono 3.2.5
     static member Create (path:string) =
         do 
             use sw = new StreamWriter(path)
