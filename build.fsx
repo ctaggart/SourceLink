@@ -1,6 +1,5 @@
-#r "packages/FAKE/tools/NuGet.Core.dll"
-#r "packages/FAKE/tools/FakeLib.dll"
-
+#I "packages/FAKE/tools"
+#r "FakeLib.dll"
 #load "packages/SourceLink.Fake/tools/SourceLink.Tfs.fsx"
 
 open System
