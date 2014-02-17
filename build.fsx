@@ -1,4 +1,6 @@
+#r "packages/FAKE/tools/NuGet.Core.dll"
 #r "packages/FAKE/tools/FakeLib.dll"
+
 #load "packages/SourceLink.Fake/tools/SourceLink.Tfs.fsx"
 
 open System
@@ -25,10 +27,14 @@ Target "Clean" (fun _ ->
     |> CleanDirs 
 )
 
-Target "BuildNumber" (fun _ -> 
+Target "BuildNumber" (fun _ ->
+    #if MONO
+    ()
+    #else
     use tb = getTfsBuild()
     tb.Build.BuildNumber <- sprintf "SourceLink.%s" buildVersion
     tb.Build.Save()
+    #endif
 )
 
 Target "AssemblyInfo" (fun _ ->
