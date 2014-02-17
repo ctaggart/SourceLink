@@ -6,28 +6,28 @@ open LibGit2Sharp
 open System.Collections.Generic
 open System.Runtime.InteropServices
 
-/// Windows API
-module Windows =
-    [<DllImport("kernel32", CharSet=CharSet.Unicode)>]
-    extern int AddDllDirectory(string dir)
+///// Windows API
+//module Windows =
+//    [<DllImport("kernel32", CharSet=CharSet.Unicode)>]
+//    extern int AddDllDirectory(string dir)
 
-type internal GitLib() =
-    // similar to static initializer in LibGit2Sharp.Core.NativeMethods,
-    // but it uses location of LibGit2Sharp.dll and AddDllDirectory instead of ExecutingAssembly and PATH
-    static do
-        try
-            let dir = typeof<LibGit2SharpException>.Assembly.Location |> Path.GetDirectoryName
-            let arch = if IntPtr.Size = 8 then "amd64" else "x86"
-            let path = Path.combine dir (sprintf @"NativeBinaries\%s" arch)
-            let i = path |> Windows.AddDllDirectory
-            if i = 0 then
-                Ex.failwithf "AddDllDirectory %A failed: %A" path (ComponentModel.Win32Exception(Marshal.GetLastWin32Error()))
-        with
-            | :? EntryPointNotFoundException -> Ex.failwithf "AddDllDirectory not found. Install KB2533623 update. http://support.microsoft.com/kb/2533623"
+//type internal GitLib() =
+//    // similar to static initializer in LibGit2Sharp.Core.NativeMethods,
+//    // but it uses location of LibGit2Sharp.dll and AddDllDirectory instead of ExecutingAssembly and PATH
+//    static do
+//        try
+//            let dir = typeof<LibGit2SharpException>.Assembly.Location |> Path.GetDirectoryName
+//            let arch = if IntPtr.Size = 8 then "amd64" else "x86"
+//            let path = Path.combine dir (sprintf @"NativeBinaries\%s" arch)
+//            let i = path |> Windows.AddDllDirectory
+//            if i = 0 then
+//                Ex.failwithf "AddDllDirectory %A failed: %A" path (ComponentModel.Win32Exception(Marshal.GetLastWin32Error()))
+//        with
+//            | :? EntryPointNotFoundException -> Ex.failwithf "AddDllDirectory not found. Install KB2533623 update. http://support.microsoft.com/kb/2533623"
 
 type GitRepo(dir) =
     let dir = Path.absolute dir
-    let gl = new GitLib() // trigger static initializer
+//    let gl = new GitLib() // trigger static initializer
     let repo = new Repository(dir)
     
     member x.Repo with get() = repo

@@ -55,6 +55,12 @@ Target "AssemblyInfo" (fun _ ->
         Attribute.FileVersion versionFile
         Attribute.InformationalVersion versionInfo
         ]
+    CreateFSharpAssemblyInfo "Git/AssemblyInfo.fs"
+        [ 
+        Attribute.Version versionAssembly 
+        Attribute.FileVersion versionFile
+        Attribute.InformationalVersion versionInfo
+        ]
 )
 
 Target "Build" (fun _ ->
@@ -71,6 +77,7 @@ Target "SourceLink" (fun _ ->
     #else
     !! "Tfs/Tfs.fsproj" 
     ++ "SourceLink/SourceLink.fsproj"
+    ++ "Git/Git.fsproj"
     |> Seq.iter (fun f ->
         let proj = VsProj.LoadRelease f
         logfn "source linking %s" proj.OutputFilePdb
