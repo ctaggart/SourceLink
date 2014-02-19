@@ -8,16 +8,23 @@ open Fake
 open Fake.AssemblyInfoFile
 open SourceLink
 
-let cfg = getBuildConfig __SOURCE_DIRECTORY__
-let repo = new GitRepo(__SOURCE_DIRECTORY__)
 let dt = DateTime.UtcNow
+let cfg = getBuildConfig __SOURCE_DIRECTORY__
+let revision =
+    #if MONO
+    ""
+    #else
+    use repo = new GitRepo(__SOURCE_DIRECTORY__)
+    repo.Revision
+    #endif
+let revision8 = if revision = "" then "" else "-"+revision.Substring(0,8)
 
 let versionAssembly = cfg.AppSettings.["versionAssembly"].Value // change when incompatible
 let versionFile = cfg.AppSettings.["versionFile"].Value // matches nuget version
 let prerelease =
     if hasBuildParam "prerelease" then getBuildParam "prerelease"
-    else sprintf "a%s-%s" (dt.ToString "yyMMddHHmm") (repo.Revision.Substring(0,8)) // 20 char limit
-let versionInfo = sprintf "%s %s %s" versionAssembly (dt.ToString "yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'") repo.Revision
+    else sprintf "a%s%s" (dt.ToString "yyMMddHHmm") revision8 // 20 char limit
+let versionInfo = sprintf "%s %s %s" versionAssembly (dt.ToString "yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'") revision
 let buildVersion = if String.IsNullOrEmpty prerelease then versionFile else sprintf "%s-%s" versionFile prerelease
 
 Target "Clean" (fun _ -> 
@@ -79,6 +86,7 @@ Target "SourceLink" (fun _ ->
     ++ "SourceLink/SourceLink.fsproj"
     ++ "Git/Git.fsproj"
     |> Seq.iter (fun f ->
+        use repo = new GitRepo(__SOURCE_DIRECTORY__)
         let proj = VsProj.LoadRelease f
         logfn "source linking %s" proj.OutputFilePdb
         let files = proj.Compiles -- "**/AssemblyInfo.fs"
