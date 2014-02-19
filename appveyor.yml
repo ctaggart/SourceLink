@@ -1,2 +1,2 @@
-build=script:
+build_script:
   - ps: .\build.cmd
