@@ -12,7 +12,7 @@ type VsProj = Project // abbreviation
 type Project with
     static member Load (proj:string) globalProps =
         let pc = new ProjectCollection()
-        Project(proj, globalProps |> Dictionary.ofTuples, null, pc)
+        Project(proj, globalProps |> Dictionary<_,_>.ofTuples, null, pc)
     static member LoadRelease proj = Project.Load proj ["Configuration","Release"]
 
     /// full path for all "Compile" items
