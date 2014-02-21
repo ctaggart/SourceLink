@@ -11,12 +11,8 @@ open SourceLink
 let dt = DateTime.UtcNow
 let cfg = getBuildConfig __SOURCE_DIRECTORY__
 let revision =
-    #if MONO
-    ""
-    #else
     use repo = new GitRepo(__SOURCE_DIRECTORY__)
     repo.Revision
-    #endif
 let revision8 = if revision = "" then "" else "-"+revision.Substring(0,8)
 
 let versionAssembly = cfg.AppSettings.["versionAssembly"].Value // change when incompatible
@@ -26,6 +22,52 @@ let prerelease =
     else sprintf "a%s%s" (dt.ToString "yyMMddHHmm") revision8 // 20 char limit
 let versionInfo = sprintf "%s %s %s" versionAssembly (dt.ToString "yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'") revision
 let buildVersion = if String.IsNullOrEmpty prerelease then versionFile else sprintf "%s-%s" versionFile prerelease
+
+let isAppVeyorBuild = environVar "APPVEYOR" <> null
+
+/// http://www.appveyor.com/docs2/environment-variables
+type AppVeyorEnv =
+    static member ApiUrl = environVar "APPVEYOR_API_URL"
+    static member ProjectId = environVar "APPVEYOR_PROJECT_ID"
+    static member ProjectName = environVar "APPVEYOR_PROJECT_NAME"
+    static member ProjectSlug = environVar "APPVEYOR_PROJECT_SLUG"
+    static member BuildFolder = environVar "APPVEYOR_BUILD_FOLDER"
+    static member BuildId = environVar "APPVEYOR_BUILD_ID"
+    static member BuildNumber = environVar "APPVEYOR_BUILD_NUMBER"
+    static member BuildVersion = environVar "APPVEYOR_BUILD_VERSION"
+    static member JobId = environVar "APPVEYOR_JOB_ID"
+    static member RepoProvider = environVar "APPVEYOR_REPO_PROVIDER"
+    static member RepoScm = environVar "APPVEYOR_REPO_SCM"
+    static member RepoName = environVar "APPVEYOR_REPO_NAME"
+    static member RepoBranch = environVar "APPVEYOR_REPO_BRANCH"
+    static member RepoCommit = environVar "APPVEYOR_REPO_COMMIT"
+    static member RepoCommitAuthor = environVar "APPVEYOR_REPO_COMMIT_AUTHOR"
+    static member RepoCommitAuthorEmail = environVar "APPVEYOR_REPO_COMMIT_AUTHOR_EMAIL"
+    static member RepoCommitTimestamp = environVar "APPVEYOR_REPO_COMMIT_TIMESTAMP"
+    static member RepoCommitMessage = environVar "APPVEYOR_REPO_COMMIT_MESSAGE"
+
+Target "AppVeyor" (fun _ ->
+    logfn "APPVEYOR: %s" (environVar "APPVEYOR")
+    logfn "CI: %s" (environVar "CI")
+    logfn "ApiUrl: %s" AppVeyorEnv.ApiUrl
+    logfn "ProjectId: %s" AppVeyorEnv.ProjectId
+    logfn "ProjectName: %s" AppVeyorEnv.ProjectName
+    logfn "ProjectSlug: %s" AppVeyorEnv.ProjectSlug
+    logfn "BuildFolder: %s" AppVeyorEnv.BuildFolder
+    logfn "BuildId: %s" AppVeyorEnv.BuildId
+    logfn "BuildNumber: %s" AppVeyorEnv.BuildNumber
+    logfn "BuildVersion: %s" AppVeyorEnv.BuildVersion
+    logfn "JobId: %s" AppVeyorEnv.JobId
+    logfn "RepoProvider: %s" AppVeyorEnv.RepoProvider
+    logfn "RepoScm: %s" AppVeyorEnv.RepoScm
+    logfn "RepoName: %s" AppVeyorEnv.RepoName
+    logfn "RepoBranch: %s" AppVeyorEnv.RepoBranch
+    logfn "RepoCommit: %s" AppVeyorEnv.RepoCommit
+    logfn "RepoCommitAuthor: %s" AppVeyorEnv.RepoCommitAuthor
+    logfn "RepoCommitAuthorEmail: %s" AppVeyorEnv.RepoCommitAuthorEmail
+    logfn "RepoCommitTimestamp: %s" AppVeyorEnv.RepoCommitTimestamp
+    logfn "RepoCommitMessage: %s" AppVeyorEnv.RepoCommitMessage
+)
 
 Target "Clean" (fun _ -> 
     !! "**/bin/"
@@ -71,17 +113,10 @@ Target "AssemblyInfo" (fun _ ->
 )
 
 Target "Build" (fun _ ->
-    #if MONO
-    !! "SourceLink/SourceLink.fsproj" |> MSBuildRelease "" "Rebuild" |> ignore
-    #else
     !! "SourceLink.sln" |> MSBuildRelease "" "Rebuild" |> ignore
-    #endif
 )
 
 Target "SourceLink" (fun _ ->
-    #if MONO
-    ()
-    #else
     !! "Tfs/Tfs.fsproj" 
     ++ "SourceLink/SourceLink.fsproj"
     ++ "Git/Git.fsproj"
@@ -95,7 +130,6 @@ Target "SourceLink" (fun _ ->
         proj.CreateSrcSrv "https://raw.github.com/ctaggart/SourceLink/{0}/%var2%" repo.Revision (repo.Paths files)
         Pdbstr.exec proj.OutputFilePdb proj.OutputFilePdbSrcSrv
     )
-    #endif
 )
 
 Target "NuGet" (fun _ ->
@@ -140,6 +174,7 @@ Target "NuGet" (fun _ ->
 )
 
 "Clean"
+    =?> ("AppVeyor", isAppVeyorBuild)
     =?> ("BuildNumber", isTfsBuild)
     ==> "AssemblyInfo"
     ==> "Build"
