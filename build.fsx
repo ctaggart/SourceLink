@@ -80,6 +80,14 @@ Target "BuildNumber" (fun _ ->
 )
 
 Target "BuildVersion" (fun _ ->
+    logfn "cmd /c where where"
+    let rv = Shell.Exec("cmd", "/c where where")
+    logfn "  rv: %d" rv
+
+    logfn "cmd /c where appveyor"
+    let rv = Shell.Exec("cmd", "/c where appveyor")
+    logfn "  rv: %d" rv
+
     let args = sprintf "UpdateBuild -Version \"%s\"" buildVersion
     let rv = Shell.Exec("appveyor", args)
     logfn "appveyor %s, exit code %d" args rv
