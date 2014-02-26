@@ -47,8 +47,6 @@ type AppVeyorEnv =
     static member RepoCommitMessage = environVar "APPVEYOR_REPO_COMMIT_MESSAGE"
 
 Target "AppVeyor" (fun _ ->
-    logfn "APPVEYOR: %s" (environVar "APPVEYOR")
-    logfn "CI: %s" (environVar "CI")
     logfn "ApiUrl: %s" AppVeyorEnv.ApiUrl
     logfn "ProjectId: %s" AppVeyorEnv.ProjectId
     logfn "ProjectName: %s" AppVeyorEnv.ProjectName
@@ -76,13 +74,13 @@ Target "Clean" (fun _ ->
 )
 
 Target "BuildNumber" (fun _ ->
-    #if MONO
-    ()
-    #else
     use tb = getTfsBuild()
     tb.Build.BuildNumber <- sprintf "SourceLink.%s" buildVersion
     tb.Build.Save()
-    #endif
+)
+
+Target "BuildVersion" (fun _ ->
+    Shell.Exec("appveyor", sprintf "UpdateBuild -Version %s" buildVersion) |> ignore
 )
 
 Target "AssemblyInfo" (fun _ ->
@@ -176,6 +174,7 @@ Target "NuGet" (fun _ ->
 "Clean"
     =?> ("AppVeyor", isAppVeyorBuild)
     =?> ("BuildNumber", isTfsBuild)
+    =?> ("BuildVersion", isAppVeyorBuild)
     ==> "AssemblyInfo"
     ==> "Build"
     =?> ("SourceLink", isMono = false && hasBuildParam "skipSourceLink" = false)
