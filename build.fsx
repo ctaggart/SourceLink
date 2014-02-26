@@ -80,7 +80,7 @@ Target "BuildNumber" (fun _ ->
 )
 
 Target "BuildVersion" (fun _ ->
-    let args = sprintf "UpdateBuild -Version %s" buildVersion
+    let args = sprintf "UpdateBuild -Version \"%s\"" buildVersion
     let rv = Shell.Exec("appveyor", args)
     logfn "appveyor %s, exit code %d" args rv
 )
