@@ -27,14 +27,18 @@ type PeInfo() =
     member val Pdb = String.Empty with set, get
 
 let readPeInfo (file:string) =
-    let m = ModuleDefinition.ReadModule file
-    let header, bytes = m.GetDebugHeader()
     let pi = PeInfo()
     pi.File <- file
-    pi.DateTime <- unixEpoch.AddSeconds (double header.TimeDateStamp)
-    let rsds = toString bytes.[0..3]
-    if rsds = "RSDS" then
-        pi.Guid <- Guid bytes.[4..19]
-        pi.Age <- BitConverter.ToUInt32(bytes, 20)
-        pi.Pdb <- (toString bytes.[24..]).TrimEnd [|(char)0uy|]
+    try
+        let m = ModuleDefinition.ReadModule file
+        if m.HasDebugHeader then
+            let header, bytes = m.GetDebugHeader()
+            pi.DateTime <- unixEpoch.AddSeconds (double header.TimeDateStamp)
+            let rsds = toString bytes.[0..3]
+            if rsds = "RSDS" then
+                pi.Guid <- Guid bytes.[4..19]
+                pi.Age <- BitConverter.ToUInt32(bytes, 20)
+                pi.Pdb <- (toString bytes.[24..]).TrimEnd [|(char)0uy|]
+    with
+        | :? BadImageFormatException -> ()
     pi
