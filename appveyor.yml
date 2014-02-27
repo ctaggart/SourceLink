@@ -1,5 +1,5 @@
 build_script:
-  - ps: .\build.cmd
+  - cmd: build.cmd %fakeargs%
 test: off
 artifacts:
   - path: bin\*.nupkg
