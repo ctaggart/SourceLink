@@ -10,3 +10,5 @@
 
 # Normalize to LF in the repository and working directory. Do not leave merge conflict markers in the files.
 * text=auto eol=lf merge=union
+# Visual Studio can read LF sln files, but it always writes them as CRLF.
+*.sln text eol=crlf

@@ -3,5 +3,3 @@ build_script:
 test: off
 artifacts:
   - path: bin\*.nupkg
-environment:
-  fakeargs: clean
