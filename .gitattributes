@@ -1,7 +1,12 @@
-*        text=auto
-*.cs     text eol=lf diff=csharp
-*.fs     text eol=lf
-*.sln    text eol=crlf merge=union
-*.csproj text merge=union
-*.fsproj text merge=union
-*.sh     text eol=lf
+# git help gitattributes
+# text=auto
+#   When text is set to "auto", the path is marked for automatic end-of-line normalization.
+#   If Git decides that the content is text, its line endings are normalized to LF on checkin.
+# eol=lf
+#   This attribute sets a specific line-ending style to be used in the working directory.
+# git help merge-file
+# merge=union
+#   Instead of leaving conflicts in the file, resolve conflicts favouring our (or their or both) side of the lines.
+
+# Normalize to LF in the repository and working directory. Do not leave merge conflict markers in the files.
+* text=auto eol=lf merge=union
