@@ -1,4 +1,4 @@
-﻿#r "bin\Release\LibGit2Sharp.dll"
+﻿#r "../packages/LibGit2Sharp.0.15.0.0/lib/net35/LibGit2Sharp.dll"
 
 open LibGit2Sharp
 

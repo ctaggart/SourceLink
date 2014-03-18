@@ -5,8 +5,6 @@ open System.Text
 open SourceLink
 open SourceLink.PdbModify
 open SourceLink.SrcSrv
-open Microsoft.Dia
-open SourceLink.Dia
 
 let pagesToString (pages:int[]) =
     let sb = StringBuilder()
@@ -163,22 +161,6 @@ let diffInfoStreams a b =
             printfn "b has flag %d for %s" i pn.Name
 
     printfn "done compairing info streams"
-
-let printDia file =
-    let sn = openPdb file
-    let gs = sn.globalScope
-    printfn "%A %d" gs.guid gs.age
-
-    let sfs = sn.getTables().SourceFiles
-    printfn "# of source files %d" sfs.count
-    
-    for sf in sfs.toSeq() do
-        printfn "%d %s" sf.uniqueId sf.fileName
-//        for sym in sf.compilands.toSeq() do
-//            printfn "  %s" sym.name
-//    
-//    for ds in sn.getSeqDebugStreams() do
-//        printfn "%A %d" ds.name ds.count
 
 let printSrcSrv file = 
     for line in PdbFile.ReadSrcSrvLines file do

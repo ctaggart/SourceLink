@@ -6,13 +6,12 @@ open Microsoft.Dia
 //let unixEpoch = DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)
 //let fromUnixEpoch (seconds:uint32) = unixEpoch.AddSeconds (double seconds)
 
-let openPdb file =
-    let ds = DiaSourceClass()
-    ds.loadDataFromPdb file
-    ds.openSession()
-
 type IDiaSession with
-    member x.getSeqTables() =
+    static member Open file =
+        let ds = DiaSourceClass() // IDiaDataSource
+        ds.loadDataFromPdb file
+        ds.openSession()
+    member x.SeqTables() =
         seq {
             let tables = x.getEnumTables()
             let table = ref Unchecked.defaultof<IDiaTable>
@@ -22,7 +21,7 @@ type IDiaSession with
                 if !celt = 1u then
                     yield !table
         }
-    member x.getSeqDebugStreams() =
+    member x.SeqDebugStreams() =
         seq {
             let streams = x.getEnumDebugStreams()
             let stream = ref Unchecked.defaultof<IDiaEnumDebugStreamData>
@@ -34,7 +33,7 @@ type IDiaSession with
         }
 
 type DiaTables(sn:IDiaSession) =
-    let map = sn.getSeqTables() |> Seq.map (fun t -> t.name, t) |> Map.ofSeq
+    let map = sn.SeqTables() |> Seq.map (fun t -> t.name, t) |> Map.ofSeq
     member x.Symbols = map.["Symbols"] :?> IDiaEnumSymbols
     member x.SourceFiles = map.["SourceFiles"] :?> IDiaEnumSourceFiles
     member x.LineNumbers  = map.["LineNumbers "] :?> IDiaEnumLineNumbers 
@@ -44,10 +43,10 @@ type DiaTables(sn:IDiaSession) =
 //    member x.StackFrames = map.["FrameData"] :?> IDiaEnumStackFrames
 
 type IDiaSession with
-    member x.getTables() = DiaTables(x)
+    member x.Tables with get() = DiaTables x
 
 type IDiaEnumSourceFiles with
-    member x.toSeq() =
+    member x.Seq() =
         seq {
             let sf = ref Unchecked.defaultof<IDiaSourceFile>
             let celt = ref 1u
@@ -61,7 +60,7 @@ type IDiaEnumSourceFiles with
 //    member x.DateTime with get() = fromUnixEpoch x.timeStamp
 
 type IDiaEnumSymbols with
-    member x.toSeq() =
+    member x.Seq() =
         seq {
             let sym = ref Unchecked.defaultof<IDiaSymbol>
             let celt = ref 1u
