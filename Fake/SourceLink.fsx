@@ -54,6 +54,5 @@ type Pdbstr with
     static member exec pdb srcsrv =
         let exe = Pdbstr.tryFind()
         if exe.IsNone then
-//            Ex.failwithf "unable to find pdbstr.exe"
-            logfn "pdbstr.exe not found, install Debugging Tools for Windows"
+            failwith "pdbstr.exe not found, install Debugging Tools for Windows"
         Pdbstr.execWith exe.Value pdb srcsrv
