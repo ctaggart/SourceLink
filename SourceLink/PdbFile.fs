@@ -58,7 +58,7 @@ type PdbFile(path) =
 
     // read root stream
     let readRoot streamRoot =
-        let root = PdbRoot()
+        let root = PdbRoot streamRoot
         use brDirectory = streamReader streamRoot
         let streamCount = brDirectory.ReadInt32()
         if streamCount <> 0x0131CA0B then
@@ -159,7 +159,6 @@ type PdbFile(path) =
     member x.HasSrcSrv with get() = info.NameToPdbName.ContainsKey srcsrv
     member x.SrcSrv with get() = info.NameToPdbName.[srcsrv].Stream
     member x.RootPage with get() = rootPage
-    member x.RootPdbStream with get() = rootPdbStream
     member x.Root with get() = root
     member x.Stream0 with get() = readRoot root.Streams.[0]
     member x.PagesFree with get() = pagesFree
@@ -226,7 +225,7 @@ type PdbFile(path) =
             let used = SortedSet<int>()
             let add page = used.Add page |> ignore
             add x.RootPage
-            for page in x.RootPdbStream.Pages do
+            for page in x.Root.Stream.Pages do
                 add page
             for stream in x.Root.Streams do
                 for page in stream.Pages do
@@ -241,7 +240,7 @@ type PdbFile(path) =
     /// frees info stream, root stream
     member x.FreeInfo() =
         x.FreePages x.OrphanedPages
-        x.FreePages x.RootPdbStream.Pages // free root
+        x.FreePages x.Root.Stream.Pages // free root
         x.FreeStream 1 // free info
         x.FreeStream 0
 
@@ -256,7 +255,7 @@ type PdbFile(path) =
         let rootPage = x.WriteRootPage rootPageBytes
         x.WriteHeader rootPdbStream.ByteCount rootPage
 
-    member x.WriteSrcSrv bytes =
+    member x.WriteSrcSrvBytes bytes =
         if x.HasSrcSrv then
             x.FreeStream x.SrcSrv
             x.WriteToStream x.SrcSrv bytes
@@ -287,24 +286,46 @@ type PdbFile(path) =
         x.TrimEnd()
         x.SaveInfo()
 
-    static member WriteSrcSrvBytesTo bytes toFile =
-        use pdb = new PdbFile(toFile)
-        pdb.FreeInfo()
-        pdb.WriteSrcSrv bytes
-        pdb.Info.Age <- pdb.Info.Age + 1
-        pdb.SaveInfo()
+    member x.ReadSrcSrvBytes() =
+        if x.HasSrcSrv then x.ReadStreamBytes x.SrcSrv else [||]
 
-    static member WriteSrcSrvFileTo file toFile =
-        PdbFile.WriteSrcSrvBytesTo (File.ReadAllBytes file) toFile
+    member x.ReadSrcSrv srcsrvFile =
+        use fs = File.OpenWrite srcsrvFile
+        fs.WriteBytes (x.ReadSrcSrvBytes())
 
-    static member ReadSrcSrvBytes file = 
-        use pdb = new PdbFile(file)
-        if pdb.HasSrcSrv then pdb.ReadStreamBytes pdb.SrcSrv else [||]
+    member x.ReadSrcSrvLines() =
+        if x.HasSrcSrv then x.ReadStreamBytes x.SrcSrv |> StreamReader.ReadLines else [||]
 
-    static member ReadSrcSrvLines file =
-        use pdb = new PdbFile(file)
-        if pdb.HasSrcSrv then pdb.ReadStreamBytes pdb.SrcSrv |> StreamReader.ReadLines else [||]
-         
+    member x.WriteSrcSrvBytes srcsrvBytes =
+        x.FreeInfo()
+        x.WriteSrcSrvBytes srcsrvBytes
+        x.Info.Age <- x.Info.Age + 1
+        x.SaveInfo()
+
+    member x.WriteSrcSrv srcsrvFile =
+        x.WriteSrcSrvBytes (File.ReadAllBytes srcsrvFile)
+
+    static member readSrcSrvBytes pdbFile = 
+        use pdb = new PdbFile(pdbFile)
+        pdb.ReadSrcSrvBytes()
+
+    static member readSrcSrv pdbFile srcsrvFile =
+        use pdb = new PdbFile(pdbFile)
+        pdb.ReadSrcSrv srcsrvFile
+
+    static member readSrcSrvLines pdbFile =
+        use pdb = new PdbFile(pdbFile)
+        pdb.ReadSrcSrvLines()
+
+    static member writeSrcSrvBytes pdbFile srcsrvBytes =
+        use pdb = new PdbFile(pdbFile)
+        pdb.WriteSrcSrvBytes srcsrvBytes
+
+    // same argument order as as Pdbstr.exec
+    static member writeSrcSrv pdbFile srcsrvFile =
+        use pdb = new PdbFile(pdbFile)
+        pdb.WriteSrcSrvBytes srcsrvFile
+
     /// The raw URL to get the source code.
     /// It becomes the SRVSRVTRG, the source server target.
     /// {0} will be substituted with the revision.

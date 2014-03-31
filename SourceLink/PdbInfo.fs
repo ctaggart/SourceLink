@@ -8,7 +8,9 @@ type PdbStream() =
     member val Pages = Array.create 0 0 with set, get
 
 // data in the root stream
-type PdbRoot() =
+type PdbRoot(stream:PdbStream) =
+    /// PdbStream used for reading the PdbRoot
+    member x.Stream with get() = stream
     member val Streams = List<PdbStream>() with set, get
     member x.AddStream (pdbStream:PdbStream) =
         x.Streams.Add pdbStream

@@ -23,14 +23,6 @@ module SrcSrv =
         sw.Flush()
         ms.ToArray()
 
-    // TODO bug https://github.com/ctaggart/SourceLink/issues/6
-    /// writes the srcsrv file to the pdb without using pdbstr.exe
-    let write pdb srcsrv =
-        use pdb = new PdbFile(pdb)
-        pdb.FreeInfo()
-        pdb.WriteSrcSrv(File.ReadAllBytes srcsrv)
-        pdb.Info.Age <- pdb.Info.Age + 1
-        pdb.SaveInfo()
 
 [<AutoOpen>]
 module PdbFileCreateSrcSrv =

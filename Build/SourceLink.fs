@@ -41,7 +41,7 @@ type SourceLink() =
                             x.Error "cannot find %s with checksum of %s" file checksum
                     if x.HasErrors = false then
                         pdb.CreateSrcSrv x.RepoUrl revision (repo.Paths files)
-                SrcSrv.write pdbFile (pdbFile + ".srcsrv")
+                PdbFile.writeSrcSrv pdbFile (pdbFile + ".srcsrv")
             with
             | :? RepositoryNotFoundException as ex -> x.Error "%s" ex.Message
             | :? SourceLinkException as ex -> x.Error "%s" ex.Message

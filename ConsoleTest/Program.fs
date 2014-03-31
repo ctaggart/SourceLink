@@ -16,7 +16,7 @@ let pagesToString (pages:int[]) =
 let printStreamPages file =
     use file = new PdbFile(file)
     printfn "root page is %X" file.RootPage
-    printfn "root stream, %d bytes, %s" file.RootPdbStream.ByteCount (pagesToString file.RootPdbStream.Pages)
+    printfn "root stream, %d bytes, %s" file.Root.Stream.ByteCount (pagesToString file.Root.Stream.Pages)
     let root = file.Root
     for i in 0 .. root.Streams.Count - 1 do
         let s = root.Streams.[i]
@@ -76,8 +76,8 @@ let diffStreamBytes a b =
     use fb = new PdbFile(b)
 
     // root stream
-    let ra = fa.RootPdbStream
-    let rb = fb.RootPdbStream
+    let ra = fa.Root.Stream
+    let rb = fb.Root.Stream
     let rba = fa.ReadPdbStreamBytes ra
     let rbb = fb.ReadPdbStreamBytes rb
     if false = rba.CollectionEquals rbb then
@@ -163,7 +163,7 @@ let diffInfoStreams a b =
     printfn "done compairing info streams"
 
 let printSrcSrv file = 
-    for line in PdbFile.ReadSrcSrvLines file do
+    for line in PdbFile.readSrcSrvLines file do
         printfn "%s" line
 
 let printNamesByStream file =
@@ -185,8 +185,35 @@ let main argv =
 //    printStreamPages pdb
 //    printOrphanedPages pdb
 
-    let pdb = Path.combine __SOURCE_DIRECTORY__ @"..\SourceLink\bin\Release\SourceLink.pdb"
-    let srcsrv = pdb + ".srcsrv"
-    SrcSrv.write pdb srcsrv
+//    let pdb = Path.combine __SOURCE_DIRECTORY__ @"..\SourceLink\bin\Release\SourceLink.pdb"
+//    let srcsrv = pdb + ".srcsrv"
+//    SrcSrv.write pdb srcsrv
+    
+//    let f = Path.combine __SOURCE_DIRECTORY__ @"..\packages\FSharp.Data.2.0.3\lib\net40\FSharp.Data.pdb"
+//    let fsrcsrv = f + ".srcsrv"
+//    let f1 = f + ".1"
+//    let f2 = f + ".2"
+//    let fsrcsrv2 = fsrcsrv + ".2"
 
+//    use pdb = new PdbFile(f)
+//    printfn "# of streams: %d" pdb.Root.Streams.Count
+//    printfn "# of named streams: %d, %d, %d" pdb.Info.StreamToPdbName.Count pdb.Info.FlagIndexToPdbName.Count pdb.Info.NameToPdbName.Count
+//    for pn in pdb.Info.StreamToPdbName.Values do
+//        printfn "%d %s" pn.Stream pn.Name
+//
+//    let s0 = pdb.Stream0 // one less stream, srcsrv
+//    printfn "# of streams s0: %d" s0.Streams.Count
+//    printfn "root %A" pdb.Root.Stream.Pages
+//    printfn "s0 %A" s0.Stream.Pages
+    
+//    let i = ref 0
+//    for s in pdb.Root.Streams do
+//        printfn "%3d %A" !i s.Pages        
+//        incr i
+//    printfn "OrphanedPages: %A" pdb.OrphanedPages
+
+//    PdbFile.writeSrcSrv f fsrcsrv
+//    File.copy f1 f
+//    PdbFile.writeSrcSrvFileTo fsrcsrv f
+//    diffInfoStreams f f2
     0
