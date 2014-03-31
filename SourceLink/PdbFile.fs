@@ -324,7 +324,7 @@ type PdbFile(path) =
     // same argument order as as Pdbstr.exec
     static member writeSrcSrv pdbFile srcsrvFile =
         use pdb = new PdbFile(pdbFile)
-        pdb.WriteSrcSrvBytes srcsrvFile
+        pdb.WriteSrcSrv srcsrvFile
 
     /// The raw URL to get the source code.
     /// It becomes the SRVSRVTRG, the source server target.
