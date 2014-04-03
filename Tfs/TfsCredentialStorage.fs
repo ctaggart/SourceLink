@@ -8,8 +8,10 @@ open Microsoft.TeamFoundation.Client
 
 type TfsClientCredentialStorage with
     static member TokenAsString (token:IssuedToken) =
-        let m = typeof<TfsClientCredentialStorage>.GetMethod("GetTokenAsString", BindingFlags.NonPublic ||| BindingFlags.Static ||| BindingFlags.DeclaredOnly)
-        m.Invoke(null, [| token |]) :?> string
+        if token = null then ""
+        else
+            let m = typeof<TfsClientCredentialStorage>.GetMethod("GetTokenAsString", BindingFlags.NonPublic ||| BindingFlags.Static ||| BindingFlags.DeclaredOnly)
+            m.Invoke(null, [| token |]) :?> string
 
     static member TokenFromString (credentialType:VssCredentialsType) (tokenValue:string) =
         let m = typeof<TfsClientCredentialStorage>.GetMethod("GetTokenFromString", BindingFlags.NonPublic ||| BindingFlags.Static ||| BindingFlags.DeclaredOnly)
