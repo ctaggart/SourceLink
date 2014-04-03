@@ -24,7 +24,7 @@
     </Sequence.Variables>
     <mtbwa:AgentScope mtbwt:BuildTrackingParticipant.Importance="Low">
       <mtbac:InitializeEnvironment mtbwt:BuildTrackingParticipant.Importance="Low" />
-      <mtbac:GetEnvironmentVariable x:TypeArguments="x:String" Name="SourcesDirectory" Result="[SourcesDirectory]" />
+      <mtbac:GetEnvironmentVariable mtbwt:BuildTrackingParticipant.Importance="Low" x:TypeArguments="x:String" Name="SourcesDirectory" Result="[SourcesDirectory]" />
       <mtbag:GitPull DisplayName="Git Pull" CleanRepository="[True]" />
       <sourcelink:Process DisplayName="NuGet Install FAKE" FileName="NuGet.exe" Arguments="install FAKE -OutputDirectory packages -ExcludeVersion" WorkingDirectory="[SourcesDirectory]" />
       <sourcelink:Process DisplayName="NuGet Install SourceLink.Fake" FileName="NuGet.exe" Arguments="install SourceLink.Fake -OutputDirectory packages -ExcludeVersion" WorkingDirectory="[SourcesDirectory]" />
