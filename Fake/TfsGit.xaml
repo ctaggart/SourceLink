@@ -1,0 +1,37 @@
+﻿<Activity
+  xmlns:sourcelink="clr-namespace:SourceLink.Activities;assembly=SourceLink.Tfs"
+  xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:mtbwa="clr-namespace:Microsoft.TeamFoundation.Build.Workflow.Activities;assembly=Microsoft.TeamFoundation.Build.Workflow"
+  xmlns:mtbwt="clr-namespace:Microsoft.TeamFoundation.Build.Workflow.Tracking;assembly=Microsoft.TeamFoundation.Build.Workflow"
+  xmlns:mtbac="clr-namespace:Microsoft.TeamFoundation.Build.Activities.Core;assembly=Microsoft.TeamFoundation.Build.Activities"
+  xmlns:mtbag="clr-namespace:Microsoft.TeamFoundation.Build.Activities.Git;assembly=Microsoft.TeamFoundation.Build.Activities"
+  xmlns:mtbw="clr-namespace:Microsoft.TeamFoundation.Build.Workflow;assembly=Microsoft.TeamFoundation.Build.Workflow"
+  xmlns:this="clr-namespace:TfsBuild"
+  x:Class="TfsBuild.Process">
+  <x:Members>
+    <x:Property Name="Metadata" Type="mtbw:ProcessParameterMetadataCollection" />
+    <x:Property Name="MSBuildArguments" Type="InArgument(x:String)" />
+  </x:Members>
+  <this:Process.Metadata>
+    <mtbw:ProcessParameterMetadataCollection>
+      <mtbw:ProcessParameterMetadata BrowsableWhen="Always" Category="Build" DisplayName="MSBuild arguments" Description="These arguments will be passed to FAKE instead." ParameterName="MSBuildArguments" />
+    </mtbw:ProcessParameterMetadataCollection>
+  </this:Process.Metadata>
+  <Sequence mtbwt:BuildTrackingParticipant.Importance="Low">
+    <Sequence.Variables>
+      <Variable x:TypeArguments="x:String" Name="SourcesDirectory" />
+    </Sequence.Variables>
+    <mtbwa:AgentScope mtbwt:BuildTrackingParticipant.Importance="Low">
+      <mtbac:InitializeEnvironment mtbwt:BuildTrackingParticipant.Importance="Low" />
+      <mtbac:GetEnvironmentVariable x:TypeArguments="x:String" Name="SourcesDirectory" Result="[SourcesDirectory]" />
+      <mtbag:GitPull DisplayName="Git Pull" CleanRepository="[True]" />
+      <sourcelink:Process DisplayName="NuGet Install FAKE" FileName="NuGet.exe" Arguments="install FAKE -OutputDirectory packages -ExcludeVersion" WorkingDirectory="[SourcesDirectory]" />
+      <sourcelink:Process DisplayName="NuGet Install SourceLink.Fake" FileName="NuGet.exe" Arguments="install SourceLink.Fake -OutputDirectory packages -ExcludeVersion" WorkingDirectory="[SourcesDirectory]" />
+      <sourcelink:Process DisplayName="NuGet Restore" FileName="NuGet.exe" Arguments="restore" WorkingDirectory="[SourcesDirectory]" />
+      <sourcelink:Fake DisplayName="FAKE - F# Make" WorkingDirectory="[SourcesDirectory]" />
+      <mtbac:DropBinaries DisplayName="Copy to Drop" />
+      <mtbac:ResetEnvironment DisplayName="Reset the Environment" />
+    </mtbwa:AgentScope>
+  </Sequence>
+</Activity>

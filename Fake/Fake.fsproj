@@ -51,6 +51,9 @@
     <None Include="SourceLink.Tfs.fsx" />
     <None Include="Fake.fsx" />
     <None Include="Fake.nuspec" />
+    <None Include="TfsGit.xaml">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="VsoGit.xaml" />
     <None Include="build.cmd" />
     <None Include="build.sh" />
