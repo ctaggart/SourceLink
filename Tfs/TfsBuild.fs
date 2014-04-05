@@ -14,7 +14,9 @@ type TfsBuild(project:TfsProject, agent:IBuildAgent, build:IBuildDetail) =
 
     // from FAKE scripts
     new(tfsUri:string, tfsUser:string, tfsAgent:string, tfsBuild:string) =
-        let user = tfsUser |> Hex.decode |> Text.Encoding.UTF8.GetString |> TfsUser.FromSimpleWebToken
+        let user =
+            if String.IsNullOrEmpty tfsUser then TfsUser()
+            else tfsUser |> Hex.decode |> Text.Encoding.UTF8.GetString |> TfsUser.FromSimpleWebToken
         let tfs = new Tfs(Uri tfsUri, user.Credentials)
         let bs = tfs.BuildServer
         let agent = tfsAgent |> Uri.from |> bs.GetBuildAgent

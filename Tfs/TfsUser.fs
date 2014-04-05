@@ -6,6 +6,7 @@ open Microsoft.VisualStudio.Services.Common
 open Microsoft.TeamFoundation.Client
 
 type TfsUser(credentials:TfsClientCredentials) =
+    new() = TfsUser(TfsClientCredentials())
     member x.Credentials with get() = credentials
 
     static member VisualStudio
