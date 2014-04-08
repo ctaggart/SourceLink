@@ -11,16 +11,17 @@
     @dependencies@
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="FSharp.Core" />
+      <frameworkAssembly assemblyName="Microsoft.TeamFoundation.Build.Activities" />
       <frameworkAssembly assemblyName="Microsoft.TeamFoundation.Build.Client" />
       <frameworkAssembly assemblyName="Microsoft.TeamFoundation.Build.Workflow" />
       <frameworkAssembly assemblyName="Microsoft.TeamFoundation.Client" />
       <frameworkAssembly assemblyName="Microsoft.TeamFoundation.Common" />
+      <frameworkAssembly assemblyName="Microsoft.TeamFoundation.SourceControl.WebApi" />
       <frameworkAssembly assemblyName="Microsoft.TeamFoundation.TestManagement.Client" />
       <frameworkAssembly assemblyName="Microsoft.TeamFoundation.VersionControl.Client" />
       <frameworkAssembly assemblyName="Microsoft.TeamFoundation.VersionControl.Common" />
       <frameworkAssembly assemblyName="Microsoft.TeamFoundation.WorkItemTracking.Client" />
       <frameworkAssembly assemblyName="Microsoft.VisualStudio.Services.Common" />
-      <frameworkAssembly assemblyName="Microsoft.TeamFoundation.SourceControl.WebApi" />
       <frameworkAssembly assemblyName="System.Activities" />
       <frameworkAssembly assemblyName="System.Net.Http" />
       <frameworkAssembly assemblyName="System.Xml" />

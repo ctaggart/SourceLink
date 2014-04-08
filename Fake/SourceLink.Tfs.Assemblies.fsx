@@ -1,5 +1,6 @@
 ﻿#r "System.Net.Http"
 #r "System.Activities"
+#r "Microsoft.TeamFoundation.Build.Activities"
 #r "Microsoft.TeamFoundation.Build.Client"
 #r "Microsoft.TeamFoundation.Build.Workflow"
 #r "Microsoft.TeamFoundation.Client"

@@ -15,7 +15,6 @@ type Fake() =
         if dirs.Length = 0 then None
         else dirs.[dirs.Length-1] |> Some
 
-    [<RequiredArgument>]
     member val WorkingDirectory = InArgument<string>() with get, set
     member val FileName = InArgument<string>() with get, set
     member val BuildFsx = InArgument<string>() with get, set
@@ -29,7 +28,9 @@ type Fake() =
     override x.Execute(context:CodeActivityContext) : unit =
         use tb = new TfsBuild(context.BuildAgent, context.BuildDetail)
 
-        let workdir = x.WorkingDirectory.Get context
+        let workdir =
+            let wd = x.WorkingDirectory.Get context
+            if String.IsNullOrEmpty wd then context.BuildDirectory else wd
 
         let filename =
             let fn = x.FileName.Get context

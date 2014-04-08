@@ -23,7 +23,7 @@ type Process() =
 
         let workdir =
             let wd = x.WorkingDirectory.Get context
-            if String.IsNullOrEmpty wd then "" else wd
+            if String.IsNullOrEmpty wd then context.BuildDirectory else wd
 
         let filename = x.FileName.Get context
 

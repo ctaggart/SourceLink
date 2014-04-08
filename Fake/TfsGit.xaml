@@ -19,17 +19,13 @@
     </mtbw:ProcessParameterMetadataCollection>
   </this:Process.Metadata>
   <Sequence mtbwt:BuildTrackingParticipant.Importance="Low">
-    <Sequence.Variables>
-      <Variable x:TypeArguments="x:String" Name="SourcesDirectory" />
-    </Sequence.Variables>
     <mtbwa:AgentScope mtbwt:BuildTrackingParticipant.Importance="Low">
       <mtbac:InitializeEnvironment mtbwt:BuildTrackingParticipant.Importance="Low" />
-      <mtbac:GetEnvironmentVariable mtbwt:BuildTrackingParticipant.Importance="Low" x:TypeArguments="x:String" Name="SourcesDirectory" Result="[SourcesDirectory]" />
       <mtbag:GitPull DisplayName="Git Pull" CleanRepository="[True]" />
-      <sourcelink:Process DisplayName="NuGet Install FAKE" FileName="NuGet.exe" Arguments="install FAKE -OutputDirectory packages -ExcludeVersion" WorkingDirectory="[SourcesDirectory]" />
-      <sourcelink:Process DisplayName="NuGet Install SourceLink.Fake" FileName="NuGet.exe" Arguments="install SourceLink.Fake -OutputDirectory packages -ExcludeVersion" WorkingDirectory="[SourcesDirectory]" />
-      <sourcelink:Process DisplayName="NuGet Restore" FileName="NuGet.exe" Arguments="restore" WorkingDirectory="[SourcesDirectory]" />
-      <sourcelink:Fake DisplayName="FAKE - F# Make" WorkingDirectory="[SourcesDirectory]" />
+      <sourcelink:Process DisplayName="NuGet Install FAKE" FileName="NuGet.exe" Arguments="install FAKE -OutputDirectory packages -ExcludeVersion" />
+      <sourcelink:Process DisplayName="NuGet Install SourceLink.Fake" FileName="NuGet.exe" Arguments="install SourceLink.Fake -OutputDirectory packages -ExcludeVersion" />
+      <sourcelink:Process DisplayName="NuGet Restore" FileName="NuGet.exe" Arguments="restore" />
+      <sourcelink:Fake DisplayName="FAKE - F# Make" />
       <mtbac:DropBinaries DisplayName="Copy to Drop" />
       <mtbac:ResetEnvironment DisplayName="Reset the Environment" />
     </mtbwa:AgentScope>
