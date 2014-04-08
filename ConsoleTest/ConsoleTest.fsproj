@@ -43,10 +43,6 @@
     <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Private>True</Private>
     </Reference>
-    <Reference Include="FSharp.Data">
-      <HintPath>..\packages\FSharp.Data.2.0.3\lib\net40\FSharp.Data.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="LibGit2Sharp">
       <HintPath>..\packages\LibGit2Sharp.0.15.0.0\lib\net35\LibGit2Sharp.dll</HintPath>
       <Private>True</Private>
@@ -63,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Checksums.fs" />
+    <Compile Include="RootAndInfo.fs" />
     <Compile Include="Program.fs" />
     <None Include="packages.config" />
     <None Include="Git.fsx" />
