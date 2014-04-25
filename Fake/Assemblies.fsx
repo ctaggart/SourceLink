@@ -4,7 +4,7 @@
 #r "System.Configuration"
 
 //#r "../packages/FAKE/tools/FakeLib.dll"
-//#r "../packages/LibGit2Sharp.0.15.0.0/lib/net35/LibGit2Sharp.dll"
+//#r "../packages/LibGit2Sharp.0.17.0.0/lib/net35/LibGit2Sharp.dll"
 //#r "../packages/SourceLink.Fake/tools/SourceLink.dll"
 //#r "../packages/SourceLink.Fake/tools/SourceLink.Git.dll"
 #I __SOURCE_DIRECTORY__

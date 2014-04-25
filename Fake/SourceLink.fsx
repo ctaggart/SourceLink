@@ -4,7 +4,7 @@
 
 #I __SOURCE_DIRECTORY__
 //#r "../packages/FAKE/tools/FakeLib.dll" // in dev
-//#r "../packages/LibGit2Sharp.0.15.0.0/lib/net35/LibGit2Sharp.dll" // in dev
+//#r "../packages/LibGit2Sharp.0.17.0.0/lib/net35/LibGit2Sharp.dll" // in dev
 //#r "../SourceLink/bin/Debug/SourceLink.dll" // in dev
 //#r "../Git/bin/Debug/SourceLink.Git.dll" // in dev
 #r "LibGit2Sharp.dll"

@@ -45,7 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="LibGit2Sharp">
-      <HintPath>..\packages\LibGit2Sharp.0.15.0.0\lib\net35\LibGit2Sharp.dll</HintPath>
+      <HintPath>..\packages\LibGit2Sharp.0.17.0.0\lib\net35\LibGit2Sharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="mscorlib" />
@@ -55,8 +55,6 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\SourceLink\SourceLink.fsproj">
       <Name>SourceLink</Name>
       <Project>{aaf1b8d7-791e-40f1-a278-9a16d9667866}</Project>
