@@ -2,6 +2,7 @@
 #r "System.Activities"
 #r "Microsoft.TeamFoundation.Build.Activities"
 #r "Microsoft.TeamFoundation.Build.Client"
+#r "Microsoft.TeamFoundation.Build.Common"
 #r "Microsoft.TeamFoundation.Build.Workflow"
 #r "Microsoft.TeamFoundation.Client"
 #r "Microsoft.TeamFoundation.Common"
