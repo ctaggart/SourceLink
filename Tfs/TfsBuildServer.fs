@@ -4,6 +4,7 @@ module SourceLink.TfsBuildServer
 open System
 open Microsoft.TeamFoundation.Build.Client
 open Microsoft.TeamFoundation.Build.Workflow
+open Microsoft.TeamFoundation.Build.Common
 
 type IWorkspaceTemplate with
     member x.FirstMapping
@@ -36,3 +37,8 @@ type IBuildDefinition with
 type IBuildDetail with
     /// deserializes the xml of parameters
     member x.GetParameters() = TfsProcessParameters(x.ProcessParameters |> WorkflowHelpers.DeserializeProcessParameters)
+    /// the Git branch and commit, a parsed SourceGetVersion
+    member x.SourceVersionGit 
+        with get() =
+            let _, branch, commit = BuildSourceVersion.TryParseGit x.SourceGetVersion
+            branch, commit
