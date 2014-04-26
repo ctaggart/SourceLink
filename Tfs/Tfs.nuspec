@@ -13,6 +13,7 @@
       <frameworkAssembly assemblyName="FSharp.Core" />
       <frameworkAssembly assemblyName="Microsoft.TeamFoundation.Build.Activities" />
       <frameworkAssembly assemblyName="Microsoft.TeamFoundation.Build.Client" />
+      <frameworkAssembly assemblyName="Microsoft.TeamFoundation.Build.Common" />
       <frameworkAssembly assemblyName="Microsoft.TeamFoundation.Build.Workflow" />
       <frameworkAssembly assemblyName="Microsoft.TeamFoundation.Client" />
       <frameworkAssembly assemblyName="Microsoft.TeamFoundation.Common" />
