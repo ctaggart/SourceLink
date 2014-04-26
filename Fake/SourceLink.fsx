@@ -17,7 +17,7 @@ open Fake
 open SourceLink
 
 let getBuildConfig dir =
-    AppConfig.Get (Path.combine dir "build.config")
+    AppConfig.get (Path.combine dir "build.config")
 
 type Microsoft.Build.Evaluation.Project with
     member x.Compiles : FileIncludes = {

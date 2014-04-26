@@ -42,6 +42,7 @@
     <Compile Include="GitRepo.fs" />
     <Compile Include="AssemblyInfo.fs" />
     <None Include="packages.config" />
+    <None Include="Git.nuspec" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="LibGit2Sharp">

@@ -103,10 +103,7 @@ Target "NuGet" (fun _ ->
         DependenciesByFramework =
         [{ 
             FrameworkVersion = "net45"
-            Dependencies =
-            [
-                "SourceLink", sprintf "[%s]" buildVersion // exact version
-            ]
+            Dependencies = ["SourceLink", sprintf "[%s]" buildVersion] // exact version
         }]
     }) "Tfs/Tfs.nuspec"
 
@@ -123,6 +120,18 @@ Target "NuGet" (fun _ ->
         WorkingDir = "Fake"
         OutputPath = bin
     }) "Fake/Fake.nuspec"
+
+    NuGet (fun p -> 
+    { p with
+        Version = buildVersion
+        WorkingDir = "Git/bin/Release"
+        OutputPath = bin
+        DependenciesByFramework =
+        [{ 
+            FrameworkVersion = "net45"
+            Dependencies = ["LibGit2Sharp", GetPackageVersion "./packages/" "LibGit2Sharp"]
+        }]
+    }) "Git/Git.nuspec"
 )
 
 "Clean"
