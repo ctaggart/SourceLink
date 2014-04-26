@@ -33,6 +33,7 @@ type IBuildDefinition with
     member x.GetParameters() = TfsProcessParameters(x.ProcessParameters |> WorkflowHelpers.DeserializeProcessParameters)
     /// serializes the xml of parameters
     member x.SetParameters (v:TfsProcessParameters) = x.ProcessParameters <- WorkflowHelpers.SerializeProcessParameters v.Dictionary
+    static member sortName (a:IBuildDefinition) (b:IBuildDefinition) = String.cmpi a.Name b.Name
 
 type IBuildDetail with
     /// deserializes the xml of parameters
