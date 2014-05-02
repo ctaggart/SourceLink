@@ -19,7 +19,9 @@ type TfsProject(tfs:Tfs, project:string) =
     new(projectUri:Uri) = new TfsProject(projectUri, TfsUser.VisualStudio)
 
     member x.Tfs with get() = tfs
-    member x.Project with get() = project
+    member x.Name with get() = project
+    member x.Project with get() = tfs.WorkItemStore.Projects.[project]
+    member x.GitRepositories with get() = tfs.GitRepositoryService.QueryRepositories project
     member x.GetBuildDefinitions() = bs.QueryBuildDefinitions project
     member x.CreateBuildDefinition() = bs.CreateBuildDefinition project
     member x.GetBuildDefinition name =

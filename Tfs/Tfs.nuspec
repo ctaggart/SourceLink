@@ -17,12 +17,17 @@
       <frameworkAssembly assemblyName="Microsoft.TeamFoundation.Build.Workflow" />
       <frameworkAssembly assemblyName="Microsoft.TeamFoundation.Client" />
       <frameworkAssembly assemblyName="Microsoft.TeamFoundation.Common" />
+      <frameworkAssembly assemblyName="Microsoft.TeamFoundation.Git.Client" />
+      <frameworkAssembly assemblyName="Microsoft.TeamFoundation.Git.Common" />
       <frameworkAssembly assemblyName="Microsoft.TeamFoundation.SourceControl.WebApi" />
       <frameworkAssembly assemblyName="Microsoft.TeamFoundation.TestManagement.Client" />
+      <frameworkAssembly assemblyName="Microsoft.TeamFoundation.TestManagement.Common" />
       <frameworkAssembly assemblyName="Microsoft.TeamFoundation.VersionControl.Client" />
       <frameworkAssembly assemblyName="Microsoft.TeamFoundation.VersionControl.Common" />
       <frameworkAssembly assemblyName="Microsoft.TeamFoundation.WorkItemTracking.Client" />
+      <frameworkAssembly assemblyName="Microsoft.TeamFoundation.WorkItemTracking.Common" />
       <frameworkAssembly assemblyName="Microsoft.VisualStudio.Services.Common" />
+      <frameworkAssembly assemblyName="Microsoft.VisualStudio.Services.WebApi" />
       <frameworkAssembly assemblyName="System.Activities" />
       <frameworkAssembly assemblyName="System.Net.Http" />
       <frameworkAssembly assemblyName="System.Xml" />

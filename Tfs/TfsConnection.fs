@@ -23,6 +23,7 @@ type TfsConnection with
     member x.AdministrationService with get() = x.GetService<IAdministrationService>()
     member x.GitHttpClient with get() = x.GetClient<SourceControl.WebApi.GitHttpClient>()
     member x.TfvcHttpClient with get() = x.GetClient<SourceControl.WebApi.TfvcHttpClient>()
+    member x.GitRepositoryService with get() = x.GetService<Git.Client.GitRepositoryService>()
 
 type TfsConfigurationServer with
     member x.ProjectCollectionService with get() = x.GetService<ITeamProjectCollectionService>()
@@ -45,9 +46,3 @@ type TfsTeamProjectCollection with
     member x.CommonStructureService3 with get() = x.GetService<Server.ICommonStructureService3>()
     member x.ServerStatusService with get() = x.GetService<Server.IServerStatusService>()
     member x.ProcessTemplates with get() = x.GetService<Server.IProcessTemplates>()
-
-    // not working with TF Service
-    member x.ProjectNames
-        with get() =
-            x.VersionControlServer.GetAllTeamProjects false
-            |> Array.map (fun p -> p.Name)
