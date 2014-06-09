@@ -8,64 +8,63 @@ open Fake
 open Fake.AssemblyInfoFile
 open SourceLink
 
+type MyListener() =
+    interface ITraceListener with
+        member x.Write msg =
+            match msg with
+            | StartMessage -> printfn "StartMessage"
+            | OpenTag(tag,name) -> printfn "OpenTag %s %s" tag name
+            | CloseTag tag -> printfn "CloseTag %s" tag
+            | ImportantMessage text -> printfn "ImportantMessage %s" text
+            | ErrorMessage text -> printfn "ImportantMessage %s" text
+            | LogMessage(text,newLine) -> printfn "LogMessage %s %b" text newLine
+            | TraceMessage(text,newLine) -> printfn "TraceMessage %s %b" text newLine
+            | FinishedMessage -> printfn "FinishedMessage"
+
+listeners.Clear()
+listeners.Add(MyListener())
+MSBuildLoggers <- []
+
 let dt = DateTime.UtcNow
 let cfg = getBuildConfig __SOURCE_DIRECTORY__
 let revision =
     use repo = new GitRepo(__SOURCE_DIRECTORY__)
     repo.Revision
-//let revision8 = if revision = "" then "" else "-"+revision.Substring(0,8)
 
 let versionAssembly = cfg.AppSettings.["versionAssembly"].Value // change when incompatible
 let versionFile = cfg.AppSettings.["versionFile"].Value // matches nuget version
 let prerelease =
     if hasBuildParam "prerelease" then getBuildParam "prerelease"
     else sprintf "ci%s" (dt.ToString "yyMMddHHmm") // 20 char limit
-let versionInfo = sprintf "%s %s %s" versionAssembly (dt.ToString "yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'") revision
+let versionInfo = sprintf "%s %s %s" versionAssembly dt.IsoDateTime revision
 let buildVersion = if String.IsNullOrEmpty prerelease then versionFile else sprintf "%s-%s" versionFile prerelease
 
-let isAppVeyorBuild = environVar "APPVEYOR" <> null
-
-Target "Clean" (fun _ -> 
-    !! "**/bin/"
-    ++ "**/obj/" 
-    |> CleanDirs 
-)
+Target "Clean" (fun _ -> !! "**/bin/" ++ "**/obj/" |> CleanDirs)
 
 Target "BuildVersion" (fun _ ->
     let args = sprintf "UpdateBuild -Version \"%s\"" buildVersion
-    let rv = Shell.Exec("appveyor", args)
-    logfn "appveyor %s, exit code %d" args rv
+    Shell.Exec("appveyor", args) |> ignore
 )
 
 Target "AssemblyInfo" (fun _ ->
-    CreateFSharpAssemblyInfo "SourceLink/AssemblyInfo.fs"
-        [ 
+    let common = [ 
         Attribute.Version versionAssembly 
         Attribute.FileVersion versionFile
-        Attribute.InformationalVersion versionInfo
-        ]
-    CreateFSharpAssemblyInfo "Build/AssemblyInfo.fs"
-        [ 
-        Attribute.Version versionAssembly 
-        Attribute.FileVersion versionFile
-        Attribute.InformationalVersion versionInfo
-        ]
-    CreateFSharpAssemblyInfo "Tfs/AssemblyInfo.fs"
-        [ 
-        Attribute.Version versionAssembly 
-        Attribute.FileVersion versionFile
-        Attribute.InformationalVersion versionInfo
-        ]
-    CreateFSharpAssemblyInfo "Git/AssemblyInfo.fs"
-        [ 
-        Attribute.Version versionAssembly 
-        Attribute.FileVersion versionFile
-        Attribute.InformationalVersion versionInfo
-        ]
+        Attribute.InformationalVersion versionInfo ]
+    common |> CreateFSharpAssemblyInfo "SourceLink/AssemblyInfo.fs"
+    common |> CreateFSharpAssemblyInfo "Build/AssemblyInfo.fs"
+    common |> CreateFSharpAssemblyInfo "Tfs/AssemblyInfo.fs"
+    common |> CreateFSharpAssemblyInfo "Git/AssemblyInfo.fs"
 )
 
 Target "Build" (fun _ ->
-    !! "SourceLink.sln" |> MSBuildRelease "" "Rebuild" |> ignore
+//    !! "SourceLink.sln" |> MSBuildRelease "" "Rebuild" |> ignore
+    MSBuildHelper.build  (fun p ->
+    { p with
+        Targets = ["Rebuild"]
+        Properties = ["Configuration","Release"]
+//      NoConsoleLogger = true
+    }) "SourceLink.sln"
 )
 
 Target "SourceLink" (fun _ ->
@@ -135,7 +134,7 @@ Target "NuGet" (fun _ ->
 )
 
 "Clean"
-    =?> ("BuildVersion", isAppVeyorBuild)
+    =?> ("BuildVersion", buildServer = BuildServer.AppVeyor)
     ==> "AssemblyInfo"
     ==> "Build"
     =?> ("SourceLink", isMono = false && hasBuildParam "skipSourceLink" = false)
