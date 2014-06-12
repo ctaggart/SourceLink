@@ -8,22 +8,22 @@ open Fake
 open Fake.AssemblyInfoFile
 open SourceLink
 
-type MyListener() =
-    interface ITraceListener with
-        member x.Write msg =
-            match msg with
-            | StartMessage -> printfn "StartMessage"
-            | OpenTag(tag,name) -> printfn "OpenTag %s %s" tag name
-            | CloseTag tag -> printfn "CloseTag %s" tag
-            | ImportantMessage text -> printfn "ImportantMessage %s" text
-            | ErrorMessage text -> printfn "ImportantMessage %s" text
-            | LogMessage(text,newLine) -> printfn "LogMessage %s %b" text newLine
-            | TraceMessage(text,newLine) -> printfn "TraceMessage %s %b" text newLine
-            | FinishedMessage -> printfn "FinishedMessage"
+//type MyListener() =
+//    interface ITraceListener with
+//        member x.Write msg =
+//            match msg with
+//            | StartMessage -> printfn "StartMessage"
+//            | OpenTag(tag,name) -> printfn "OpenTag %s %s" tag name
+//            | CloseTag tag -> printfn "CloseTag %s" tag
+//            | ImportantMessage text -> printfn "ImportantMessage %s" text
+//            | ErrorMessage text -> printfn "ImportantMessage %s" text
+//            | LogMessage(text,newLine) -> printfn "LogMessage %s %b" text newLine
+//            | TraceMessage(text,newLine) -> printfn "TraceMessage %s %b" text newLine
+//            | FinishedMessage -> printfn "FinishedMessage"
 
-listeners.Clear()
-listeners.Add(MyListener())
-MSBuildLoggers <- []
+//listeners.Clear()
+//listeners.Add(MyListener())
+//MSBuildLoggers <- []
 
 let dt = DateTime.UtcNow
 let cfg = getBuildConfig __SOURCE_DIRECTORY__
@@ -48,7 +48,7 @@ Target "BuildVersion" (fun _ ->
     if isTfsBuild then
         let tb = getTfsBuild()
         for n in tb.Build.Information.Nodes do
-            printfn "node id: %d %A" n.Id n
+            logfn "node id: %d %A" n.Id n
 
 )
 
