@@ -52,6 +52,7 @@ Target "Tfs" (fun _ ->
     main.AddMessage "this is cool"
     main.AddMessage "this is a number: %d" 7
     main.AddMessage "this is a link to [google](http://google.com/)"
+    bi.Save()
 )
 
 Target "BuildVersion" (fun _ ->
