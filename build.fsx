@@ -41,15 +41,15 @@ let buildVersion = if String.IsNullOrEmpty prerelease then versionFile else spri
 
 Target "Clean" (fun _ -> !! "**/bin/" ++ "**/obj/" |> CleanDirs)
 
+Target "Tfs" (fun _ ->
+    let tb = getTfsBuild()
+    for n in tb.Build.Information.Nodes do
+        logfn "node id: %d %A" n.Id n
+)
+
 Target "BuildVersion" (fun _ ->
     let args = sprintf "UpdateBuild -Version \"%s\"" buildVersion
     Shell.Exec("appveyor", args) |> ignore
-
-    if isTfsBuild then
-        let tb = getTfsBuild()
-        for n in tb.Build.Information.Nodes do
-            logfn "node id: %d %A" n.Id n
-
 )
 
 Target "AssemblyInfo" (fun _ ->
@@ -140,7 +140,8 @@ Target "NuGet" (fun _ ->
 )
 
 "Clean"
-    =?> ("BuildVersion", buildServer = BuildServer.AppVeyor || isTfsBuild)
+    =?> ("Tfs", isTfsBuild)
+    =?> ("BuildVersion", buildServer = BuildServer.AppVeyor)
     ==> "AssemblyInfo"
     ==> "Build"
     =?> ("SourceLink", isMono = false && hasBuildParam "skipSourceLink" = false)
