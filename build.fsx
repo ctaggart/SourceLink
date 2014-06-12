@@ -43,8 +43,15 @@ Target "Clean" (fun _ -> !! "**/bin/" ++ "**/obj/" |> CleanDirs)
 
 Target "Tfs" (fun _ ->
     let tb = getTfsBuild()
-    for n in tb.Build.Information.Nodes do
-        logfn "node id: %d %A" n.Id n
+    let bi = tb.Build.Information
+    logfn "number of build information nodes: %d" bi.Nodes.Length
+//    for n in tb.Build.Information.Nodes do
+//        logfn "node id: %d %A" n.Id n
+    
+    let main = bi.AddSummarySection 1 "1" "The Main Section" 
+    main.AddMessage "this is cool"
+    main.AddMessage "this is a number: %d" 7
+    main.AddMessage "this is a link to [google](http://google.com/)"
 )
 
 Target "BuildVersion" (fun _ ->
