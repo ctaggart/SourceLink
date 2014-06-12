@@ -1,6 +1,6 @@
 #I "packages/FAKE/tools"
 #r "FakeLib.dll"
-#load "packages/SourceLink.Fake/tools/SourceLink.fsx"
+#load "packages/SourceLink.Fake/tools/SourceLink.Tfs.fsx"
 
 open System
 open System.IO
@@ -44,6 +44,12 @@ Target "Clean" (fun _ -> !! "**/bin/" ++ "**/obj/" |> CleanDirs)
 Target "BuildVersion" (fun _ ->
     let args = sprintf "UpdateBuild -Version \"%s\"" buildVersion
     Shell.Exec("appveyor", args) |> ignore
+
+    if isTfsBuild then
+        let tb = getTfsBuild()
+        for n in tb.Build.Information.Nodes do
+            printfn "node id: %d %A" n.Id n
+
 )
 
 Target "AssemblyInfo" (fun _ ->
