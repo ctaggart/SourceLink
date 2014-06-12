@@ -48,7 +48,7 @@ Target "Tfs" (fun _ ->
 //    for n in tb.Build.Information.Nodes do
 //        logfn "node id: %d %A" n.Id n
     
-    let main = bi.AddSummarySection 1 "1" "The Main Section" 
+    let main = bi.AddSummarySection 1 "a1" "The Main Section" 
     main.AddMessage "this is cool"
     main.AddMessage "this is a number: %d" 7
     main.AddMessage "this is a link to [google](http://google.com/)"
