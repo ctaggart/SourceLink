@@ -8,18 +8,18 @@ open Fake
 open Fake.AssemblyInfoFile
 open SourceLink
 
-//type MyListener() =
-//    interface ITraceListener with
-//        member x.Write msg =
-//            match msg with
-//            | StartMessage -> printfn "StartMessage"
-//            | OpenTag(tag,name) -> printfn "OpenTag %s %s" tag name
-//            | CloseTag tag -> printfn "CloseTag %s" tag
-//            | ImportantMessage text -> printfn "ImportantMessage %s" text
-//            | ErrorMessage text -> printfn "ImportantMessage %s" text
-//            | LogMessage(text,newLine) -> printfn "LogMessage %s %b" text newLine
-//            | TraceMessage(text,newLine) -> printfn "TraceMessage %s %b" text newLine
-//            | FinishedMessage -> printfn "FinishedMessage"
+type MyListener() =
+    interface ITraceListener with
+        member x.Write msg =
+            match msg with
+            | StartMessage -> printfn "StartMessage"
+            | OpenTag(tag,name) -> printfn "OpenTag %s %s" tag name
+            | CloseTag tag -> printfn "CloseTag %s" tag
+            | ImportantMessage text -> printfn "ImportantMessage %s" text
+            | ErrorMessage text -> printfn "ImportantMessage %s" text
+            | LogMessage(text,newLine) -> printfn "LogMessage %s %b" text newLine
+            | TraceMessage(text,newLine) -> printfn "TraceMessage %s %b" text newLine
+            | FinishedMessage -> printfn "FinishedMessage"
 
 //listeners.Clear()
 //listeners.Add(MyListener())
@@ -140,7 +140,7 @@ Target "NuGet" (fun _ ->
 )
 
 "Clean"
-    =?> ("BuildVersion", buildServer = BuildServer.AppVeyor)
+    =?> ("BuildVersion", buildServer = BuildServer.AppVeyor || isTfsBuild)
     ==> "AssemblyInfo"
     ==> "Build"
     =?> ("SourceLink", isMono = false && hasBuildParam "skipSourceLink" = false)
