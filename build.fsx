@@ -175,11 +175,13 @@ Target "Summary" (fun _ ->
     let bi = tb.Build.Information
     let st = bi.AddBuildStep("build step a", "message of build step a", DateTime.UtcNow, BuildStepStatus.Succeeded)
     st.FinishTime <- st.StartTime.AddMinutes 2.
-    
-    bi.AddBuildMessage("this is s bm", BuildMessageImportance.High, DateTime.UtcNow) |> ignore
+    st.Node.Children.AddBuildMessage("this is s bm", BuildMessageImportance.High, DateTime.UtcNow) |> ignore
 
     let stB = bi.AddBuildStep("build step b", "message of build step b", DateTime.UtcNow, BuildStepStatus.Unknown)
-    bi.AddBuildMessage("this is another bm for b", BuildMessageImportance.High, DateTime.UtcNow) |> ignore
+    stB.Node.Children.AddBuildMessage("this is another bm for b", BuildMessageImportance.High, DateTime.UtcNow) |> ignore
+    
+
+
 
     bi.Save()
 )
