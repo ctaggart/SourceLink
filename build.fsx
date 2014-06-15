@@ -183,7 +183,7 @@ Target "Summary" (fun _ ->
     =?> ("Tfs", isTfsBuild)
     =?> ("BuildVersion", buildServer = BuildServer.AppVeyor)
     ==> "AssemblyInfo"
-    ==> "Build"
+//    ==> "Build"
     =?> ("SourceLink", isMono = false && hasBuildParam "skipSourceLink" = false)
     ==> "NuGet"
     =?> ("Summary", isTfsBuild)
