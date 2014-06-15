@@ -188,4 +188,4 @@ Target "Summary" (fun _ ->
 //    ==> "NuGet"
     =?> ("Summary", isTfsBuild)
 
-RunTargetOrDefault "NuGet"
+RunTargetOrDefault "Summary"
