@@ -31,18 +31,27 @@ let rec printBuildInfo (bi:IBuildInformation) indent =
 //st.FinishTime <- st.StartTime.AddMinutes 2.
 //bi.Save()
 
-type MyListener() =
+open System.Collections.Generic
+
+type MyListener(root:IBuildInformation) =
+    let mutable step : IBuildStep = null
     interface ITraceListener with
         member x.Write msg =
             match msg with
-            | StartMessage -> printfn "StartMessage"
-            | OpenTag(tag,name) -> printfn "OpenTag %s %s" tag name
-            | CloseTag tag -> printfn "CloseTag %s" tag
-            | ImportantMessage text -> printfn "ImportantMessage %s" text
-            | ErrorMessage text -> printfn "ImportantMessage %s" text
-            | LogMessage(text,newLine) -> printfn "LogMessage %s %b" text newLine
-            | TraceMessage(text,newLine) -> printfn "TraceMessage %s %b" text newLine
-            | FinishedMessage -> printfn "FinishedMessage"
+            | OpenTag(tag,name) -> 
+                root.AddBuildMessage(sprintf "tag: %s, name: %s" tag name, BuildMessageImportance.High, DateTime.UtcNow) |> ignore
+                step <- root.AddBuildStep(tag, name, DateTime.UtcNow, BuildStepStatus.Unknown)
+            | StartMessage -> ()
+            | ImportantMessage text ->
+                step.Node.Children.AddBuildMessage(text, BuildMessageImportance.High, DateTime.UtcNow) |> ignore
+            | LogMessage(text,newLine) ->
+                step.Node.Children.AddBuildMessage(text, BuildMessageImportance.Normal, DateTime.UtcNow) |> ignore
+            | TraceMessage(text,newLine) ->
+                step.Node.Children.AddBuildMessage(text, BuildMessageImportance.Low, DateTime.UtcNow) |> ignore
+            | ErrorMessage text -> 
+                step.Node.Children.AddBuildError(text, DateTime.UtcNow) |> ignore
+            | FinishedMessage -> ()
+            | CloseTag tag -> step.FinishTime <- DateTime.UtcNow
 
 //listeners.Clear()
 //listeners.Add(MyListener())
@@ -65,17 +74,23 @@ let buildVersion = if String.IsNullOrEmpty prerelease then versionFile else spri
 Target "Clean" (fun _ -> !! "**/bin/" ++ "**/obj/" |> CleanDirs)
 
 Target "Tfs" (fun _ ->
+    
     let tb = getTfsBuild()
     let bi = tb.Build.Information
-    logfn "number of build information nodes: %d" bi.Nodes.Length
-//    for n in tb.Build.Information.Nodes do
-//        logfn "node id: %d %A" n.Id n
-    
-    let main = bi.AddSummarySection 1 "a1" "The Main Section" 
-    main.AddMessage "this is cool"
-    main.AddMessage "this is a number: %d" 7
-    main.AddMessage "this is a link to [google](http://google.com/)"
-    bi.Save()
+
+    listeners.Clear()
+    listeners.Add(MyListener(bi))
+
+
+//    logfn "number of build information nodes: %d" bi.Nodes.Length
+////    for n in tb.Build.Information.Nodes do
+////        logfn "node id: %d %A" n.Id n
+//    
+//    let main = bi.AddSummarySection 1 "a1" "The Main Section" 
+//    main.AddMessage "this is cool"
+//    main.AddMessage "this is a number: %d" 7
+//    main.AddMessage "this is a link to [google](http://google.com/)"
+//    bi.Save()
 )
 
 Target "BuildVersion" (fun _ ->
