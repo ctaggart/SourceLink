@@ -8,6 +8,29 @@ open Fake
 open Fake.AssemblyInfoFile
 open SourceLink
 
+
+open Microsoft.TeamFoundation.Build.Client
+
+let rec printBuildInfo (bi:IBuildInformation) indent =
+    bi.Nodes |> Seq.iter (fun n ->
+        printfn "%s%d %s" indent n.Id n.Type
+        for k,v in n.Fields.KeyValues do
+            printfn "%s  %-30s %s" indent k v
+        printBuildInfo n.Children (indent + "  ")
+    )
+
+//// print current buid info
+//let tp = new TfsProject(Uri "https://ctaggart.visualstudio.com/DefaultCollection/TryGit")
+////tp.Tfs.BuildServer.GetBuildDefinitions
+////tp.GetBuildDefinitions()
+//let b = tp.Tfs.BuildServer.GetBuild 364
+//let bi = b.Information
+//printBuildInfo bi ""
+//
+//let st = bi.AddBuildStep("build step a", "message of build step a", DateTime.UtcNow, BuildStepStatus.Succeeded)
+//st.FinishTime <- st.StartTime.AddMinutes 2.
+//bi.Save()
+
 type MyListener() =
     interface ITraceListener with
         member x.Write msg =
@@ -147,6 +170,15 @@ Target "NuGet" (fun _ ->
     }) "Git/Git.nuspec"
 )
 
+Target "Summary" (fun _ ->
+    let tb = getTfsBuild()
+    let bi = tb.Build.Information
+    let st = bi.AddBuildStep("build step a", "message of build step a", DateTime.UtcNow, BuildStepStatus.Succeeded)
+    st.FinishTime <- st.StartTime.AddMinutes 2.
+    bi.Save()
+)
+
+
 "Clean"
     =?> ("Tfs", isTfsBuild)
     =?> ("BuildVersion", buildServer = BuildServer.AppVeyor)
@@ -154,5 +186,6 @@ Target "NuGet" (fun _ ->
     ==> "Build"
     =?> ("SourceLink", isMono = false && hasBuildParam "skipSourceLink" = false)
     ==> "NuGet"
+    =?> ("Summary", isTfsBuild)
 
 RunTargetOrDefault "NuGet"
