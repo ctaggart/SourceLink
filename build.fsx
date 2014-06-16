@@ -34,7 +34,8 @@ let rec printBuildInfo (bi:IBuildInformation) indent =
 open System.Collections.Generic
 
 type MyListener(root:IBuildInformation) =
-    let mutable step : IBuildStep = null
+    let fakeStep = root.AddBuildStep("FAKE", "FAKE Build", DateTime.UtcNow, BuildStepStatus.Unknown)
+    let mutable step = fakeStep
     interface ITraceListener with
         member x.Write msg =
             match msg with
@@ -51,7 +52,9 @@ type MyListener(root:IBuildInformation) =
             | ErrorMessage text -> 
                 step.Node.Children.AddBuildError(text, DateTime.UtcNow) |> ignore
             | FinishedMessage -> ()
-            | CloseTag tag -> step.FinishTime <- DateTime.UtcNow
+            | CloseTag tag -> 
+                step.FinishTime <- DateTime.UtcNow
+                step <- fakeStep
 
 //listeners.Clear()
 //listeners.Add(MyListener())
@@ -71,27 +74,30 @@ let prerelease =
 let versionInfo = sprintf "%s %s %s" versionAssembly dt.IsoDateTime revision
 let buildVersion = if String.IsNullOrEmpty prerelease then versionFile else sprintf "%s-%s" versionFile prerelease
 
-Target "Clean" (fun _ -> !! "**/bin/" ++ "**/obj/" |> CleanDirs)
-
-Target "Tfs" (fun _ ->
-    
+if isTfsBuild then
     let tb = getTfsBuild()
     let bi = tb.Build.Information
-
     listeners.Clear()
     listeners.Add(MyListener(bi))
 
 
-//    logfn "number of build information nodes: %d" bi.Nodes.Length
-////    for n in tb.Build.Information.Nodes do
-////        logfn "node id: %d %A" n.Id n
+Target "Clean" (fun _ -> !! "**/bin/" ++ "**/obj/" |> CleanDirs)
+
+//Target "Tfs" (fun _ ->
 //    
-//    let main = bi.AddSummarySection 1 "a1" "The Main Section" 
-//    main.AddMessage "this is cool"
-//    main.AddMessage "this is a number: %d" 7
-//    main.AddMessage "this is a link to [google](http://google.com/)"
-//    bi.Save()
-)
+//
+//
+//
+////    logfn "number of build information nodes: %d" bi.Nodes.Length
+//////    for n in tb.Build.Information.Nodes do
+//////        logfn "node id: %d %A" n.Id n
+////    
+////    let main = bi.AddSummarySection 1 "a1" "The Main Section" 
+////    main.AddMessage "this is cool"
+////    main.AddMessage "this is a number: %d" 7
+////    main.AddMessage "this is a link to [google](http://google.com/)"
+////    bi.Save()
+//)
 
 Target "BuildVersion" (fun _ ->
     let args = sprintf "UpdateBuild -Version \"%s\"" buildVersion
@@ -203,7 +209,7 @@ Target "Summary" (fun _ ->
 
 
 "Clean"
-    =?> ("Tfs", isTfsBuild)
+//    =?> ("Tfs", isTfsBuild)
     =?> ("BuildVersion", buildServer = BuildServer.AppVeyor)
     ==> "AssemblyInfo"
 //    ==> "Build"
