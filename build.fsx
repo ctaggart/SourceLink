@@ -33,6 +33,7 @@ let rec printBuildInfo (bi:IBuildInformation) indent =
 
 open System.Collections.Generic
 
+//[<AllowNullLiteral>]
 type MyListener(root:IBuildInformation) =
     let defaultTarget = root.AddBuildStep("no target", "no target", DateTime.UtcNow, BuildStepStatus.Unknown)
     let mutable target = defaultTarget
@@ -57,6 +58,7 @@ type MyListener(root:IBuildInformation) =
                     target.FinishTime <- DateTime.UtcNow
                     target <- defaultTarget
 //                    root.Save()
+    member x.Save() = root.Save()
 
 //listeners.Clear()
 //listeners.Add(MyListener())
@@ -76,10 +78,12 @@ let prerelease =
 let versionInfo = sprintf "%s %s %s" versionAssembly dt.IsoDateTime revision
 let buildVersion = if String.IsNullOrEmpty prerelease then versionFile else sprintf "%s-%s" versionFile prerelease
 
+let tfsLogger = MyListener(null)
 if isTfsBuild then
     let tb = getTfsBuild()
     let bi = tb.Build.Information
     listeners.Clear()
+    tfsLogger = MyListener(bi)
     listeners.Add(MyListener(bi))
 
 
@@ -204,9 +208,11 @@ Target "Summary" (fun _ ->
 //    stB.Node.Children.AddBuildMessage("this is another bm for b", BuildMessageImportance.High, DateTime.UtcNow) |> ignore
     
 
+    if isTfsBuild then
+        tfsLogger.Save()
+        
 
-
-    bi.Save()
+//    bi.Save()
 )
 
 
