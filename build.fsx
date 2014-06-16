@@ -55,6 +55,7 @@ type MyListener(root:IBuildInformation) =
             | CloseTag tag -> 
                 step.FinishTime <- DateTime.UtcNow
                 step <- fakeStep
+                root.Save()
 
 //listeners.Clear()
 //listeners.Add(MyListener())
