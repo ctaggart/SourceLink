@@ -55,7 +55,7 @@ type MyListener(root:IBuildInformation) =
             | CloseTag tag ->
                 if tag.Equals "target" then
                     target.FinishTime <- DateTime.UtcNow
-                    target <- defaultTarget
+//                    target <- defaultTarget
                     root.Save()
 
 //listeners.Clear()
