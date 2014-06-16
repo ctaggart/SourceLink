@@ -34,28 +34,29 @@ let rec printBuildInfo (bi:IBuildInformation) indent =
 open System.Collections.Generic
 
 type MyListener(root:IBuildInformation) =
-    let fakeStep = root.AddBuildStep("FAKE", "FAKE Build", DateTime.UtcNow, BuildStepStatus.Unknown)
-    let mutable step = fakeStep
+    let defaultTarget = root.AddBuildStep("no target", "no target", DateTime.UtcNow, BuildStepStatus.Unknown)
+    let mutable target = defaultTarget
     interface ITraceListener with
         member x.Write msg =
             match msg with
-            | OpenTag(tag,name) -> 
-                root.AddBuildMessage(sprintf "tag: %s, name: %s" tag name, BuildMessageImportance.High, DateTime.UtcNow) |> ignore
-                step <- root.AddBuildStep(tag, name, DateTime.UtcNow, BuildStepStatus.Unknown)
+            | OpenTag(tag,name) ->
+                if tag.Equals "target" then
+                    target <- root.AddBuildStep(name, name, DateTime.UtcNow, BuildStepStatus.Unknown)
             | StartMessage -> ()
             | ImportantMessage text ->
-                step.Node.Children.AddBuildMessage(text, BuildMessageImportance.High, DateTime.UtcNow) |> ignore
+                target.Node.Children.AddBuildMessage(text, BuildMessageImportance.High, DateTime.UtcNow) |> ignore
             | LogMessage(text,newLine) ->
-                step.Node.Children.AddBuildMessage(text, BuildMessageImportance.Normal, DateTime.UtcNow) |> ignore
+                target.Node.Children.AddBuildMessage(text, BuildMessageImportance.Normal, DateTime.UtcNow) |> ignore
             | TraceMessage(text,newLine) ->
-                step.Node.Children.AddBuildMessage(text, BuildMessageImportance.Low, DateTime.UtcNow) |> ignore
+                target.Node.Children.AddBuildMessage(text, BuildMessageImportance.Low, DateTime.UtcNow) |> ignore
             | ErrorMessage text -> 
-                step.Node.Children.AddBuildError(text, DateTime.UtcNow) |> ignore
+                target.Node.Children.AddBuildError(text, DateTime.UtcNow) |> ignore
             | FinishedMessage -> ()
-            | CloseTag tag -> 
-                step.FinishTime <- DateTime.UtcNow
-                step <- fakeStep
-                root.Save()
+            | CloseTag tag ->
+                if tag.Equals "target" then
+                    target.FinishTime <- DateTime.UtcNow
+                    target <- defaultTarget
+                    root.Save()
 
 //listeners.Clear()
 //listeners.Add(MyListener())
