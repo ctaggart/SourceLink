@@ -78,12 +78,12 @@ let prerelease =
 let versionInfo = sprintf "%s %s %s" versionAssembly dt.IsoDateTime revision
 let buildVersion = if String.IsNullOrEmpty prerelease then versionFile else sprintf "%s-%s" versionFile prerelease
 
-let tfsLogger = MyListener(null)
+let mutable tfsLogger = MyListener(null)
 if isTfsBuild then
     let tb = getTfsBuild()
     let bi = tb.Build.Information
     listeners.Clear()
-    tfsLogger = MyListener(bi)
+    tfsLogger <- MyListener(bi)
     listeners.Add(MyListener(bi))
 
 
