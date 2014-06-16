@@ -55,8 +55,8 @@ type MyListener(root:IBuildInformation) =
             | CloseTag tag ->
                 if tag.Equals "target" then
                     target.FinishTime <- DateTime.UtcNow
-//                    target <- defaultTarget
-                    root.Save()
+                    target <- defaultTarget
+//                    root.Save()
 
 //listeners.Clear()
 //listeners.Add(MyListener())
@@ -196,12 +196,12 @@ Target "NuGet" (fun _ ->
 Target "Summary" (fun _ ->
     let tb = getTfsBuild()
     let bi = tb.Build.Information
-    let st = bi.AddBuildStep("build step a", "message of build step a", DateTime.UtcNow, BuildStepStatus.Succeeded)
-    st.FinishTime <- st.StartTime.AddMinutes 2.
-    st.Node.Children.AddBuildMessage("this is s bm", BuildMessageImportance.High, DateTime.UtcNow) |> ignore
-
-    let stB = bi.AddBuildStep("build step b", "message of build step b", DateTime.UtcNow, BuildStepStatus.Unknown)
-    stB.Node.Children.AddBuildMessage("this is another bm for b", BuildMessageImportance.High, DateTime.UtcNow) |> ignore
+//    let st = bi.AddBuildStep("build step a", "message of build step a", DateTime.UtcNow, BuildStepStatus.Succeeded)
+//    st.FinishTime <- st.StartTime.AddMinutes 2.
+//    st.Node.Children.AddBuildMessage("this is s bm", BuildMessageImportance.High, DateTime.UtcNow) |> ignore
+//
+//    let stB = bi.AddBuildStep("build step b", "message of build step b", DateTime.UtcNow, BuildStepStatus.Unknown)
+//    stB.Node.Children.AddBuildMessage("this is another bm for b", BuildMessageImportance.High, DateTime.UtcNow) |> ignore
     
 
 
