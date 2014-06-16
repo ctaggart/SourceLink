@@ -78,7 +78,7 @@ let prerelease =
 let versionInfo = sprintf "%s %s %s" versionAssembly dt.IsoDateTime revision
 let buildVersion = if String.IsNullOrEmpty prerelease then versionFile else sprintf "%s-%s" versionFile prerelease
 
-let mutable tfsLogger = MyListener(null)
+let mutable tfsLogger = Unchecked.defaultof<_>()
 if isTfsBuild then
     let tb = getTfsBuild()
     let bi = tb.Build.Information
