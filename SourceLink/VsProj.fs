@@ -36,7 +36,7 @@ type Project with
                 elif "Exe".EqualsI ot || "WinExe".EqualsI ot then ".exe"
                 else Ex.failwithf "OutputType not matched: %s" ot
             let dir = Path.combine x.DirectoryPath x.OutputPath
-            Path.combine dir (sprintf "%s%s" x.AssemblyName ext)
+            Path.combine dir (sprintf "%s%s" x.AssemblyName ext) |> Path.GetFullPath
     member x.OutputDirectory with get() = Path.GetDirectoryName x.OutputFile
 
     member x.OutputFilePdb with get() = Path.ChangeExtension(x.OutputFile, ".pdb")

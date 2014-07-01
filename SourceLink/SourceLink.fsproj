@@ -75,4 +75,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml" />
   </ItemGroup>
+  <Target Name="BeforeBuild">
+    <Message Importance="High" Text="msbuild commandline: $([System.Environment]::CommandLine)" />
+  </Target>
 </Project>

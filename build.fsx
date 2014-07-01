@@ -13,55 +13,31 @@ let cfg = getBuildConfig __SOURCE_DIRECTORY__
 let revision =
     use repo = new GitRepo(__SOURCE_DIRECTORY__)
     repo.Revision
-//let revision8 = if revision = "" then "" else "-"+revision.Substring(0,8)
 
 let versionAssembly = cfg.AppSettings.["versionAssembly"].Value // change when incompatible
 let versionFile = cfg.AppSettings.["versionFile"].Value // matches nuget version
 let prerelease =
     if hasBuildParam "prerelease" then getBuildParam "prerelease"
     else sprintf "ci%s" (dt.ToString "yyMMddHHmm") // 20 char limit
-let versionInfo = sprintf "%s %s %s" versionAssembly (dt.ToString "yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'") revision
+let versionInfo = sprintf "%s %s %s" versionAssembly dt.IsoDateTime revision
 let buildVersion = if String.IsNullOrEmpty prerelease then versionFile else sprintf "%s-%s" versionFile prerelease
 
-let isAppVeyorBuild = environVar "APPVEYOR" <> null
-
-Target "Clean" (fun _ -> 
-    !! "**/bin/"
-    ++ "**/obj/" 
-    |> CleanDirs 
-)
+Target "Clean" (fun _ -> !! "**/bin/" ++ "**/obj/" |> CleanDirs)
 
 Target "BuildVersion" (fun _ ->
     let args = sprintf "UpdateBuild -Version \"%s\"" buildVersion
-    let rv = Shell.Exec("appveyor", args)
-    logfn "appveyor %s, exit code %d" args rv
+    Shell.Exec("appveyor", args) |> ignore
 )
 
 Target "AssemblyInfo" (fun _ ->
-    CreateFSharpAssemblyInfo "SourceLink/AssemblyInfo.fs"
-        [ 
+    let common = [ 
         Attribute.Version versionAssembly 
         Attribute.FileVersion versionFile
-        Attribute.InformationalVersion versionInfo
-        ]
-    CreateFSharpAssemblyInfo "Build/AssemblyInfo.fs"
-        [ 
-        Attribute.Version versionAssembly 
-        Attribute.FileVersion versionFile
-        Attribute.InformationalVersion versionInfo
-        ]
-    CreateFSharpAssemblyInfo "Tfs/AssemblyInfo.fs"
-        [ 
-        Attribute.Version versionAssembly 
-        Attribute.FileVersion versionFile
-        Attribute.InformationalVersion versionInfo
-        ]
-    CreateFSharpAssemblyInfo "Git/AssemblyInfo.fs"
-        [ 
-        Attribute.Version versionAssembly 
-        Attribute.FileVersion versionFile
-        Attribute.InformationalVersion versionInfo
-        ]
+        Attribute.InformationalVersion versionInfo ]
+    common |> CreateFSharpAssemblyInfo "SourceLink/AssemblyInfo.fs"
+    common |> CreateFSharpAssemblyInfo "Build/AssemblyInfo.fs"
+    common |> CreateFSharpAssemblyInfo "Tfs/AssemblyInfo.fs"
+    common |> CreateFSharpAssemblyInfo "Git/AssemblyInfo.fs"
 )
 
 Target "Build" (fun _ ->
@@ -135,10 +111,10 @@ Target "NuGet" (fun _ ->
 )
 
 "Clean"
-    =?> ("BuildVersion", isAppVeyorBuild)
+    =?> ("BuildVersion", buildServer = BuildServer.AppVeyor)
     ==> "AssemblyInfo"
     ==> "Build"
-    =?> ("SourceLink", isMono = false && hasBuildParam "skipSourceLink" = false)
+    =?> ("SourceLink", isMono = false && hasBuildParam "link")
     ==> "NuGet"
 
 RunTargetOrDefault "NuGet"
