@@ -16,11 +16,10 @@ let revision =
 
 let versionAssembly = cfg.AppSettings.["versionAssembly"].Value // change when incompatible
 let versionFile = cfg.AppSettings.["versionFile"].Value // matches nuget version
-let prerelease =
-    if hasBuildParam "prerelease" then getBuildParam "prerelease"
-    else sprintf "ci%s" (dt.ToString "yyMMddHHmm") // 20 char limit
+let isRelease = hasBuildParam "release"
+let prerelease = getBuildParamOrDefault "prerelease" (sprintf "ci%s" (dt.ToString "yyMMddHHmm")) // 20 char limit
 let versionInfo = sprintf "%s %s %s" versionAssembly dt.IsoDateTime revision
-let buildVersion = if String.IsNullOrEmpty prerelease then versionFile else sprintf "%s-%s" versionFile prerelease
+let buildVersion = if isRelease then versionFile else sprintf "%s-%s" versionFile prerelease
 
 Target "Clean" (fun _ -> !! "**/bin/" ++ "**/obj/" |> CleanDirs)
 
