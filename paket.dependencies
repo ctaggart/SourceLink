@@ -1,4 +1,5 @@
 source http://nuget.org/api/v2
+source https://ci.appveyor.com/nuget/sourcelink-helmesfwai2a
 
 nuget FAKE
 nuget SourceLink.Fake prerelease
