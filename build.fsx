@@ -51,11 +51,11 @@ Target "SourceLink" (fun _ ->
     |> Seq.iter (fun f ->
         use repo = new GitRepo(__SOURCE_DIRECTORY__)
         let proj = VsProj.LoadRelease f
-        logfn "source linking %s" proj.OutputFilePdb
+        logfn "source indexing %s" proj.OutputFilePdb
         let files = proj.Compiles -- "**/AssemblyInfo.fs"
         repo.VerifyChecksums files
         proj.VerifyPdbChecksums files
-        proj.CreateSrcSrv "https://raw.github.com/ctaggart/SourceLink/{0}/%var2%" repo.Revision (repo.Paths files)
+        proj.CreateSrcSrv "https://raw.githubusercontent.com/ctaggart/SourceLink/{0}/%var2%" repo.Revision (repo.Paths files)
         Pdbstr.exec proj.OutputFilePdb proj.OutputFilePdbSrcSrv
     )
 )
@@ -114,7 +114,7 @@ Target "NuGet" (fun _ ->
     =?> ("BuildVersion", buildServer = BuildServer.AppVeyor)
     ==> "AssemblyInfo"
     ==> "Build"
-    =?> ("SourceLink", isMono = false && hasBuildParam "link")
+    =?> ("SourceLink", buildServer = BuildServer.AppVeyor || (isMono = false && hasBuildParam "link"))
     ==> "NuGet"
 
 RunTargetOrDefault "NuGet"
