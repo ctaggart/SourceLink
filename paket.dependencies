@@ -1,0 +1,8 @@
+source http://nuget.org/api/v2
+
+nuget FAKE
+nuget SourceLink.Fake prerelease
+
+nuget FSharp.Data
+nuget LibGit2Sharp
+nuget Mono.Cecil

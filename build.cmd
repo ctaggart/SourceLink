@@ -1,4 +1,3 @@
-.nuget\nuget.exe install FAKE -OutputDirectory packages -ExcludeVersion 
-.nuget\nuget.exe install SourceLink.Fake -OutputDirectory packages -ExcludeVersion -Prerelease
-.nuget\nuget.exe restore
+paket.bootstrapper.exe
+paket.exe install
 packages\FAKE\tools\FAKE.exe build.fsx %*

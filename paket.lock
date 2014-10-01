@@ -1,0 +1,10 @@
+NUGET
+  remote: http://nuget.org/api/v2
+  specs:
+    FAKE (3.5.6)
+    FSharp.Data (2.0.15)
+      Zlib.Portable (>= 1.10.0)
+    LibGit2Sharp (0.19.0.0)
+    Mono.Cecil (0.9.5.4)
+    SourceLink.Fake (0.4.0-ci1405020136)
+    Zlib.Portable (1.10.0)
