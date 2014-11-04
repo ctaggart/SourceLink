@@ -60,7 +60,6 @@
     <Compile Include="Task.fs" />
     <Compile Include="SourceCheck.fs" />
     <Compile Include="SourceLink.fs" />
-    <Compile Include="AssemblyInfo.fs" />
     <None Include="App.config" />
     <None Include="Build.nuspec">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

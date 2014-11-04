@@ -60,7 +60,6 @@
     <Compile Include="Pdbstr.fs" />
     <Compile Include="Digraph.fs" />
     <Compile Include="MetaDataImport.fs" />
-    <Compile Include="AssemblyInfo.fs" />
     <None Include="SourceLink.nuspec" />
   </ItemGroup>
   <ItemGroup>

@@ -52,7 +52,6 @@
     <Compile Include="TfsActivities.fs" />
     <Compile Include="Activities.Process.fs" />
     <Compile Include="Activities.Fake.fs" />
-    <Compile Include="AssemblyInfo.fs" />
     <None Include="Tfs.nuspec" />
     <None Include="paket.references" />
     <Compile Include="TfsSummarySection.fs" />
