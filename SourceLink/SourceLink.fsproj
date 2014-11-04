@@ -61,6 +61,7 @@
     <Compile Include="Digraph.fs" />
     <Compile Include="MetaDataImport.fs" />
     <None Include="SourceLink.nuspec" />
+    <Compile Include="AssemblyInfo.fs" Condition="Exists('AssemblyInfo.fs')" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">

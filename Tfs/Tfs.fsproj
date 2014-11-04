@@ -55,6 +55,7 @@
     <None Include="Tfs.nuspec" />
     <None Include="paket.references" />
     <Compile Include="TfsSummarySection.fs" />
+    <Compile Include="AssemblyInfo.fs" Condition="Exists('AssemblyInfo.fs')" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Build" />

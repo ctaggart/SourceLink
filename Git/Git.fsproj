@@ -42,6 +42,7 @@
     <Compile Include="GitRepo.fs" />
     <None Include="paket.references" />
     <None Include="Git.nuspec" />
+    <Compile Include="AssemblyInfo.fs" Condition="Exists('AssemblyInfo.fs')" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
