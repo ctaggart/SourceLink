@@ -47,9 +47,12 @@ type Microsoft.Build.Evaluation.Project with // VsProj
 
 type Pdbstr with
     static member execWith exe pdb srcsrv =
-        let args = sprintf "-w -s:srcsrv -i:%s -p:%s" (Path.GetFileName srcsrv) (Path.GetFileName pdb)
         let workdir = Path.GetDirectoryName pdb
-        logfn "%s>%s %s" workdir exe args
+        // use relative paths if in workdir
+        let srcsrv = if workdir.EqualsI <| Path.GetDirectoryName srcsrv then Path.GetFileName srcsrv else srcsrv
+        let pdb = if workdir.EqualsI <| Path.GetDirectoryName pdb then Path.GetFileName pdb else pdb
+        let args = sprintf "-w -s:srcsrv -i:\"%s\" -p:\"%s\"" srcsrv pdb
+        logfn "%s>\"%s\" %s" workdir exe args
         Shell.Exec(exe, args, workdir) |> ignore
     static member exec pdb srcsrv =
         let exe = Pdbstr.tryFind()
