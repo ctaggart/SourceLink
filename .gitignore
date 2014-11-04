@@ -7,3 +7,4 @@ packages
 /Dia/*.tlb
 /Dia/*.c
 paket.exe
+AssemblyInfo.fs
