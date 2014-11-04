@@ -68,6 +68,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="paket.references" />
+    <Compile Include="AssemblyInfo.fs" Condition="Exists('AssemblyInfo.fs')" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Git\Git.fsproj">
