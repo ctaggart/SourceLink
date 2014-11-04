@@ -7,19 +7,32 @@ open System.IO
 open Fake
 open Fake.AssemblyInfoFile
 open SourceLink
+open Fake.AppVeyor
 
-let dt = DateTime.UtcNow
+let buildDate =
+    let pst = TimeZoneInfo.FindSystemTimeZoneById "Pacific Standard Time"
+    DateTimeOffset(TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, pst), pst.BaseUtcOffset)
+
 let cfg = getBuildConfig __SOURCE_DIRECTORY__
 let revision =
     use repo = new GitRepo(__SOURCE_DIRECTORY__)
     repo.Revision
 
-let versionAssembly = cfg.AppSettings.["versionAssembly"].Value // change when incompatible
-let versionFile = cfg.AppSettings.["versionFile"].Value // matches nuget version
-let isRelease = hasBuildParam "release"
-let prerelease = getBuildParamOrDefault "prerelease" (sprintf "ci%s" (dt.ToString "yyMMddHHmm")) // 20 char limit
-let versionInfo = sprintf "%s %s %s" versionAssembly dt.IsoDateTime revision
-let buildVersion = if isRelease then versionFile else sprintf "%s-%s" versionFile prerelease
+type AppVeyorEnvironment with
+    static member IsRepoTag = environVar "APPVEYOR_REPO_TAG" = "True"
+
+let isAppVeyorBuild = buildServer = BuildServer.AppVeyor
+let hasRepoVersionTag = isAppVeyorBuild && AppVeyorEnvironment.IsRepoTag && AppVeyorEnvironment.RepoBranch.StartsWith "v"
+
+let release = ReleaseNotesHelper.LoadReleaseNotes "RELEASE_NOTES.md"
+
+let versionAssembly =
+    if hasRepoVersionTag then AppVeyor.AppVeyorEnvironment.RepoBranch.Substring 1
+    else release.NugetVersion
+
+let buildVersion =
+    if hasRepoVersionTag then versionAssembly
+    else sprintf "%s-ci%s" versionAssembly (buildDate.ToString "yyMMddHHmm") // 20 char limit
 
 Target "Clean" (fun _ -> !! "**/bin/" ++ "**/obj/" |> CleanDirs)
 
@@ -29,10 +42,16 @@ Target "BuildVersion" (fun _ ->
 )
 
 Target "AssemblyInfo" (fun _ ->
+    let iv = Text.StringBuilder() // json
+    iv.Appendf "{\\\"buildVersion\\\":\\\"%s\\\"" buildVersion
+    iv.Appendf ",\\\"buildDate\\\":\\\"%s\\\"" (buildDate.ToString "yyyy'-'MM'-'dd'T'HH':'mm':'sszzz")
+    if isAppVeyorBuild then
+        iv.Appendf ",\\\"gitCommit\\\":\\\"%s\\\"" AppVeyor.AppVeyorEnvironment.RepoCommit
+        iv.Appendf ",\\\"gitBranch\\\":\\\"%s\\\"" AppVeyor.AppVeyorEnvironment.RepoBranch
+    iv.Appendf "}"
     let common = [ 
         Attribute.Version versionAssembly 
-        Attribute.FileVersion versionFile
-        Attribute.InformationalVersion versionInfo ]
+        Attribute.InformationalVersion iv.String ]
     common |> CreateFSharpAssemblyInfo "SourceLink/AssemblyInfo.fs"
     common |> CreateFSharpAssemblyInfo "Build/AssemblyInfo.fs"
     common |> CreateFSharpAssemblyInfo "Tfs/AssemblyInfo.fs"
@@ -110,10 +129,10 @@ Target "NuGet" (fun _ ->
 )
 
 "Clean"
-    =?> ("BuildVersion", buildServer = BuildServer.AppVeyor)
+    =?> ("BuildVersion", isAppVeyorBuild)
     ==> "AssemblyInfo"
     ==> "Build"
-    =?> ("SourceLink", buildServer = BuildServer.AppVeyor || (isMono = false && hasBuildParam "link"))
+    =?> ("SourceLink", isAppVeyorBuild || (isMono = false && hasBuildParam "link"))
     ==> "NuGet"
 
 RunTargetOrDefault "NuGet"
