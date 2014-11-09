@@ -34,7 +34,7 @@ let buildVersion =
     if hasRepoVersionTag then versionAssembly
     else sprintf "%s-ci%s" versionAssembly (buildDate.ToString "yyMMddHHmm") // 20 char limit
 
-Target "Clean" (fun _ -> !! "**/bin/" ++ "**/obj/" |> CleanDirs)
+Target "Clean" (fun _ -> !! "**/bin/" ++ "**/obj/" ++ "**/docs/output/" |> CleanDirs)
 
 Target "BuildVersion" (fun _ ->
     let args = sprintf "UpdateBuild -Version \"%s\"" buildVersion
@@ -127,6 +127,56 @@ Target "NuGet" (fun _ ->
         }]
     }) "Git/Git.nuspec"
 )
+
+// --------------------------------------------------------------------------------------
+// Generate the documentation
+
+//Target "GenerateReferenceDocs" (fun _ ->
+//    if not <| executeFSIWithArgs "docs/tools" "generate.fsx" ["--define:RELEASE"; "--define:REFERENCE"] [] then
+//      failwith "generating reference documentation failed"
+//)
+
+let generateDocs fail =
+    if executeFSIWithArgs "docs/tools" "generate.fsx" ["--define:RELEASE"; "--define:HELP"] [] then
+        traceImportant "Help generated"
+    else
+        if fail then
+            failwith "generating help documentation failed"
+        else
+            traceImportant "generating help documentation failed"
+    
+
+Target "Docs" (fun _ ->
+    DeleteFile "docs/content/release-notes.md"    
+    CopyFile "docs/content/" "RELEASE_NOTES.md"
+    Rename "docs/content/release-notes.md" "docs/content/RELEASE_NOTES.md"
+
+//    DeleteFile "docs/content/license.md"
+//    CopyFile "docs/content/" "LICENSE.txt"
+//    Rename "docs/content/license.md" "docs/content/LICENSE.txt"
+
+    generateDocs true
+    CopyFile "docs/output" "SourceLink128.jpg" // icon used by all NuGet packages
+)
+
+
+Target "DocsRun" (fun _ ->    
+    use watcher = new FileSystemWatcher(DirectoryInfo("docs/content").FullName,"*.*")
+    watcher.EnableRaisingEvents <- true
+    watcher.Changed.Add(fun e -> generateDocs false)
+    watcher.Created.Add(fun e -> generateDocs false)
+    watcher.Renamed.Add(fun e -> generateDocs false)
+    watcher.Deleted.Add(fun e -> generateDocs false)
+
+    traceImportant "Waiting for help edits. Press any key to stop."
+
+    System.Console.ReadKey() |> ignore
+
+    watcher.EnableRaisingEvents <- false
+    watcher.Dispose()
+)
+
+// --------------------------------------------------------------------------------------
 
 "Clean"
     =?> ("BuildVersion", isAppVeyorBuild)

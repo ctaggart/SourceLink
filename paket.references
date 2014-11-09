@@ -1,2 +1,4 @@
 FAKE
 SourceLink.Fake
+FSharp.Formatting
+NuGet.CommandLine
