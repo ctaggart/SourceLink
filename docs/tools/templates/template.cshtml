@@ -14,10 +14,7 @@
 
     <link type="text/css" rel="stylesheet" href="@Root/content/style.css" />
     <script type="text/javascript" src="@Root/content/tips.js"></script>
-    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <link rel="icon" href="http://ctaggart.github.io/SourceLink/SourceLink128.jpg">
   </head>
   <body>
     <div class="container">
@@ -36,16 +33,21 @@
           <img src="http://ctaggart.github.io/SourceLink/SourceLink128.jpg" alt="F# Project" style="width:150px;margin:10px" />
           <ul class="nav nav-list" id="menu" style="margin-top: 20px;">
             <li class="nav-header">@Properties["project-name"]</li>
+            <li><a href="http://www.nuget.org/packages/SourceLink.Fake"><img src="http://img.shields.io/nuget/v/SourceLink.Fake.svg?style=flat" /></a></li>
             <li><a href="@Root/index.html">Home page</a></li>
-            <li class="divider"></li>
-            <li><a href="@Properties["project-github"]">Source Code on GitHub</a></li>
-            @*<li><a href="@Properties["project-nuget"]">Get Library via NuGet</a></li>*@
-            <li><a href="@Properties["project-github"]/issues">Report an issue</a></li>
-            @*<li><a href="@Root/license.html">License</a></li>*@
             <li><a href="@Root/release-notes.html">Release Notes</a></li>
+            @*<li class="divider"></li>*@
+            <li><a href="@Properties["project-github"]">Source Code</a></li>
+            <li><a href="@Properties["project-github"]/issues">Report an Issue</a></li>
+            <li><a href="http://blog.ctaggart.com/search/label/SourceLink">Blog Posts</a></li>
 
-            @*<li class="nav-header">Documentation</li>
-            <li><a href="@Root/faq.html">FAQ</a></li>*@   
+            <li class="nav-header">Documentation</li>
+              <li><a href="@Root/how-it-works.html">how it works</a></li>
+            <li><a href="@Root/visualstudio.html">enable Visual Studio</a></li>
+            <li><a href="@Root/fake.html">with FAKE</a></li>
+            <li><a href="@Root/tfs.html">with TFS</a></li>
+            <li><a href="@Root/github.html">with GitHub</a></li>
+            
           </ul>
         </div>
       </div>
