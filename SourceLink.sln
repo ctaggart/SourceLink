@@ -37,7 +37,14 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Git", "Git\Git.fsproj", "{7
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{D3E73D0A-292F-463C-B834-F8FCD9AA36BD}"
 	ProjectSection(SolutionItems) = preProject
+		docs\content\fake.md = docs\content\fake.md
+		docs\tools\generate.fsx = docs\tools\generate.fsx
+		docs\content\github.md = docs\content\github.md
+		docs\content\how-it-works.md = docs\content\how-it-works.md
 		docs\content\index.md = docs\content\index.md
+		docs\tools\templates\template.cshtml = docs\tools\templates\template.cshtml
+		docs\content\tfs.md = docs\content\tfs.md
+		docs\content\visualstudio.md = docs\content\visualstudio.md
 	EndProjectSection
 EndProject
 Global
