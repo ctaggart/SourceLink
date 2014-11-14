@@ -21,6 +21,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591,1589</NoWarn>
+    <PlatformTarget>x64</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,12 +33,17 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\SourceLink.SymbolStore.xml</DocumentationFile>
     <NoWarn>1591,1589</NoWarn>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ComStreamWrapper.cs" />
+    <Compile Include="DummyMetadataImport.cs" />
     <Compile Include="HResults.cs" />
+    <Compile Include="IMetadataImport.cs" />
     <Compile Include="ISymConstant.cs" />
     <Compile Include="ISymEncMethod.cs" />
     <Compile Include="ISymENCUpdate.cs" />
@@ -54,6 +61,7 @@
     <Compile Include="SymSearchInfo.cs" />
     <Compile Include="SymSrv.cs" />
     <Compile Include="SymVariable.cs" />
+    <Compile Include="TempPdbReader.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SymbolStore.nuspec" />
