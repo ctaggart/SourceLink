@@ -34,6 +34,8 @@ let buildVersion =
     if hasRepoVersionTag then versionAssembly
     else sprintf "%s-ci%s" versionAssembly (buildDate.ToString "yyMMddHHmm") // 20 char limit
 
+MSBuildDefaults <- { MSBuildDefaults with Verbosity = Some MSBuildVerbosity.Minimal }
+
 Target "Clean" (fun _ -> !! "**/bin/" ++ "**/obj/" ++ "**/docs/output/" |> CleanDirs)
 
 Target "BuildVersion" (fun _ ->
@@ -56,6 +58,7 @@ Target "AssemblyInfo" (fun _ ->
     common |> CreateFSharpAssemblyInfo "Build/AssemblyInfo.fs"
     common |> CreateFSharpAssemblyInfo "Tfs/AssemblyInfo.fs"
     common |> CreateFSharpAssemblyInfo "Git/AssemblyInfo.fs"
+    common |> CreateCSharpAssemblyInfo "SymbolStore/Properties/AssemblyInfo.cs"
 )
 
 Target "Build" (fun _ ->
@@ -66,6 +69,7 @@ Target "SourceLink" (fun _ ->
     !! "Tfs/Tfs.fsproj" 
     ++ "SourceLink/SourceLink.fsproj"
     ++ "Git/Git.fsproj"
+    ++ "SymbolStore/SymbolStore.csproj"
     |> Seq.iter (fun f ->
         use repo = new GitRepo(__SOURCE_DIRECTORY__)
         let proj = VsProj.LoadRelease f
@@ -126,6 +130,13 @@ Target "NuGet" (fun _ ->
             Dependencies = ["LibGit2Sharp", GetPackageVersion "./packages/" "LibGit2Sharp"]
         }]
     }) "Git/Git.nuspec"
+
+    NuGet (fun p -> 
+    { p with
+        Version = buildVersion
+        WorkingDir = "SymbolStore/bin/Release"
+        OutputPath = bin
+    }) "SymbolStore/SymbolStore.nuspec"
 )
 
 // --------------------------------------------------------------------------------------
