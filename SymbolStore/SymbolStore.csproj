@@ -52,6 +52,7 @@
     <Compile Include="ISymSearchInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" Condition="Exists('Properties\AssemblyInfo.fs')" />
     <Compile Include="SrcSrv.cs" />
+    <Compile Include="SymbolCache.cs" />
     <Compile Include="SymConstant.cs" />
     <Compile Include="SymDocument.cs" />
     <Compile Include="SymMethod.cs" />
@@ -61,7 +62,7 @@
     <Compile Include="SymSearchInfo.cs" />
     <Compile Include="SymSrv.cs" />
     <Compile Include="SymVariable.cs" />
-    <Compile Include="TempPdbReader.cs" />
+    <Compile Include="PdbReader.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SymbolStore.nuspec" />
