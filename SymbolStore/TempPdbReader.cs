@@ -64,7 +64,7 @@ namespace SourceLink.SymbolStore
             }
         }
 
-        internal ISymUnmanagedReader RawSymbolReader
+        public ISymUnmanagedReader SymUnmanagedReader
         {
             get
             {
@@ -75,6 +75,11 @@ namespace SourceLink.SymbolStore
 
                 return rawReader;
             }
+        }
+
+        public ISymUnmanagedSourceServerModule SymUnmanagedSourceServerModule
+        {
+            get { return (ISymUnmanagedSourceServerModule)rawReader; }
         }
     }
 }
