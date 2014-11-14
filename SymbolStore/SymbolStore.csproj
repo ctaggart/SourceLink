@@ -44,6 +44,7 @@
     <Compile Include="ISymScope2.cs" />
     <Compile Include="ISymSearchInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" Condition="Exists('Properties\AssemblyInfo.fs')" />
+    <Compile Include="SrcSrv.cs" />
     <Compile Include="SymConstant.cs" />
     <Compile Include="SymDocument.cs" />
     <Compile Include="SymMethod.cs" />
@@ -51,6 +52,7 @@
     <Compile Include="SymReader.cs" />
     <Compile Include="SymScope.cs" />
     <Compile Include="SymSearchInfo.cs" />
+    <Compile Include="SymSrv.cs" />
     <Compile Include="SymVariable.cs" />
   </ItemGroup>
   <ItemGroup>
