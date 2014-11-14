@@ -20,7 +20,7 @@ namespace SourceLink.SymbolStore
         InterfaceType(ComInterfaceType.InterfaceIsIUnknown),
         ComVisible(false)
     ]
-    interface ISymUnmanagedMethod
+    public interface ISymUnmanagedMethod
     {
         void GetToken(out SymbolToken pToken);
         void GetSequencePointCount(out int retVal);
