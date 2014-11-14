@@ -6,7 +6,7 @@
 
 
 // These interfaces serve as an extension to the BCL's SymbolStore interfaces.
-namespace Microsoft.Samples.Debugging.CorSymbolStore 
+namespace SourceLink.SymbolStore 
 {
     using System.Diagnostics.SymbolStore;
 
@@ -23,7 +23,7 @@ namespace Microsoft.Samples.Debugging.CorSymbolStore
         InterfaceType(ComInterfaceType.InterfaceIsIUnknown),
         ComVisible(false)
     ]
-    internal interface ISymUnmanagedNamespace
+    public interface ISymUnmanagedNamespace
     {
         void GetName(int cchName,
                         out int pcchName,

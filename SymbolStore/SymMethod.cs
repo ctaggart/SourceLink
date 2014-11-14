@@ -6,7 +6,7 @@
 
 
 // These interfaces serve as an extension to the BCL's SymbolStore interfaces.
-namespace Microsoft.Samples.Debugging.CorSymbolStore 
+namespace SourceLink.SymbolStore 
 {
     using System.Diagnostics.SymbolStore;
 
@@ -60,7 +60,7 @@ namespace Microsoft.Samples.Debugging.CorSymbolStore
         InterfaceType(ComInterfaceType.InterfaceIsIUnknown),
         ComVisible(false)
     ]
-    internal interface ISymENCUnmanagedMethod
+    public interface ISymENCUnmanagedMethod
     {
         void GetFileNameFromOffset(int dwOffset,
                                          int cchName,

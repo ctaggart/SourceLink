@@ -6,7 +6,7 @@
 
 
 // These interfaces serve as an extension to the BCL's SymbolStore interfaces.
-namespace Microsoft.Samples.Debugging.CorSymbolStore 
+namespace SourceLink.SymbolStore 
 {
     using System.Diagnostics.SymbolStore;
 
