@@ -15,7 +15,7 @@ namespace SourceLink.SymbolStore
             SrcSrv.Init(sessionCookie, symbolCacheDir);
         }
 
-        public PdbReader ReadPdb(string filePath, Stream stream)
+        public PdbReader ReadPdb(Stream stream, string filePath)
         {
             return new PdbReader(stream, sessionCookie, filePath);
         }
