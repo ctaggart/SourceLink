@@ -1,0 +1,20 @@
+﻿<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata minClientVersion="2.7">
+    <id>SourceLink.Debugging</id>
+    <version>0.0.0</version>
+    <title>SourceLink</title>
+    <authors>Cameron Taggart</authors>
+    <!--<summary></summary>-->
+    <description>extension to the BCL's SymbolStore interfaces</description>
+    <projectUrl>http://ctaggart.github.io/SourceLink/</projectUrl>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <iconUrl>http://ctaggart.github.io/SourceLink/SourceLink128.jpg</iconUrl>
+    @dependencies@
+  </metadata>
+  <files>
+    <file src="SourceLink.SymbolStore.dll" target="lib\net45" />
+    <file src="SourceLink.SymbolStore.pdb" target="lib\net45" />
+    <file src="SourceLink.SymbolStore.xml" target="lib\net45" />
+  </files>
+</package>
