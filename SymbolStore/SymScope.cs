@@ -6,7 +6,7 @@
 
 
 // These interfaces serve as an extension to the BCL's SymbolStore interfaces.
-namespace Microsoft.Samples.Debugging.CorSymbolStore
+namespace SourceLink.SymbolStore
 {
     using System.Diagnostics.SymbolStore;
 
@@ -22,7 +22,7 @@ namespace Microsoft.Samples.Debugging.CorSymbolStore
         InterfaceType(ComInterfaceType.InterfaceIsIUnknown),
         ComVisible(false)
     ]
-    internal interface ISymUnmanagedScope
+    public interface ISymUnmanagedScope
     {
         void GetMethod([MarshalAs(UnmanagedType.Interface)] out ISymUnmanagedMethod pRetVal);
 
@@ -53,7 +53,7 @@ namespace Microsoft.Samples.Debugging.CorSymbolStore
         InterfaceType(ComInterfaceType.InterfaceIsIUnknown),
         ComVisible(false)
     ]
-    internal interface ISymUnmanagedScope2 : ISymUnmanagedScope
+    public interface ISymUnmanagedScope2 : ISymUnmanagedScope
     {
         // ISymUnmanagedScope methods (need to define the base interface methods also, per COM interop requirements)
         new void GetMethod([MarshalAs(UnmanagedType.Interface)] out ISymUnmanagedMethod pRetVal);

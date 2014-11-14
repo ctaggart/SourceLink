@@ -4,7 +4,7 @@
 //  Copyright (C) Microsoft Corporation.  All rights reserved.
 //---------------------------------------------------------------------
 
-namespace Microsoft.Samples.Debugging.CorDebug
+namespace SourceLink.SymbolStore
 {
 	public enum HResult
 	{

@@ -6,10 +6,9 @@
 
 
 // These interfaces serve as an extension to the BCL's SymbolStore interfaces.
-namespace Microsoft.Samples.Debugging.CorSymbolStore
+namespace SourceLink.SymbolStore
 {
     using System.Diagnostics.SymbolStore;
-    using Microsoft.Samples.Debugging.CorDebug;
 
     // Interface does not need to be marked with the serializable attribute
     using System;
@@ -23,7 +22,7 @@ namespace Microsoft.Samples.Debugging.CorSymbolStore
         InterfaceType(ComInterfaceType.InterfaceIsIUnknown),
         ComVisible(false)
     ]
-    internal interface ISymUnmanagedReader
+    public interface ISymUnmanagedReader
     {
         void GetDocument([MarshalAs(UnmanagedType.LPWStr)] String url,
                               Guid language,
@@ -113,7 +112,7 @@ namespace Microsoft.Samples.Debugging.CorSymbolStore
         InterfaceType(ComInterfaceType.InterfaceIsIUnknown),
         ComVisible(false)
     ]
-    internal interface ISymUnmanagedEncUpdate
+    public interface ISymUnmanagedEncUpdate
     {
 
         void UpdateSymbolStore2(IStream stream,
@@ -136,7 +135,7 @@ namespace Microsoft.Samples.Debugging.CorSymbolStore
         InterfaceType(ComInterfaceType.InterfaceIsIUnknown),
         ComVisible(false)
     ]
-    internal interface ISymUnmanagedReaderSymbolSearchInfo
+    public interface ISymUnmanagedReaderSymbolSearchInfo
     {
         void GetSymbolSearchInfoCount(out int pcSearchInfo);
 
@@ -152,7 +151,7 @@ namespace Microsoft.Samples.Debugging.CorSymbolStore
         InterfaceType(ComInterfaceType.InterfaceIsIUnknown),
         ComVisible(false)
     ]
-    internal interface ISymUnmanagedDispose
+    public interface ISymUnmanagedDispose
     {
         void Destroy();
     }
