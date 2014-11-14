@@ -2,7 +2,7 @@
   <metadata minClientVersion="2.7">
     <id>SourceLink.SymbolStore</id>
     <version>0.0.0</version>
-    <title>SourceLink</title>
+    <title>SourceLink.SymbolStore</title>
     <authors>Cameron Taggart</authors>
     <!--<summary></summary>-->
     <description>extension to the BCL's SymbolStore interfaces</description>
