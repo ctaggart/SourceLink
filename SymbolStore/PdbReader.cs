@@ -145,8 +145,18 @@ namespace SourceLink.SymbolStore
            return this.symReader.GetSymAttribute(parent, name);
         }
 
+        public ISymbolVariable[] GetVariables(SymbolToken parent)
+        {
+            return this.symReader.GetVariables(parent);
+        }
+
+        public SymbolToken UserEntryPoint
+        {
+            get { return this.symReader.UserEntryPoint; }
+        }
+
         // explicit to see what F# does
-        public ISymbolDocument[] ISymbolReader.GetDocuments()
+        ISymbolDocument[] ISymbolReader.GetDocuments()
         {
             return this.symReader.GetDocuments();
         }
@@ -167,5 +177,6 @@ namespace SourceLink.SymbolStore
         {
             get { return this.symReader.GetNamespaces(); }
         }
+
     }
 }
