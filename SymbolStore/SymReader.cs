@@ -76,7 +76,9 @@ namespace SourceLink.SymbolStore
                                 out int pcNameSpaces,
                                 [In, Out, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 0)] ISymUnmanagedNamespace[] namespaces);
 
-        void Initialize(IntPtr importer,
+        // switched to Interface object instead of IntPtr
+        // https://github.com/ctaggart/roslyn/blob/master/Src/Test/PdbUtilities/Shared/ISymUnmanagedReader.cs#L55
+        void Initialize([MarshalAs(UnmanagedType.Interface)] object importer,
                        [MarshalAs(UnmanagedType.LPWStr)] String filename,
                        [MarshalAs(UnmanagedType.LPWStr)] String searchPath,
                        IStream stream);
