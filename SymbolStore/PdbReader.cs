@@ -103,7 +103,59 @@ namespace SourceLink.SymbolStore
             return SrcSrv.GetFileUrl(sessionCookie, moduleCookie, sourceFilePath);
         }
 
-        //  ISymbolReader adapter
+        //  explicit ISymbolReader
+
+        ISymbolDocument ISymbolReader.GetDocument(string url, Guid language, Guid languageVendor, Guid documentType)
+        {
+            return this.symReader.GetDocument(url, language, languageVendor, documentType);
+        }
+
+        ISymbolDocument[] ISymbolReader.GetDocuments()
+        {
+            return this.symReader.GetDocuments();
+        }
+
+        ISymbolVariable[] ISymbolReader.GetGlobalVariables()
+        {
+            return this.symReader.GetGlobalVariables();
+        }
+
+        ISymbolMethod ISymbolReader.GetMethod(SymbolToken method, int version)
+        {
+            return this.symReader.GetMethod(method, version);
+        }
+
+        ISymbolMethod ISymbolReader.GetMethod(SymbolToken method)
+        {
+            return this.symReader.GetMethod(method);
+        }
+
+        ISymbolMethod ISymbolReader.GetMethodFromDocumentPosition(ISymbolDocument document, int line, int column)
+        {
+            return this.symReader.GetMethodFromDocumentPosition(document, line, column);
+        }
+
+        ISymbolNamespace[] ISymbolReader.GetNamespaces()
+        {
+            return this.symReader.GetNamespaces();
+        }
+
+        byte[] ISymbolReader.GetSymAttribute(SymbolToken parent, string name)
+        {
+           return this.symReader.GetSymAttribute(parent, name);
+        }
+
+        ISymbolVariable[] ISymbolReader.GetVariables(SymbolToken parent)
+        {
+            return this.symReader.GetVariables(parent);
+        }
+
+        SymbolToken ISymbolReader.UserEntryPoint
+        {
+            get { return this.symReader.UserEntryPoint; }
+        }
+
+        // implicit ISymbolReader
 
         public ISymbolDocument GetDocument(string url, Guid language, Guid languageVendor, Guid documentType)
         {
@@ -142,7 +194,7 @@ namespace SourceLink.SymbolStore
 
         public byte[] GetSymAttribute(SymbolToken parent, string name)
         {
-           return this.symReader.GetSymAttribute(parent, name);
+            return this.symReader.GetSymAttribute(parent, name);
         }
 
         public ISymbolVariable[] GetVariables(SymbolToken parent)
@@ -153,12 +205,6 @@ namespace SourceLink.SymbolStore
         public SymbolToken UserEntryPoint
         {
             get { return this.symReader.UserEntryPoint; }
-        }
-
-        // explicit to see what F# does
-        ISymbolDocument[] ISymbolReader.GetDocuments()
-        {
-            return this.symReader.GetDocuments();
         }
 
         // convenience getters
