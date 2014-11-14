@@ -77,7 +77,7 @@ namespace SourceLink.SymbolStore
                         }
                     }
 
-
+                    return cacheFileName;
                 }
                 else
                 {
