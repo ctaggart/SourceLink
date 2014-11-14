@@ -61,19 +61,6 @@ namespace SourceLink.SymbolStore
             }
         }
 
-        public ISymbolReader SymbolReader
-        {
-            get
-            {
-                if (symReader == null)
-                {
-                    throw new ObjectDisposedException("SymReader");
-                }
-
-                return symReader;
-            }
-        }
-
         public ISymUnmanagedReader SymUnmanagedReader
         {
             get
@@ -103,59 +90,7 @@ namespace SourceLink.SymbolStore
             return SrcSrv.GetFileUrl(sessionCookie, moduleCookie, sourceFilePath);
         }
 
-        //  explicit ISymbolReader
-
-        ISymbolDocument ISymbolReader.GetDocument(string url, Guid language, Guid languageVendor, Guid documentType)
-        {
-            return this.symReader.GetDocument(url, language, languageVendor, documentType);
-        }
-
-        ISymbolDocument[] ISymbolReader.GetDocuments()
-        {
-            return this.symReader.GetDocuments();
-        }
-
-        ISymbolVariable[] ISymbolReader.GetGlobalVariables()
-        {
-            return this.symReader.GetGlobalVariables();
-        }
-
-        ISymbolMethod ISymbolReader.GetMethod(SymbolToken method, int version)
-        {
-            return this.symReader.GetMethod(method, version);
-        }
-
-        ISymbolMethod ISymbolReader.GetMethod(SymbolToken method)
-        {
-            return this.symReader.GetMethod(method);
-        }
-
-        ISymbolMethod ISymbolReader.GetMethodFromDocumentPosition(ISymbolDocument document, int line, int column)
-        {
-            return this.symReader.GetMethodFromDocumentPosition(document, line, column);
-        }
-
-        ISymbolNamespace[] ISymbolReader.GetNamespaces()
-        {
-            return this.symReader.GetNamespaces();
-        }
-
-        byte[] ISymbolReader.GetSymAttribute(SymbolToken parent, string name)
-        {
-           return this.symReader.GetSymAttribute(parent, name);
-        }
-
-        ISymbolVariable[] ISymbolReader.GetVariables(SymbolToken parent)
-        {
-            return this.symReader.GetVariables(parent);
-        }
-
-        SymbolToken ISymbolReader.UserEntryPoint
-        {
-            get { return this.symReader.UserEntryPoint; }
-        }
-
-        // implicit ISymbolReader
+        // implicit ISymbolReader interface implemenation
 
         public ISymbolDocument GetDocument(string url, Guid language, Guid languageVendor, Guid documentType)
         {
