@@ -159,7 +159,9 @@ namespace SourceLink.SymbolStore
     }
 
 
-    internal class SymReader : ISymbolReader, ISymbolReader2, ISymbolReaderSymbolSearchInfo, ISymbolEncUpdate, IDisposable
+    internal class SymReader 
+        : //ISymbolReader2, 
+        ISymbolReaderSymbolSearchInfo, ISymbolEncUpdate, IDisposable
     {
 
         private ISymUnmanagedReader m_reader; // Unmanaged Reader pointer
@@ -187,7 +189,7 @@ namespace SourceLink.SymbolStore
             m_reader = null;
         }
 
-        public ISymbolDocument GetDocument(String url,
+        public SymDocument GetDocument(String url,
                                         Guid language,
                                         Guid languageVendor,
                                         Guid documentType)
@@ -198,23 +200,16 @@ namespace SourceLink.SymbolStore
             {
                 return null;
             }
-            return new SymbolDocument(document);
+            return new SymDocument(document);
         }
 
-        public ISymbolDocument[] GetDocuments()
+        public SymDocument[] GetDocuments()
         {
             int cDocs = 0;
             m_reader.GetDocuments(0, out cDocs, null);
-            ISymUnmanagedDocument[] unmanagedDocuments = new ISymUnmanagedDocument[cDocs];
-            m_reader.GetDocuments(cDocs, out cDocs, unmanagedDocuments);
-
-            ISymbolDocument[] documents = new SymbolDocument[cDocs];
-            uint i;
-            for (i = 0; i < cDocs; i++)
-            {
-                documents[i] = new SymbolDocument(unmanagedDocuments[i]);
-            }
-            return documents;
+            var docs = new ISymUnmanagedDocument[cDocs];
+            m_reader.GetDocuments(cDocs, out cDocs, docs);
+            return Array.ConvertAll(docs, doc => new SymDocument(doc));
         }
 
         public SymbolToken UserEntryPoint
@@ -237,7 +232,7 @@ namespace SourceLink.SymbolStore
             }
         }
 
-        public ISymbolMethod GetMethod(SymbolToken method)
+        public SymMethod GetMethod(SymbolToken method)
         {
             ISymUnmanagedMethod unmanagedMethod = null;
             int hr = m_reader.GetMethod(method, out unmanagedMethod);
@@ -254,7 +249,7 @@ namespace SourceLink.SymbolStore
             return new SymMethod(unmanagedMethod);
         }
 
-        public ISymbolMethod GetMethod(SymbolToken method, int version)
+        public SymMethod GetMethod(SymbolToken method, int version)
         {
             ISymUnmanagedMethod unmanagedMethod = null;
             int hr = m_reader.GetMethodByVersion(method, version, out unmanagedMethod);
@@ -303,12 +298,12 @@ namespace SourceLink.SymbolStore
             return variables;
         }
 
-        public ISymbolMethod GetMethodFromDocumentPosition(ISymbolDocument document,
+        public SymMethod GetMethodFromDocumentPosition(ISymbolDocument document,
                                                         int line,
                                                         int column)
         {
             ISymUnmanagedMethod unmanagedMethod = null;
-            m_reader.GetMethodFromDocumentPosition(((SymbolDocument)document).InternalDocument, line, column, out unmanagedMethod);
+            m_reader.GetMethodFromDocumentPosition(((SymDocument)document).InternalDocument, line, column, out unmanagedMethod);
             return new SymMethod(unmanagedMethod);
         }
 
@@ -383,17 +378,17 @@ namespace SourceLink.SymbolStore
             return fileName.ToString();
         }
 
-        public ISymbolMethod[] GetMethodsFromDocumentPosition(
+        public SymMethod[] GetMethodsFromDocumentPosition(
                 ISymbolDocument document, int line, int column)
         {
             ISymUnmanagedMethod[] unmanagedMethods;
-            ISymbolMethod[] methods;
+            SymMethod[] methods;
             int count = 0;
             uint i;
-            m_reader.GetMethodsFromDocumentPosition(((SymbolDocument)document).InternalDocument, line, column, 0, out count, null);
+            m_reader.GetMethodsFromDocumentPosition(((SymDocument)document).InternalDocument, line, column, 0, out count, null);
             unmanagedMethods = new ISymUnmanagedMethod[count];
-            m_reader.GetMethodsFromDocumentPosition(((SymbolDocument)document).InternalDocument, line, column, count, out count, unmanagedMethods);
-            methods = new ISymbolMethod[count];
+            m_reader.GetMethodsFromDocumentPosition(((SymDocument)document).InternalDocument, line, column, count, out count, unmanagedMethods);
+            methods = new SymMethod[count];
 
             for (i = 0; i < count; i++)
             {
@@ -406,7 +401,7 @@ namespace SourceLink.SymbolStore
                                      out Boolean isCurrent)
         {
             int version = 0;
-            m_reader.GetDocumentVersion(((SymbolDocument)document).InternalDocument, out version, out isCurrent);
+            m_reader.GetDocumentVersion(((SymDocument)document).InternalDocument, out version, out isCurrent);
             return version;
         }
 

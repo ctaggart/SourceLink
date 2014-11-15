@@ -18,7 +18,7 @@ namespace SourceLink.SymbolStore
     [
         ComVisible(false)
     ]
-    public interface ISymbolReader2 : ISymbolReader, IDisposable
+    public interface ISymbolReader2 : IDisposable
     {
         // Initialize the symbol reader with the metadata importer interface
         // that this reader will be associated with, along with the filename

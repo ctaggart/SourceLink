@@ -87,11 +87,11 @@ namespace SourceLink.SymbolStore
     }
 
 
-    internal class SymScope : ISymbolScope, ISymbolScope2
+    public class SymScope //: ISymbolScope, ISymbolScope2
     {
         ISymUnmanagedScope m_target;
 
-        internal SymScope(ISymUnmanagedScope target)
+        public SymScope(ISymUnmanagedScope target)
         {
             // We should not wrap null instances
             if (target == null)
@@ -100,7 +100,7 @@ namespace SourceLink.SymbolStore
             m_target = target;
         }
 
-        public ISymbolMethod Method
+        public SymMethod Method
         {
             get
             {
@@ -112,7 +112,7 @@ namespace SourceLink.SymbolStore
             }
         }
 
-        public ISymbolScope Parent
+        public SymScope Parent
         {
             get
             {
@@ -124,7 +124,7 @@ namespace SourceLink.SymbolStore
             }
         }
 
-        public ISymbolScope[] GetChildren()
+        public SymScope[] GetChildren()
         {
             int count;
             m_target.GetChildren(0, out count, null);
@@ -132,7 +132,7 @@ namespace SourceLink.SymbolStore
             m_target.GetChildren(count, out count, uScopes);
 
             int i;
-            ISymbolScope[] scopes = new ISymbolScope[count];
+            SymScope[] scopes = new SymScope[count];
             for (i = 0; i < count; i++)
             {
                 scopes[i] = new SymScope(uScopes[i]);

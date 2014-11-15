@@ -39,7 +39,7 @@ namespace SourceLink.SymbolStore
         void GetParameters(int cParams,
                               out int pcParams,
                               [In, Out, MarshalAs(UnmanagedType.LPArray, SizeParamIndex=0)] ISymUnmanagedVariable[] parms);
-        void GetNamespace([MarshalAs(UnmanagedType.Interface)] out ISymUnmanagedNamespace retVal);
+        //void GetNamespace([MarshalAs(UnmanagedType.Interface)] out ISymUnmanagedNamespace retVal); // NIE
         void GetSourceStartEnd(ISymUnmanagedDocument[] docs,
                                   [In, Out, MarshalAs(UnmanagedType.LPArray)] int[] lines,
                                   [In, Out, MarshalAs(UnmanagedType.LPArray)] int[] columns,
@@ -76,7 +76,7 @@ namespace SourceLink.SymbolStore
     }
     
 
-    internal class SymMethod : ISymbolMethod, ISymbolEnCMethod
+    public class SymMethod : ISymbolEnCMethod
     {
         ISymUnmanagedMethod m_unmanagedMethod;
 
@@ -106,6 +106,25 @@ namespace SourceLink.SymbolStore
                 int retval = 0;                
                 m_unmanagedMethod.GetSequencePointCount(out retval);
                 return retval;
+            }
+        }
+
+        public SequencePoint[] SequencePoints
+        {
+            get
+            {
+                var count = SequencePointCount;
+                var docs = new ISymUnmanagedDocument[count];
+                var offsets = new int[count];
+                var lines = new int[count];
+                var columns = new int[count];
+                var endLines = new int[count];
+                var endColumns = new int[count];
+                m_unmanagedMethod.GetSequencePoints(count, out count, offsets, docs, lines, columns, endLines, endColumns); // NIE!
+                var points = new SequencePoint[count];
+                for (var i = 0; i < count; i++)
+                    points[i] = new SequencePoint(offsets[i], new SymDocument(docs[i]), lines[i], columns[i], endLines[i], endColumns[i]);
+                return points;
             }
         }
 
@@ -161,14 +180,14 @@ namespace SourceLink.SymbolStore
             // Create the SymbolDocument form the IntPtr's
             for (i = 0; i < documents.Length; i++)
             {
-                documents[i] = new SymbolDocument(unmanagedDocuments[i]);
+                documents[i] = new SymDocument(unmanagedDocuments[i]);
             }
 
             return;
   
         }
 
-        public ISymbolScope RootScope
+        public SymScope RootScope
         { 
             get
             {
@@ -178,34 +197,33 @@ namespace SourceLink.SymbolStore
             }
         }
 
-        public ISymbolScope GetScope(int offset)
+        public SymScope GetScope(int offset)
         {
             ISymUnmanagedScope retVal = null;
             m_unmanagedMethod.GetScopeFromOffset(offset, out retVal);
             return new SymScope(retVal);
         }
 
-        public int GetOffset(ISymbolDocument document,
+        public int GetOffset(SymDocument document,
                              int line,
                              int column)
         {
             int retVal = 0;
-            m_unmanagedMethod.GetOffset(((SymbolDocument)document).InternalDocument, line, column, out retVal);
+            m_unmanagedMethod.GetOffset(document.InternalDocument, line, column, out retVal);
             return retVal;
         }
 
-        public int[] GetRanges(ISymbolDocument document,
+        public int[] GetRanges(SymDocument document,
                                int line,
                                int column)
         {                              
             int cRanges = 0;
-            m_unmanagedMethod.GetRanges(((SymbolDocument)document).InternalDocument, line, column, 0, out cRanges, null);
+            m_unmanagedMethod.GetRanges(document.InternalDocument, line, column, 0, out cRanges, null);
             int[] Ranges = new int[cRanges];
-            m_unmanagedMethod.GetRanges(((SymbolDocument)document).InternalDocument, line, column, cRanges, out cRanges, Ranges);
+            m_unmanagedMethod.GetRanges(document.InternalDocument, line, column, cRanges, out cRanges, Ranges);
             return Ranges;
         }
                                 
-
         public ISymbolVariable[] GetParameters()
         {
             int cVariables = 0;
@@ -221,13 +239,6 @@ namespace SourceLink.SymbolStore
             }
 
             return Variables;
-        }
-
-        public ISymbolNamespace GetNamespace()
-        {
-            ISymUnmanagedNamespace retVal = null;
-            m_unmanagedMethod.GetNamespace(out retVal);
-            return new SymNamespace(retVal);
         }
 
         public bool GetSourceStartEnd(ISymbolDocument[] docs,
@@ -264,7 +275,7 @@ namespace SourceLink.SymbolStore
             {
                 for (i = 0; i < docs.Length;i++)
                 {
-                    docs[i] = new SymbolDocument(unmanagedDocuments[i]);
+                    docs[i] = new SymDocument(unmanagedDocuments[i]);
                 }
             }
             return pRetVal;

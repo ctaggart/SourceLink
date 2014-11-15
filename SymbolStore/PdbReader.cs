@@ -10,10 +10,10 @@ using System.Diagnostics.SymbolStore;
 //namespace Roslyn.Test.PdbUtilities
 namespace SourceLink.SymbolStore
 {
-    public sealed class PdbReader : IDisposable, ISymbolReader
+    public sealed class PdbReader : IDisposable
     {
         private ISymUnmanagedReader rawReader;
-        private ISymbolReader symReader;
+        private SymReader symReader;
         private IntPtr sessionCookie;
         private long moduleCookie;
 
@@ -25,7 +25,7 @@ namespace SourceLink.SymbolStore
             if (String.IsNullOrEmpty(fileName))
                 this.moduleCookie = 0;
             else
-                this.moduleCookie = SrcSrv.LoadModule(sessionCookie, fileName, this.SymUnmanagedSourceServerModule);
+                this.moduleCookie = SrcSrv.LoadModule(sessionCookie, fileName, this.ISymUnmanagedSourceServerModule);
         }
 
         public PdbReader(Stream pdb, IntPtr sessionCookie, string fileName) :
@@ -61,7 +61,7 @@ namespace SourceLink.SymbolStore
             }
         }
 
-        public ISymUnmanagedReader SymUnmanagedReader
+        public ISymUnmanagedReader ISymUnmanagedReader
         {
             get
             {
@@ -74,7 +74,12 @@ namespace SourceLink.SymbolStore
             }
         }
 
-        public ISymUnmanagedSourceServerModule SymUnmanagedSourceServerModule
+        public ISymUnmanagedReader2 ISymUnmanagedReader2
+        {
+            get { return (ISymUnmanagedReader2)rawReader; }
+        }
+
+        public ISymUnmanagedSourceServerModule ISymUnmanagedSourceServerModule
         {
             get { return (ISymUnmanagedSourceServerModule)rawReader; }
         }
@@ -90,41 +95,31 @@ namespace SourceLink.SymbolStore
             return SrcSrv.GetFileUrl(sessionCookie, moduleCookie, sourceFilePath);
         }
 
-        // implicit ISymbolReader interface implemenation
+        public SymDocument[] Documents
+        {
+            get { return this.symReader.GetDocuments(); }
+        }
+
+        // ISymbolReader methods, removed some that throw NotImplementedException
+        // some of these may too, TODO test them
 
         public ISymbolDocument GetDocument(string url, Guid language, Guid languageVendor, Guid documentType)
         {
             return this.symReader.GetDocument(url, language, languageVendor, documentType);
         }
-
-        public ISymbolDocument[] GetDocuments()
-        {
-            return this.symReader.GetDocuments();
-        }
-
-        public ISymbolVariable[] GetGlobalVariables()
-        {
-            return this.symReader.GetGlobalVariables();
-        }
-
-        public ISymbolMethod GetMethod(SymbolToken method, int version)
+        public SymMethod GetMethod(SymbolToken method, int version)
         {
             return this.symReader.GetMethod(method, version);
         }
 
-        public ISymbolMethod GetMethod(SymbolToken method)
+        public SymMethod GetMethod(SymbolToken method)
         {
             return this.symReader.GetMethod(method);
         }
 
-        public ISymbolMethod GetMethodFromDocumentPosition(ISymbolDocument document, int line, int column)
+        public SymMethod GetMethodFromDocumentPosition(ISymbolDocument document, int line, int column)
         {
             return this.symReader.GetMethodFromDocumentPosition(document, line, column);
-        }
-
-        public ISymbolNamespace[] GetNamespaces()
-        {
-            return this.symReader.GetNamespaces();
         }
 
         public byte[] GetSymAttribute(SymbolToken parent, string name)
@@ -140,23 +135,6 @@ namespace SourceLink.SymbolStore
         public SymbolToken UserEntryPoint
         {
             get { return this.symReader.UserEntryPoint; }
-        }
-
-        // convenience getters
-
-        public ISymbolDocument[] Documents
-        {
-            get { return this.symReader.GetDocuments(); }
-        }
-
-        public ISymbolVariable[] GlobalVariables
-        {
-            get { return this.symReader.GetGlobalVariables(); }
-        }
-
-        public ISymbolNamespace[] Namespaces
-        {
-            get { return this.symReader.GetNamespaces(); }
         }
 
     }
