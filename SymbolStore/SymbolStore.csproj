@@ -50,7 +50,9 @@
     <Compile Include="ISymReader2.cs" />
     <Compile Include="ISymScope2.cs" />
     <Compile Include="ISymSearchInfo.cs" />
+    <Compile Include="ISymUnmanagedReader2.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" Condition="Exists('Properties\AssemblyInfo.fs')" />
+    <Compile Include="SequencePoint.cs" />
     <Compile Include="SrcSrv.cs" />
     <Compile Include="SymbolCache.cs" />
     <Compile Include="SymConstant.cs" />

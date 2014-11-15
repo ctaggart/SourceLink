@@ -57,11 +57,11 @@ namespace SourceLink.SymbolStore
     };
     
     /// <include file='doc\SymDocument.uex' path='docs/doc[@for="SymDocument"]/*' />
-    internal class SymbolDocument : ISymbolDocument
+    public class SymDocument : ISymbolDocument
     {
         ISymUnmanagedDocument m_unmanagedDocument;
         
-        internal SymbolDocument(ISymUnmanagedDocument document)
+        public SymDocument(ISymUnmanagedDocument document)
         {
             if (document == null)
             {
@@ -170,8 +170,6 @@ namespace SourceLink.SymbolStore
             }
         }
             
-        
-
         /// <include file='doc\SymDocument.uex' path='docs/doc[@for="SymDocument.GetSourceRange"]/*' />
         public byte[] GetSourceRange(int startLine, int startColumn,
                                           int endLine, int endColumn)
@@ -184,13 +182,32 @@ namespace SourceLink.SymbolStore
             return Data;
         }
                                       
-        internal ISymUnmanagedDocument InternalDocument
+        public ISymUnmanagedDocument InternalDocument
         {
             get
             {
                 return m_unmanagedDocument;
             }
         }
-                                      
+
+        // from Roslyn.Test.PdbUtilities.PdbToXmlConverter
+        public static ISymUnmanagedMethod[] GetMethodsInDocument(ISymUnmanagedReader2 symReader, ISymUnmanagedDocument symDocument)
+        {
+            int count;
+            symReader.GetMethodsInDocument(symDocument, 0, out count, null);
+
+            var result = new ISymUnmanagedMethod[count];
+            symReader.GetMethodsInDocument(symDocument, count, out count, result);
+
+            return result;
+        }
+
+        public SymMethod[] GetMethods(ISymUnmanagedReader2 symReader)
+        {
+            return Array.ConvertAll(
+                SymDocument.GetMethodsInDocument(symReader, m_unmanagedDocument),
+                m => new SymMethod(m));
+        }
+
     }
 }

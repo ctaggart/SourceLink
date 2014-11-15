@@ -19,7 +19,7 @@ namespace SourceLink.SymbolStore
     [
         ComVisible(false)
     ]
-    public interface ISymbolEnCMethod: ISymbolMethod
+    public interface ISymbolEnCMethod
     {
         String GetFileNameFromOffset(int dwOffset);
    
