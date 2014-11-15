@@ -1,17 +1,34 @@
 ﻿open System
 //open System.Collections.Generic
 open System.IO
-//open System.Text
 open SourceLink
-//open SourceLink.PdbModify
-//open SourceLink.SrcSrv
 open SourceLink.SymbolStore
+open System.Reflection
 
-let getNugetExeShas() =
-    let f = @"C:\Projects\SourceLink\.nuget\NuGet.exe"
-    printfn "calculated: %s" (GitRepo.ComputeChecksum f)
-    use r = new GitRepo(@"C:\Projects\SourceLink")
-    printfn "in repo: %s" (r.Checksum f)
+let pdbSourceLink = @"..\..\..\packages\SourceLink.Fake\tools\SourceLink.pdb"
+
+let printPdbDocuments() =
+    use s = File.OpenRead pdbSourceLink
+
+    let sc = SymbolCache @"C:\tmp\cache"
+    let r = sc.ReadPdb(s, pdbSourceLink)
+
+    for d in r.Documents do
+        printfn "\npdb original source file path: %s" d.URL
+        printfn "it had an md5 checksum of: %s" (d.GetCheckSum() |> Hex.encode)
+        let url = r.GetDownloadUrl d.URL
+        printfn "has download url if source indexed: %s" url
+        let downloadedFile = sc.DownloadFile url
+        printfn "downloaded the file to the cache %s" downloadedFile
+        printfn "downloaded file has md5 of: %s" (Crypto.hashMD5 downloadedFile |> Hex.encode)
+
+let printMethods() =
+    let dll = Assembly.LoadFrom @"..\..\..\packages\SourceLink.SymbolStore\lib\net45\SourceLink.SymbolStore.dll"
+    for dt in dll.DefinedTypes do
+        printfn "\n%s" dt.FullName
+        for m in dt.GetMembers() do
+            printfn "  %d %s" m.MetadataToken m.Name
+
 
 // print methods and their files and line numbers
 let printMethodsFileLines() =
@@ -28,8 +45,8 @@ let printMethodsFileLines() =
 
             printfn "%d method in %s" token fn
             printfn "  %d sequence points" m.SequencePointCount
-            for p in m.SequencePoints do
-                printfn "%d, %d" p.Line p.Column
+//            for p in m.SequencePoints do
+//                printfn "%d, %d" p.Line p.Column
         ()
         
 
@@ -41,8 +58,6 @@ let printMethodsFileLines() =
 
 [<EntryPoint>]
 let main argv =
-//    getNugetExeShas()
-//    let mdd = Cor.CorMetaDataDispenser() :> Cor.IMetaDataDispenser
-//    printfn "mdd: %A" mdd
+    printPdbDocuments()
     printMethodsFileLines()
     0
