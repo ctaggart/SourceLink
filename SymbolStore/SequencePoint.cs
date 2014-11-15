@@ -8,12 +8,12 @@ namespace SourceLink.SymbolStore
 {
     public class SequencePoint
     {
-        public int Offset { get; }
-        public SymDocument Document { get; }
-        public int Line { get; }
-        public int Column { get; }
-        public int EndLine { get; }
-        public int EndColumn { get; }
+        public int Offset { get; private set; }
+        public SymDocument Document { get; private set; }
+        public int Line { get; private set; }
+        public int Column { get; private set; }
+        public int EndLine { get; private set; }
+        public int EndColumn { get; private set; }
 
         public SequencePoint(int offset, SymDocument document, int line, int column, int endLine, int endColumn)
         {
