@@ -4,7 +4,7 @@
 //  Copyright (C) Microsoft Corporation.  All rights reserved.
 //---------------------------------------------------------------------
 
-namespace SourceLink.SymbolStore
+namespace SourceLink.SymbolStore.CorSym
 {
 	public enum HResult
 	{

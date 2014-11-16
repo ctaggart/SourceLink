@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30723.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "SourceLink", "SourceLink\SourceLink.fsproj", "{AAF1B8D7-791E-40F1-A278-9A16D9667866}"
 EndProject
@@ -45,7 +45,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{D3E73D0A-2
 		docs\content\visualstudio.md = docs\content\visualstudio.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SymbolStore", "SymbolStore\SymbolStore.csproj", "{F764CED4-2F3C-49EC-BA9F-99105707B607}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CorSym", "CorSym\CorSym.csproj", "{F764CED4-2F3C-49EC-BA9F-99105707B607}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "SymbolStore", "SymbolStore\SymbolStore.fsproj", "{22D889DB-96E8-475D-922E-4E7EEBB60045}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -85,6 +87,10 @@ Global
 		{F764CED4-2F3C-49EC-BA9F-99105707B607}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F764CED4-2F3C-49EC-BA9F-99105707B607}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F764CED4-2F3C-49EC-BA9F-99105707B607}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22D889DB-96E8-475D-922E-4E7EEBB60045}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22D889DB-96E8-475D-922E-4E7EEBB60045}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22D889DB-96E8-475D-922E-4E7EEBB60045}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22D889DB-96E8-475D-922E-4E7EEBB60045}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
