@@ -6,10 +6,12 @@ open SourceLink.SymbolStore
 open System.Reflection
 
 let pdbSourceLink = @"..\..\..\packages\SourceLink.Fake\tools\SourceLink.pdb"
+//let pdbSourceLink = @"C:\Projects\SourceLink1\packages\SourceLink.Fake\tools\SourceLink.pdb"
 
 let printPdbDocuments() =
     use s = File.OpenRead pdbSourceLink
 
+    let pdbSourceLink = Path.GetFullPath pdbSourceLink
     let sc = SymbolCache @"C:\tmp\cache"
     let r = sc.ReadPdb(s, pdbSourceLink)
 
@@ -19,8 +21,8 @@ let printPdbDocuments() =
         let url = r.GetDownloadUrl d.URL
         printfn "has download url if source indexed: %s" url
         let downloadedFile = sc.DownloadFile url
-        printfn "downloaded the file to the cache %s" downloadedFile
-        printfn "downloaded file has md5 of: %s" (Crypto.hashMD5 downloadedFile |> Hex.encode)
+//        printfn "downloaded the file to the cache %s" downloadedFile
+//        printfn "downloaded file has md5 of: %s" (Crypto.hashMD5 downloadedFile |> Hex.encode)
 
 let printMethods() =
     let dll = Assembly.LoadFrom @"..\..\..\packages\SourceLink.SymbolStore\lib\net45\SourceLink.SymbolStore.dll"
@@ -59,5 +61,5 @@ let printMethodsFileLines() =
 [<EntryPoint>]
 let main argv =
     printPdbDocuments()
-    printMethodsFileLines()
+//    printMethodsFileLines()
     0
