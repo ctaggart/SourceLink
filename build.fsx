@@ -81,7 +81,7 @@ Target "SourceLink" (fun _ ->
     sourceIndex "SourceLink/SourceLink.fsproj" None
     sourceIndex "Git/Git.fsproj" None
     sourceIndex "SymbolStore/SymbolStore.fsproj" None
-    sourceIndex "CorSym/CorSym.csproj" (Some "CorSym/bin/Release/SourceLink.SymbolStore.CorSym.pdb")
+    sourceIndex "CorSym/CorSym.csproj" (Some "SymbolStore/bin/Release/SourceLink.SymbolStore.CorSym.pdb")
 )
 
 Target "NuGet" (fun _ ->
