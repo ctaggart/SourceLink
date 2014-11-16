@@ -36,6 +36,258 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework'">
+      <Choose>
+        <When Condition="$(TargetFrameworkVersion) == 'v1.0'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v1.1'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v2.0'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v3.5'">
+        </When>
+        <Otherwise>
+          <ItemGroup>
+            <Reference Include="CorApi">
+              <HintPath>..\packages\MDbg\lib\net40\CorApi.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+            <Reference Include="CorApiRaw">
+              <HintPath>..\packages\MDbg\lib\net40\CorApiRaw.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+            <Reference Include="MDbgEng">
+              <HintPath>..\packages\MDbg\lib\net40\MDbgEng.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+            <Reference Include="MDbgExt">
+              <HintPath>..\packages\MDbg\lib\net40\MDbgExt.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+            <Reference Include="MdbgUtility">
+              <HintPath>..\packages\MDbg\lib\net40\MdbgUtility.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+            <Reference Include="NativeDebugWrappers">
+              <HintPath>..\packages\MDbg\lib\net40\NativeDebugWrappers.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+          </ItemGroup>
+        </Otherwise>
+      </Choose>
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == 'MonoAndroid'">
+      <ItemGroup>
+        <Reference Include="CorApi">
+          <HintPath>..\packages\MDbg\lib\net40\CorApi.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="CorApiRaw">
+          <HintPath>..\packages\MDbg\lib\net40\CorApiRaw.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="MDbgEng">
+          <HintPath>..\packages\MDbg\lib\net40\MDbgEng.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="MDbgExt">
+          <HintPath>..\packages\MDbg\lib\net40\MDbgExt.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="MdbgUtility">
+          <HintPath>..\packages\MDbg\lib\net40\MdbgUtility.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="NativeDebugWrappers">
+          <HintPath>..\packages\MDbg\lib\net40\NativeDebugWrappers.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == 'MonoTouch'">
+      <ItemGroup>
+        <Reference Include="CorApi">
+          <HintPath>..\packages\MDbg\lib\net40\CorApi.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="CorApiRaw">
+          <HintPath>..\packages\MDbg\lib\net40\CorApiRaw.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="MDbgEng">
+          <HintPath>..\packages\MDbg\lib\net40\MDbgEng.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="MDbgExt">
+          <HintPath>..\packages\MDbg\lib\net40\MDbgExt.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="MdbgUtility">
+          <HintPath>..\packages\MDbg\lib\net40\MdbgUtility.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="NativeDebugWrappers">
+          <HintPath>..\packages\MDbg\lib\net40\NativeDebugWrappers.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == 'Silverlight'">
+      <ItemGroup>
+        <Reference Include="CorApi">
+          <HintPath>..\packages\MDbg\lib\net40\CorApi.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="CorApiRaw">
+          <HintPath>..\packages\MDbg\lib\net40\CorApiRaw.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="MDbgEng">
+          <HintPath>..\packages\MDbg\lib\net40\MDbgEng.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="MDbgExt">
+          <HintPath>..\packages\MDbg\lib\net40\MDbgExt.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="MdbgUtility">
+          <HintPath>..\packages\MDbg\lib\net40\MdbgUtility.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="NativeDebugWrappers">
+          <HintPath>..\packages\MDbg\lib\net40\NativeDebugWrappers.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == 'Windows'">
+      <ItemGroup>
+        <Reference Include="CorApi">
+          <HintPath>..\packages\MDbg\lib\net40\CorApi.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="CorApiRaw">
+          <HintPath>..\packages\MDbg\lib\net40\CorApiRaw.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="MDbgEng">
+          <HintPath>..\packages\MDbg\lib\net40\MDbgEng.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="MDbgExt">
+          <HintPath>..\packages\MDbg\lib\net40\MDbgExt.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="MdbgUtility">
+          <HintPath>..\packages\MDbg\lib\net40\MdbgUtility.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="NativeDebugWrappers">
+          <HintPath>..\packages\MDbg\lib\net40\NativeDebugWrappers.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == 'WindowsPhoneApp'">
+      <ItemGroup>
+        <Reference Include="CorApi">
+          <HintPath>..\packages\MDbg\lib\net40\CorApi.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="CorApiRaw">
+          <HintPath>..\packages\MDbg\lib\net40\CorApiRaw.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="MDbgEng">
+          <HintPath>..\packages\MDbg\lib\net40\MDbgEng.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="MDbgExt">
+          <HintPath>..\packages\MDbg\lib\net40\MDbgExt.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="MdbgUtility">
+          <HintPath>..\packages\MDbg\lib\net40\MdbgUtility.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="NativeDebugWrappers">
+          <HintPath>..\packages\MDbg\lib\net40\NativeDebugWrappers.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <Reference Include="CorApi">
+          <HintPath>..\packages\MDbg\lib\net40\CorApi.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="CorApiRaw">
+          <HintPath>..\packages\MDbg\lib\net40\CorApiRaw.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="MDbgEng">
+          <HintPath>..\packages\MDbg\lib\net40\MDbgEng.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="MDbgExt">
+          <HintPath>..\packages\MDbg\lib\net40\MDbgExt.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="MdbgUtility">
+          <HintPath>..\packages\MDbg\lib\net40\MdbgUtility.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="NativeDebugWrappers">
+          <HintPath>..\packages\MDbg\lib\net40\NativeDebugWrappers.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
   <ItemGroup>
     <Reference Include="System" />
   </ItemGroup>
@@ -44,29 +296,22 @@
     <Compile Include="DummyMetadataImport.cs" />
     <Compile Include="HResults.cs" />
     <Compile Include="IMetadataImport.cs" />
-    <Compile Include="ISymConstant.cs" />
-    <Compile Include="ISymEncMethod.cs" />
-    <Compile Include="ISymENCUpdate.cs" />
-    <Compile Include="ISymReader2.cs" />
-    <Compile Include="ISymScope2.cs" />
-    <Compile Include="ISymSearchInfo.cs" />
+    <Compile Include="ISymUnmanagedDocument.cs" />
+    <Compile Include="ISymUnmanagedMethod.cs" />
+    <Compile Include="ISymUnmanagedNamespace.cs" />
+    <Compile Include="ISymUnmanagedReader.cs" />
     <Compile Include="ISymUnmanagedReader2.cs" />
+    <Compile Include="ISymUnmanagedScope.cs" />
+    <Compile Include="ISymUnmanagedVariable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" Condition="Exists('Properties\AssemblyInfo.fs')" />
     <Compile Include="SequencePoint.cs" />
     <Compile Include="SrcSrv.cs" />
     <Compile Include="SymbolCache.cs" />
-    <Compile Include="SymConstant.cs" />
-    <Compile Include="SymDocument.cs" />
-    <Compile Include="SymMethod.cs" />
-    <Compile Include="SymNamespace.cs" />
-    <Compile Include="SymReader.cs" />
-    <Compile Include="SymScope.cs" />
-    <Compile Include="SymSearchInfo.cs" />
     <Compile Include="SymSrv.cs" />
-    <Compile Include="SymVariable.cs" />
     <Compile Include="PdbReader.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="paket.references" />
     <None Include="SymbolStore.nuspec" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
