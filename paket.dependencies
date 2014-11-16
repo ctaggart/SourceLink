@@ -8,5 +8,4 @@ nuget NuGet.CommandLine
 
 nuget LibGit2Sharp
 nuget Mono.Cecil
-
-nuget SourceLink.SymbolStore prerelease
+nuget MDbg

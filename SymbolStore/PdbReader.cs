@@ -2,10 +2,8 @@
 
 using System;
 using System.IO;
-//using Microsoft.Samples.Debugging.SymbolStore;
-//using Roslyn.Utilities;
-//using Roslyn.Utilities.Pdb;
-using System.Diagnostics.SymbolStore;
+using Microsoft.Samples.Debugging.SymbolStore;
+using Microsoft.Samples.Debugging.CorSymbolStore;
 
 //namespace Roslyn.Test.PdbUtilities
 namespace SourceLink.SymbolStore
@@ -13,14 +11,14 @@ namespace SourceLink.SymbolStore
     public sealed class PdbReader : IDisposable
     {
         private ISymUnmanagedReader rawReader;
-        private SymReader symReader;
+        private ISymbolReader symReader;
         private IntPtr sessionCookie;
         private long moduleCookie;
 
         public PdbReader(ISymUnmanagedReader rawReader, IntPtr sessionCookie, string fileName)
         {
             this.rawReader = rawReader;
-            this.symReader = new SymReader(rawReader);
+            this.symReader = SymbolBinder.GetReaderFromCOM(rawReader);
             this.sessionCookie = sessionCookie;
             if (String.IsNullOrEmpty(fileName))
                 this.moduleCookie = 0;
@@ -36,11 +34,6 @@ namespace SourceLink.SymbolStore
         public PdbReader(Stream pdb) :
             this(pdb, IntPtr.Zero, null)
         {
-        }
-
-        public static object CreateUnmanagedReader(Stream pdb)
-        {
-            return CreateRawReader(pdb);
         }
 
         public static ISymUnmanagedReader CreateRawReader(Stream pdb)
@@ -61,15 +54,22 @@ namespace SourceLink.SymbolStore
             }
         }
 
+        public ISymbolReader ISymbolReader
+        {
+            get
+            {
+                if (symReader == null)
+                    throw new ObjectDisposedException("SymReader");
+                return symReader;
+            }
+        }
+
         public ISymUnmanagedReader ISymUnmanagedReader
         {
             get
             {
                 if (rawReader == null)
-                {
                     throw new ObjectDisposedException("SymReader");
-                }
-
                 return rawReader;
             }
         }
@@ -95,47 +95,43 @@ namespace SourceLink.SymbolStore
             return SrcSrv.GetFileUrl(sessionCookie, moduleCookie, sourceFilePath);
         }
 
-        public SymDocument[] Documents
+        // derived from Roslyn.Test.PdbUtilities.PdbToXmlConverter
+        public ISymUnmanagedMethod[] GetMethodsInDocument(ISymUnmanagedDocument symDocument)
         {
-            get { return this.symReader.GetDocuments(); }
+            var symReader = this.ISymUnmanagedReader2;
+            int count;
+            symReader.GetMethodsInDocument(symDocument, 0, out count, null);
+            var methods = new ISymUnmanagedMethod[count];
+            symReader.GetMethodsInDocument(symDocument, count, out count, methods);
+            return methods;
+        }
+    }
+
+    public static class PdbReaderExt
+    {
+        public static ISymUnmanagedDocument[] GetDocuments(this ISymUnmanagedReader reader)
+        {
+            int count;
+            reader.GetDocuments(0, out count, null);
+            var docs = new ISymUnmanagedDocument[count];
+            reader.GetDocuments(count, out count, docs);
+            return docs;
         }
 
-        // ISymbolReader methods, removed some that throw NotImplementedException
-        // some of these may too, TODO test them
-
-        public ISymbolDocument GetDocument(string url, Guid language, Guid languageVendor, Guid documentType)
+        public static SequencePoint[] GetSequencePoints(this ISymbolMethod method)
         {
-            return this.symReader.GetDocument(url, language, languageVendor, documentType);
+            int count = method.SequencePointCount;
+            int[] offsets = new int[count];
+            ISymbolDocument[] docs = new ISymbolDocument[count];
+            int[] startColumn = new int[count];
+            int[] endColumn = new int[count];
+            int[] startRow = new int[count];
+            int[] endRow = new int[count];
+            method.GetSequencePoints(offsets, docs, startRow, startColumn, endRow, endColumn);
+            var points = new SequencePoint[count];
+            for (int i = 0; i < count; i++)
+                points[i] = new SequencePoint(offsets[i], docs[i], startRow[i], startColumn[i], endRow[i], endColumn[i]);
+            return points;
         }
-        public SymMethod GetMethod(SymbolToken method, int version)
-        {
-            return this.symReader.GetMethod(method, version);
-        }
-
-        public SymMethod GetMethod(SymbolToken method)
-        {
-            return this.symReader.GetMethod(method);
-        }
-
-        public SymMethod GetMethodFromDocumentPosition(ISymbolDocument document, int line, int column)
-        {
-            return this.symReader.GetMethodFromDocumentPosition(document, line, column);
-        }
-
-        public byte[] GetSymAttribute(SymbolToken parent, string name)
-        {
-            return this.symReader.GetSymAttribute(parent, name);
-        }
-
-        public ISymbolVariable[] GetVariables(SymbolToken parent)
-        {
-            return this.symReader.GetVariables(parent);
-        }
-
-        public SymbolToken UserEntryPoint
-        {
-            get { return this.symReader.UserEntryPoint; }
-        }
-
     }
 }
