@@ -16,4 +16,4 @@ NUGET
       Microsoft.AspNet.Razor (>= 2.0.30506.0)
   remote: https://ci.appveyor.com/nuget/sourcelink-helmesfwai2a
   specs:
-    SourceLink.Fake (0.5.0-ci1411152059)
+    SourceLink.Fake (0.5.0-ci1411160110)

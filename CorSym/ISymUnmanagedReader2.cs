@@ -4,7 +4,7 @@ using System;
 using System.Runtime.InteropServices;
 
 //namespace Roslyn.Utilities.Pdb
-namespace SourceLink.SymbolStore
+namespace SourceLink.SymbolStore.CorSym
 {
     [Guid("A09E53B2-2A57-4cca-8F63-B84F7C35D4AA")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]

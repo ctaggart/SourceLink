@@ -4,7 +4,7 @@ using System;
 using System.Runtime.InteropServices;
 
 //namespace Roslyn.Utilities.Pdb
-namespace SourceLink.SymbolStore
+namespace SourceLink.SymbolStore.CorSym
 {
     [ComImport]
     [Guid("68005D0F-B8E0-3B01-84D5-A11A94154942")]

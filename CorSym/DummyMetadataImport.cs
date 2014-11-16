@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 
 //namespace Roslyn.Test.PdbUtilities
-namespace SourceLink.SymbolStore
+namespace SourceLink.SymbolStore.CorSym
 {
     internal sealed class DummyMetadataImport : IMetadataImport
     {

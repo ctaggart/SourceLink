@@ -5,7 +5,7 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace SourceLink.SymbolStore
+namespace SourceLink.SymbolStore.CorSym
 {
     public static class SymSrv
     {

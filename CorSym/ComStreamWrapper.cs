@@ -6,7 +6,7 @@ using System.IO;
 using System.Runtime.InteropServices.ComTypes;
 
 //namespace Roslyn.Utilities
-namespace SourceLink.SymbolStore
+namespace SourceLink.SymbolStore.CorSym
 {
     internal sealed class ComStreamWrapper : IStream
     {

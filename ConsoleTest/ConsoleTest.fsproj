@@ -8,7 +8,7 @@
     <ProjectGuid>61cbf06d-603e-4cbd-afbf-079c08beec4b</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>ConsoleTest</RootNamespace>
-    <AssemblyName>ConsoleTest</AssemblyName>
+    <AssemblyName>SourceLink.ConsoleTest</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <Name>ConsoleTest</Name>
     <TargetFSharpCoreVersion>4.3.0.0</TargetFSharpCoreVersion>
@@ -344,12 +344,18 @@
     <Compile Include="printfn.fs" />
     <Compile Include="Checksums.fs" />
     <Compile Include="RootAndInfo.fs" />
+    <Compile Include="MDbg.fs" />
     <Compile Include="Program.fs" />
     <None Include="Git.fsx" />
     <None Include="BuildInfo.fsx" />
     <None Include="paket.references" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CorSym\CorSym.csproj">
+      <Name>CorSym</Name>
+      <Project>{f764ced4-2f3c-49ec-ba9f-99105707b607}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\Git\Git.fsproj">
       <Name>Git</Name>
       <Project>{726a13b9-f319-40fa-aef6-fe629cfdaf6a}</Project>
@@ -365,9 +371,9 @@
       <Project>{aaf1b8d7-791e-40f1-a278-9a16d9667866}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\SymbolStore\SymbolStore.csproj">
+    <ProjectReference Include="..\SymbolStore\SymbolStore.fsproj">
       <Name>SymbolStore</Name>
-      <Project>{f764ced4-2f3c-49ec-ba9f-99105707b607}</Project>
+      <Project>{22d889db-96e8-475d-922e-4e7eebb60045}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
