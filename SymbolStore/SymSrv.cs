@@ -35,6 +35,8 @@ namespace SourceLink.SymbolStore
             try
             {
                 IntPtr siteHandle;
+                // a BadImageFormatException HRESULT 0x8007000B when run from SourceLink solution ConsoleTest
+                // https://github.com/ctaggart/SourceLink/issues/49
                 if (httpOpenFileHandle(uri.Scheme + "://" + uri.Host, uri.PathAndQuery, 0, out siteHandle, out fileHandle))
                 {
                     // Force folder creation
