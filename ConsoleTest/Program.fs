@@ -20,9 +20,10 @@ let printPdbDocuments() =
         printfn "it had an md5 checksum of: %s" (d.GetCheckSum() |> Hex.encode)
         let url = r.GetDownloadUrl d.URL
         printfn "has download url if source indexed: %s" url
-        let downloadedFile = sc.DownloadFile url
+//        let downloadedFile = sc.DownloadFile url
 //        printfn "downloaded the file to the cache %s" downloadedFile
 //        printfn "downloaded file has md5 of: %s" (Crypto.hashMD5 downloadedFile |> Hex.encode)
+        ()
 
 let printMethods() =
     let dll = Assembly.LoadFrom @"..\..\..\packages\SourceLink.SymbolStore\lib\net45\SourceLink.SymbolStore.dll"
