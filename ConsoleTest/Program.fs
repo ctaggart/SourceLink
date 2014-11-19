@@ -17,16 +17,14 @@ let printPdbDocuments() =
     let symbolCache = SymbolCache @"C:\tmp\cache"
     let pdbReader = symbolCache.ReadPdb s pdbSourceLink
 
-    let symbolReader = ISymbolReader.Create pdbReader.Reader
-    for d in symbolReader.GetDocuments() do
-        printfn "\npdb original source file path: %s" d.URL
-        printfn "it had an md5 checksum of: %s" (d.GetCheckSum() |> Hex.encode)
-        let url = pdbReader.GetDownloadUrl d.URL
+    for d in pdbReader.Documents do
+        printfn "\npdb original source file path: %s" d.SourceFilePath
+        printfn "it had an md5 checksum of: %s" d.ChecksumHex
+        let url = pdbReader.GetDownloadUrl d.SourceFilePath |> Option.get
         printfn "has download url if source indexed: %A" url
-//        let downloadedFile = symbolCache.DownloadFile url
-//        printfn "downloaded the file to the cache %s" downloadedFile
-//        printfn "downloaded file has md5 of: %s" (Crypto.hashMD5 downloadedFile |> Hex.encode)
-        ()
+        let downloadedFile = symbolCache.DownloadFile url
+        printfn "downloaded the file to the cache %s" downloadedFile
+        printfn "downloaded file has md5 of: %s" (Crypto.hashMD5 downloadedFile |> Hex.encode)
 
 let printMethods() =
     let dll = Assembly.LoadFrom @"..\..\..\packages\SourceLink.SymbolStore\lib\net45\SourceLink.SymbolStore.dll"
@@ -87,5 +85,5 @@ let printMethodsFileLines() =
 [<EntryPoint>]
 let main argv =
     printPdbDocuments()
-    printMethodsFileLines()
+//    printMethodsFileLines()
     0

@@ -2,24 +2,28 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Text;
 
 //namespace Roslyn.Utilities.Pdb
 namespace SourceLink.SymbolStore.CorSym
 {
-    [ComVisible(false)]
-    [Guid("40DE4037-7C81-3E1E-B022-AE1ABFF2CA08")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    // COM interface method order is important. These methods must match:
+    // https://github.com/ctaggart/SourceLink/blob/8e4a3a5d2c4c9b9179b23d2be560ecf8822f9d22/CorSym/corsym.h#L895-L944
+
+    [   ComImport, Guid("40DE4037-7C81-3E1E-B022-AE1ABFF2CA08"),
+        InterfaceType(ComInterfaceType.InterfaceIsIUnknown), ComVisible(false) ]
     public interface ISymUnmanagedDocument
     {
-        int __FindClosestLine(int line, out int pRetVal);
-        int __GetCheckSum(int cData, out int pcData, byte[] data);
-        int __GetCheckSumAlgorithmId(ref Guid pRetVal);
-        int __GetDocumentType(ref Guid pRetVal);
-        int __GetLanguage(ref Guid pRetVal);
-        int __GetLanguageVendor(ref Guid pRetVal);
-        int __GetSourceLength(out int pRetVal);
-        int __GetSourceRange(int startLine, int startColumn, int endLine, int endColumn, int cSourceBytes, out int pcSourceBytes, byte[] source);
-        int __GetURL(int cchUrl, out int pcchUrl, IntPtr szUrl);
-        int __HasEmbeddedSource(out bool pRetVal);
+        void GetURL(int cchUrl, out int pcchUrl, [MarshalAs(UnmanagedType.LPWStr)] StringBuilder szUrl);
+        void GetDocumentType(ref Guid pRetVal);
+        void GetLanguage(ref Guid pRetVal);
+        void GetLanguageVendor(ref Guid pRetVal);
+        void GetCheckSumAlgorithmId(ref Guid pRetVal);
+        void GetCheckSum(int cData, out int pcData, [In, Out, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 0)] byte[] data);
+        void FindClosestLine(int line, out int pRetVal);
+        void HasEmbeddedSource(out bool pRetVal);
+        void GetSourceLength(out int pRetVal);
+        void GetSourceRange(int startLine, int startColumn, int endLine, int endColumn, int cSourceBytes, out int pcSourceBytes, 
+            [In, Out, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 4)] byte[] source);
     }
 }
