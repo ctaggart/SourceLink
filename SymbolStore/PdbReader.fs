@@ -24,3 +24,5 @@ type PdbReader(reader:ISymUnmanagedReader, sessionCookie:IntPtr, fileName:string
         if isSourceIndexed then
             SrcSrv.GetFileUrl(sessionCookie, moduleCookie, sourceFilePath) |> Option.ofNull
         else None
+
+    member x.Documents = x.Reader.Documents
