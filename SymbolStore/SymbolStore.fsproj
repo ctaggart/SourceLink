@@ -40,6 +40,7 @@
   <ItemGroup>
     <Compile Include="SystemExt.fs" />
     <Compile Include="Hex.fs" />
+    <Compile Include="HResult.fs" />
     <Compile Include="CorSymExt.fs" />
     <Compile Include="PdbReader.fs" />
     <Compile Include="SymbolCache.fs" />
