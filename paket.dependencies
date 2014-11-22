@@ -8,4 +8,3 @@ nuget NuGet.CommandLine
 
 nuget LibGit2Sharp
 nuget Mono.Cecil
-nuget MDbg

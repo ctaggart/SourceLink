@@ -16,7 +16,7 @@ namespace SourceLink.SymbolStore.CorSym
         void GetName(
             int cchName,
             out int pcchName,
-            [In, Out, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 0)] char[] szName);
+            [MarshalAs(UnmanagedType.LPWStr)] StringBuilder name);
 
         void GetNamespaces(
             int cNameSpaces,

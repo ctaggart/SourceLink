@@ -7,10 +7,11 @@ using System.Runtime.InteropServices.ComTypes;
 //namespace Roslyn.Utilities.Pdb
 namespace SourceLink.SymbolStore.CorSym
 {
-    [ComImport]
-    [Guid("B4CE6286-2A6B-3712-A3B7-1EE1DAD467B5")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    [ComVisible(false)]
+    // COM interface method order is important. These methods must match:
+    // https://github.com/ctaggart/SourceLink/blob/8e4a3a5d2c4c9b9179b23d2be560ecf8822f9d22/CorSym/corsym.h#L1644-L1748
+
+    [   ComImport, Guid("B4CE6286-2A6B-3712-A3B7-1EE1DAD467B5"),
+        InterfaceType(ComInterfaceType.InterfaceIsIUnknown), ComVisible(false)]
     public interface ISymUnmanagedReader
     {
         void __GetDocument(/*...*/);

@@ -16,8 +16,7 @@ type PdbReader(reader:ISymUnmanagedReader, sessionCookie:IntPtr, fileName:string
 
     new(pdb:Stream) =
         PdbReader(pdb, IntPtr.Zero, null)
-
-    member x.Reader = reader
+    
     member x.IsSourceIndexed = isSourceIndexed
 
     member x.GetDownloadUrl sourceFilePath =
@@ -25,4 +24,6 @@ type PdbReader(reader:ISymUnmanagedReader, sessionCookie:IntPtr, fileName:string
             SrcSrv.GetFileUrl(sessionCookie, moduleCookie, sourceFilePath) |> Option.ofNull
         else None
 
-    member x.Documents = x.Reader.Documents
+    member x.Reader = reader
+    member x.Documents = reader.Documents
+    member x.GetMethod token = reader.GetMethod token
