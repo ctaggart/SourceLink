@@ -34,7 +34,7 @@ let buildVersion =
     if hasRepoVersionTag then versionAssembly
     else sprintf "%s-ci%s" versionAssembly (buildDate.ToString "yyMMddHHmm") // 20 char limit
 
-MSBuildDefaults <- { MSBuildDefaults with Verbosity = Some MSBuildVerbosity.Diagnostic }
+MSBuildDefaults <- { MSBuildDefaults with Verbosity = Some MSBuildVerbosity.Minimal }
 
 Target "Clean" (fun _ -> !! "**/bin/" ++ "**/obj/" ++ "**/docs/output/" |> CleanDirs)
 
@@ -67,9 +67,11 @@ Target "Build" (fun _ ->
 )
 
 Target "SourceLink" (fun _ ->
+    printfn "starting SourceLink"
     let sourceIndex proj pdb =
         use repo = new GitRepo(__SOURCE_DIRECTORY__)
-        let p = VsProj.LoadRelease proj
+//        let p = VsProj.LoadRelease proj
+        let p = VsProj.Load proj ["Configuration","Release"; "VisualStudioVersion","12.0"]
         let pdbToIndex = if Option.isSome pdb then pdb.Value else p.OutputFilePdb
         logfn "source indexing %s" pdbToIndex
         let files = p.Compiles -- "**/AssemblyInfo.fs"
