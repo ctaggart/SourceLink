@@ -34,7 +34,7 @@ let buildVersion =
     if hasRepoVersionTag then versionAssembly
     else sprintf "%s-ci%s" versionAssembly (buildDate.ToString "yyMMddHHmm") // 20 char limit
 
-MSBuildDefaults <- { MSBuildDefaults with Verbosity = Some MSBuildVerbosity.Minimal }
+MSBuildDefaults <- { MSBuildDefaults with Verbosity = Some MSBuildVerbosity.Diagnostic }
 
 Target "Clean" (fun _ -> !! "**/bin/" ++ "**/obj/" ++ "**/docs/output/" |> CleanDirs)
 
