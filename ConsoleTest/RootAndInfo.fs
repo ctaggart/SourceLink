@@ -1,5 +1,5 @@
 ﻿[<AutoOpen>]
-module RootAndInfo
+module SourceLink.RootAndInfo
 
 open System
 open System.Collections.Generic

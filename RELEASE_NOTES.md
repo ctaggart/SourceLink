@@ -1,3 +1,6 @@
+### 0.5.0
+  * [SourceLink.SymbolStore](http://www.nuget.org/packages/SourceLink.Store)
+
 ### 0.4.2 _ 2014-11-04
   * [#47](https://github.com/ctaggart/SourceLink/issues/47) Pdbstr.exec should work with absolute paths
 

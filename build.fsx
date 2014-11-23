@@ -34,6 +34,8 @@ let buildVersion =
     if hasRepoVersionTag then versionAssembly
     else sprintf "%s-ci%s" versionAssembly (buildDate.ToString "yyMMddHHmm") // 20 char limit
 
+MSBuildDefaults <- { MSBuildDefaults with Verbosity = Some MSBuildVerbosity.Minimal }
+
 Target "Clean" (fun _ -> !! "**/bin/" ++ "**/obj/" ++ "**/docs/output/" |> CleanDirs)
 
 Target "BuildVersion" (fun _ ->
@@ -56,6 +58,8 @@ Target "AssemblyInfo" (fun _ ->
     common |> CreateFSharpAssemblyInfo "Build/AssemblyInfo.fs"
     common |> CreateFSharpAssemblyInfo "Tfs/AssemblyInfo.fs"
     common |> CreateFSharpAssemblyInfo "Git/AssemblyInfo.fs"
+    common |> CreateFSharpAssemblyInfo "SymbolStore/AssemblyInfo.fs"
+    common |> CreateCSharpAssemblyInfo "CorSym/Properties/AssemblyInfo.cs"
 )
 
 Target "Build" (fun _ ->
@@ -63,19 +67,23 @@ Target "Build" (fun _ ->
 )
 
 Target "SourceLink" (fun _ ->
-    !! "Tfs/Tfs.fsproj" 
-    ++ "SourceLink/SourceLink.fsproj"
-    ++ "Git/Git.fsproj"
-    |> Seq.iter (fun f ->
+    printfn "starting SourceLink"
+    let sourceIndex proj pdb =
         use repo = new GitRepo(__SOURCE_DIRECTORY__)
-        let proj = VsProj.LoadRelease f
-        logfn "source indexing %s" proj.OutputFilePdb
-        let files = proj.Compiles -- "**/AssemblyInfo.fs"
+//        let p = VsProj.LoadRelease proj
+        let p = VsProj.Load proj ["Configuration","Release"; "VisualStudioVersion","12.0"]
+        let pdbToIndex = if Option.isSome pdb then pdb.Value else p.OutputFilePdb
+        logfn "source indexing %s" pdbToIndex
+        let files = p.Compiles -- "**/AssemblyInfo.fs"
         repo.VerifyChecksums files
-        proj.VerifyPdbChecksums files
-        proj.CreateSrcSrv "https://raw.githubusercontent.com/ctaggart/SourceLink/{0}/%var2%" repo.Revision (repo.Paths files)
-        Pdbstr.exec proj.OutputFilePdb proj.OutputFilePdbSrcSrv
-    )
+        p.VerifyPdbChecksums files
+        p.CreateSrcSrv "https://raw.githubusercontent.com/ctaggart/SourceLink/{0}/%var2%" repo.Revision (repo.Paths files)
+        Pdbstr.exec pdbToIndex p.OutputFilePdbSrcSrv
+    sourceIndex "Tfs/Tfs.fsproj" None 
+    sourceIndex "SourceLink/SourceLink.fsproj" None
+    sourceIndex "Git/Git.fsproj" None
+    sourceIndex "SymbolStore/SymbolStore.fsproj" None
+    sourceIndex "CorSym/CorSym.csproj" (Some "SymbolStore/bin/Release/SourceLink.SymbolStore.CorSym.pdb")
 )
 
 Target "NuGet" (fun _ ->
@@ -126,6 +134,13 @@ Target "NuGet" (fun _ ->
             Dependencies = ["LibGit2Sharp", GetPackageVersion "./packages/" "LibGit2Sharp"]
         }]
     }) "Git/Git.nuspec"
+
+    NuGet (fun p -> 
+    { p with
+        Version = buildVersion
+        WorkingDir = "SymbolStore/bin/Release"
+        OutputPath = bin
+    }) "SymbolStore/SymbolStore.nuspec"
 )
 
 // --------------------------------------------------------------------------------------

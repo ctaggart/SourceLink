@@ -8,7 +8,9 @@ packages
 /Dia/*.c
 paket.exe
 AssemblyInfo.fs
+AssemblyInfo.cs
 /docs/output
 /docs/content/release-notes.md
 /docs/files/img/SourceLink128.jpg
 /docs/SourceLink128.jpg
+*.sln.ide

@@ -1,5 +1,5 @@
 ﻿[<AutoOpen>]
-module Checksums
+module SourceLink.Checksums
 
 open System
 open System.Collections.Generic

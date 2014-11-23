@@ -6,6 +6,5 @@ nuget SourceLink.Fake prerelease
 nuget FSharp.Formatting
 nuget NuGet.CommandLine
 
-nuget FSharp.Data
 nuget LibGit2Sharp
 nuget Mono.Cecil
