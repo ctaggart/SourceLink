@@ -13,7 +13,7 @@
     <TargetFSharpCoreVersion>4.3.0.0</TargetFSharpCoreVersion>
     <Name>Tfs</Name>
     <!-- AppVeyor keeps wanting to use 11.0 for this project. -->
-    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == '11.0'">12.0</VisualStudioVersion>
+    <!--<VisualStudioVersion Condition="'$(VisualStudioVersion)' == '11.0'">12.0</VisualStudioVersion>-->
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -37,7 +37,7 @@
     <DocumentationFile>bin\Release\SourceLink.Tfs.xml</DocumentationFile>
     <NoWarn>2003</NoWarn>
   </PropertyGroup>
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\FSharp\Microsoft.FSharp.Targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v12.0\FSharp\Microsoft.FSharp.Targets" />
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework'">
       <Choose>
