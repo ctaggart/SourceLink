@@ -13,7 +13,7 @@
     <TargetFSharpCoreVersion>4.3.0.0</TargetFSharpCoreVersion>
     <Name>Tfs</Name>
     <!-- AppVeyor keeps wanting to use 11.0 for this project. -->
-    <VisualStudioVersion Condition="'$VisualStudioVersion' == '11.0'">12.0</VisualStudioVersion>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == '11.0'">12.0</VisualStudioVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
