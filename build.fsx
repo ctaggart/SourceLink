@@ -107,7 +107,7 @@ Target "NuGet" (fun _ ->
         DependenciesByFramework =
         [{ 
             FrameworkVersion = "net45"
-            Dependencies = ["SourceLink", sprintf "[%s]" buildVersion] // exact version
+            Dependencies = ["SourceLink.Core", sprintf "[%s]" buildVersion] // exact version
         }]
     }) "Tfs/Tfs.nuspec"
 
