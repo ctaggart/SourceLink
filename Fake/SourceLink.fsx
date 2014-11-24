@@ -5,10 +5,10 @@
 #I __SOURCE_DIRECTORY__
 //#r "../packages/FAKE/tools/FakeLib.dll" // in dev
 //#r "../packages/LibGit2Sharp.0.17.0.0/lib/net35/LibGit2Sharp.dll" // in dev
-//#r "../SourceLink/bin/Debug/SourceLink.dll" // in dev
+//#r "../SourceLink/bin/Debug/SourceLink.Core.dll" // in dev
 //#r "../Git/bin/Debug/SourceLink.Git.dll" // in dev
 #r "LibGit2Sharp.dll"
-#r "SourceLink.dll"
+#r "SourceLink.Core.dll"
 #r "SourceLink.Git.dll"
 
 open System

@@ -11,7 +11,9 @@ type GitRepo(dir) =
     let repo = new Repository(dir)
     
     member x.Repo with get() = repo
-    member x.Revision with get() = repo.Head.Tip.Sha
+    member x.Commit with get() = repo.Head.Tip.Sha
+    [<Obsolete("use .Commit instead")>]
+    member x.Revision with get() = x.Commit
 
     static member ComputeChecksums files =
         use sha1 = Security.Cryptography.SHA1.Create()
