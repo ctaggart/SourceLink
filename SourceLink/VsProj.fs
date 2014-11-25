@@ -11,8 +11,11 @@ type VsProj = Project // abbreviation
 
 type Project with
     static member Load (proj:string) globalProps =
-        let pc = new ProjectCollection()
-        Project(proj, globalProps |> Dictionary<_,_>.ofTuples, null, pc)
+        try
+            let pc = new ProjectCollection()
+            Project(proj, globalProps |> Dictionary<_,_>.ofTuples, null, pc)
+        with
+        | ex -> failwithf "unable to load proj file `%s` with properties: %A, error %s" proj globalProps ex.Message
     static member LoadRelease proj = Project.Load proj ["Configuration","Release"]
 
     /// full path for all "Compile" items

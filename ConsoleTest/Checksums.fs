@@ -8,7 +8,7 @@ open SourceLink
 
 let printCommit dir =
     use repo = new GitRepo(dir)
-    printfn "revision: %s" repo.Commit
+    printfn "commit: %s" repo.Commit
 
 let printChecksumsGit dir proj =
     let p = VsProj.Load proj ["Configuration", "Debug"]

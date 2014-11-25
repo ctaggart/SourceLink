@@ -154,3 +154,7 @@ type Byte with
         Buffer.BlockCopy(a, 0, c, 0, a.Length)
         Buffer.BlockCopy(b, 0, c, a.Length, b.Length)
         c
+
+type Option<'A> with
+    static member ofNull (t:'T when 'T : null) =
+        if t = null then None else Some t

@@ -229,7 +229,7 @@
     <When Condition="$(TargetFrameworkIdentifier) == 'Windows'">
       <ItemGroup>
         <Reference Include="FSharp.Core">
-          <HintPath>..\packages\FSharp.Core.4.3.0.0.Microsoft.Signed\lib\net45\FSharp.Core.dll</HintPath>
+          <HintPath>..\packages\FSharp.Core.4.3.0.0.Microsoft.Signed\lib\portable-net45+sl5+netcore45+MonoAndroid1+MonoTouch1\FSharp.Core.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -285,6 +285,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Reference Include="Microsoft.Build" />
     <Reference Include="mscorlib" />
     <Reference Include="System" />
   </ItemGroup>
@@ -300,6 +301,11 @@
     <None Include="Exe.nuspec" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Git\Git.fsproj">
+      <Name>Git</Name>
+      <Project>{726a13b9-f319-40fa-aef6-fe629cfdaf6a}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\SourceLink\SourceLink.fsproj">
       <Name>SourceLink</Name>
       <Project>{aaf1b8d7-791e-40f1-a278-9a16d9667866}</Project>
