@@ -16,6 +16,10 @@
     <file src="..\..\..\SourceLink\bin\Release\SourceLink.Core.dll" target="tools" />
     <file src="..\..\..\SourceLink\bin\Release\SourceLink.Core.pdb" target="tools" />
     <file src="..\..\..\SourceLink\bin\Release\SourceLink.Core.xml" target="tools" />
+    <file src="..\..\..\Git\bin\Release\SourceLink.Git.dll" target="tools" />
+    <file src="..\..\..\Git\bin\Release\SourceLink.Git.pdb" target="tools" />
+    <file src="..\..\..\Git\bin\Release\SourceLink.Git.xml" target="tools" />
+    <file src="LibGit2Sharp.dll" target="tools" />
     <file src="NativeBinaries\amd64\*.dll" target="tools\NativeBinaries\amd64" />
     <file src="NativeBinaries\x86\*.dll" target="tools\NativeBinaries\x86" />
     <file src="FSharp.Core.dll" target="tools" />
