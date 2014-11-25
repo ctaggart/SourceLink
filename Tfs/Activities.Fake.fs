@@ -63,7 +63,7 @@ type Fake() =
             let msBuildArgs = 
                 let args = tb.Parameters.MSBuildArguments
                 if args.IsNone then "" else sprintf " %s" args.Value
-            sprintf "%s%s%s tfsUri=\"%s\" tfsUser=\"%s\" tfsAgent=\"%s\" tfsBuild=\"%s\" informationNodeId=\"%s\"" buildFsx msBuildArgs args tfsUri tfsUser tfsAgent tfsBuild tfsInformationNodeId
+            sprintf "%s%s%s tfsUri=\"%s\" tfsUser=\"%s\" tfsAgent=\"%s\" tfsBuild=\"%s\" informationNodeId=\"%d\"" buildFsx msBuildArgs args tfsUri tfsUser tfsAgent tfsBuild tfsInformationNodeId
         context.MessageNormal "%s>%s %s" workdir filename arguments
 
         let p = SourceLink.Process()
