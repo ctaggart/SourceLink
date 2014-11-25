@@ -4,6 +4,7 @@ open System
 open System.IO
 open System.Activities
 open Microsoft.TeamFoundation.Build.Client
+open Microsoft.TeamFoundation.Build.Workflow.Services
 open SourceLink
 
 type Fake() = 
@@ -24,9 +25,11 @@ type Fake() =
         base.CacheMetadata metadata
         metadata.RequireBuildDetail()
         metadata.RequireBuildAgent()
+        metadata.RequireBuildLogging()
 
     override x.Execute(context:CodeActivityContext) : unit =
-        use tb = new TfsBuild(context.BuildAgent, context.BuildDetail)
+        let activityTracking = context.GetExtension<IBuildLoggingExtension>().GetActivityTracking(context :> ActivityContext);
+        use tb = new TfsBuild(context.BuildAgent, context.BuildDetail, activityTracking)
 
         let workdir =
             let wd = x.WorkingDirectory.Get context
@@ -52,6 +55,7 @@ type Fake() =
         let tfsUser = tfs.ClientCredentials.Federated.TokenValue |> Text.Encoding.UTF8.GetBytes |> Hex.encode
         let tfsBuild = tb.Build.Uri.AbsoluteUri
         let tfsAgent = tb.Agent.Uri.AbsoluteUri
+        let tfsInformationNodeId = tb.InformationNodeId
         let arguments =
             let args =
                 let args = x.Arguments.Get context
@@ -59,7 +63,7 @@ type Fake() =
             let msBuildArgs = 
                 let args = tb.Parameters.MSBuildArguments
                 if args.IsNone then "" else sprintf " %s" args.Value
-            sprintf "%s%s%s tfsUri=\"%s\" tfsUser=\"%s\" tfsAgent=\"%s\" tfsBuild=\"%s\"" buildFsx msBuildArgs args tfsUri tfsUser tfsAgent tfsBuild 
+            sprintf "%s%s%s tfsUri=\"%s\" tfsUser=\"%s\" tfsAgent=\"%s\" tfsBuild=\"%s\" informationNodeId=\"%s\"" buildFsx msBuildArgs args tfsUri tfsUser tfsAgent tfsBuild tfsInformationNodeId
         context.MessageNormal "%s>%s %s" workdir filename arguments
 
         let p = SourceLink.Process()
