@@ -4,11 +4,13 @@ module SourceLink.Activities.TfsActivities
 open System.Activities
 open Microsoft.TeamFoundation.Build.Client
 open Microsoft.TeamFoundation.Build.Workflow.Activities
+open Microsoft.TeamFoundation.Build.Workflow.Services
 open Microsoft.TeamFoundation.Build.Activities.Extensions
 
 type CodeActivityMetadata with
     member x.RequireBuildDetail() = x.RequireExtension typeof<IBuildDetail>
     member x.RequireBuildAgent() = x.RequireExtension typeof<IBuildAgent>
+    member x.RequireBuildLogging() = x.RequireExtension typeof<IBuildLoggingExtension>
 
 type CodeActivityContext with
     member x.BuildDetail = x.GetExtension<IBuildDetail>()

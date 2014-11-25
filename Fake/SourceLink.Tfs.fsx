@@ -6,6 +6,7 @@
 #load "SourceLink.Tfs.Assemblies.fsx"
 #endif
 
+open System
 open Fake
 open SourceLink
 
@@ -17,6 +18,6 @@ module TfsM =
     #if MONO
     #else
     let getTfsBuild() =
-        if isTfsBuild then new TfsBuild(getBuildParam "tfsUri", getBuildParam "tfsUser", getBuildParam "tfsAgent", getBuildParam "tfsBuild")
+        if isTfsBuild then new TfsBuild(getBuildParam "tfsUri", getBuildParam "tfsUser", getBuildParam "tfsAgent", getBuildParam "tfsBuild",  int (getBuildParam "informationNodeId"))
         else Ex.failwithf "isTfsBuild = false"
     #endif

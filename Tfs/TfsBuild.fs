@@ -1,10 +1,12 @@
 ﻿namespace SourceLink
 
 open System
+open System.Globalization
 open Microsoft.TeamFoundation.Build.Client
 open Microsoft.TeamFoundation.Build.Workflow
+open Microsoft.TeamFoundation.Build.Workflow.Services
 
-type TfsBuild(project:TfsProject, agent:IBuildAgent, build:IBuildDetail) =
+type TfsBuild(project:TfsProject, agent:IBuildAgent, build:IBuildDetail, activityTracking:Choice<int, IActivityTracking>) =
     
     /// deserializes the xml of parameters, BuildDefinition then Build parameters
     let parameters = lazy (
@@ -13,7 +15,7 @@ type TfsBuild(project:TfsProject, agent:IBuildAgent, build:IBuildDetail) =
         TfsProcessParameters(ps) )
 
     // from FAKE scripts
-    new(tfsUri:string, tfsUser:string, tfsAgent:string, tfsBuild:string) =
+    new(tfsUri:string, tfsUser:string, tfsAgent:string, tfsBuild:string, nodeId:int) =
         let user =
             if String.IsNullOrEmpty tfsUser then TfsUser()
             else tfsUser |> Hex.decode |> Text.Encoding.UTF8.GetString |> TfsUser.FromSimpleWebToken
@@ -22,12 +24,12 @@ type TfsBuild(project:TfsProject, agent:IBuildAgent, build:IBuildDetail) =
         let agent = tfsAgent |> Uri.from |> bs.GetBuildAgent
         let build = tfsBuild |> Uri.from |> bs.GetBuild
         let tp = new TfsProject(tfs, build.TeamProject)
-        new TfsBuild(tp, agent, build)
+        new TfsBuild(tp, agent, build, Choice1Of2 nodeId)
 
     // from TFS Activities
-    new(agent:IBuildAgent, build:IBuildDetail) =
+    new(agent:IBuildAgent, build:IBuildDetail, activityTracking:IActivityTracking) =
         let tp = new TfsProject(build.BuildServer.TeamProjectCollection, build.TeamProject)
-        new TfsBuild(tp, agent, build)
+        new TfsBuild(tp, agent, build, Choice2Of2 activityTracking)
 
     member x.Project with get() = project
     member x.Agent with get() = agent
@@ -36,7 +38,13 @@ type TfsBuild(project:TfsProject, agent:IBuildAgent, build:IBuildDetail) =
     member x.Parameters with get() = parameters.Value
     member x.BuildDirectory with get() = agent.GetExpandedBuildDirectory build.BuildDefinition
 
-    member x.Dispose() =
+    member x.InformationNodeId 
+        with get() = 
+            match activityTracking with 
+            | Choice1Of2 id -> id
+            | Choice2Of2 tracker -> tracker.Node.Id
+
+    member x.Dispose()= 
         use project = project
         GC.SuppressFinalize x
     interface IDisposable with member x.Dispose() = x.Dispose() 
