@@ -60,6 +60,7 @@ Target "AssemblyInfo" (fun _ ->
     common |> CreateFSharpAssemblyInfo "Git/AssemblyInfo.fs"
     common |> CreateFSharpAssemblyInfo "SymbolStore/AssemblyInfo.fs"
     common |> CreateCSharpAssemblyInfo "CorSym/Properties/AssemblyInfo.cs"
+    common |> CreateFSharpAssemblyInfo "Exe/AssemblyInfo.fs"
 )
 
 Target "Build" (fun _ ->
@@ -70,7 +71,7 @@ Target "SourceLink" (fun _ ->
     printfn "starting SourceLink"
     let sourceIndex proj pdb =
         use repo = new GitRepo(__SOURCE_DIRECTORY__)
-//        let p = VsProj.LoadRelease proj
+//        let p = VsProj.LoadRelease proj // #50
         let p = VsProj.Load proj ["Configuration","Release"; "VisualStudioVersion","12.0"]
         let pdbToIndex = if Option.isSome pdb then pdb.Value else p.OutputFilePdb
         logfn "source indexing %s" pdbToIndex
@@ -84,6 +85,7 @@ Target "SourceLink" (fun _ ->
     sourceIndex "Git/Git.fsproj" None
     sourceIndex "SymbolStore/SymbolStore.fsproj" None
     sourceIndex "CorSym/CorSym.csproj" (Some "SymbolStore/bin/Release/SourceLink.SymbolStore.CorSym.pdb")
+    sourceIndex "Exe/Exe.fsproj" None
 )
 
 Target "NuGet" (fun _ ->
@@ -105,16 +107,16 @@ Target "NuGet" (fun _ ->
         DependenciesByFramework =
         [{ 
             FrameworkVersion = "net45"
-            Dependencies = ["SourceLink", sprintf "[%s]" buildVersion] // exact version
+            Dependencies = ["SourceLink.Core", sprintf "[%s]" buildVersion] // exact version
         }]
     }) "Tfs/Tfs.nuspec"
 
-//    NuGet (fun p -> 
-//    { p with
-//        Version = buildVersion
-//        WorkingDir = "Build/bin/Release"
-//        OutputPath = bin
-//    }) "Build/Build.nuspec"
+    NuGet (fun p -> 
+    { p with
+        Version = buildVersion
+        WorkingDir = "Build/bin/Release"
+        OutputPath = bin
+    }) "Build/Build.nuspec"
 
     NuGet (fun p -> 
     { p with
@@ -141,6 +143,13 @@ Target "NuGet" (fun _ ->
         WorkingDir = "SymbolStore/bin/Release"
         OutputPath = bin
     }) "SymbolStore/SymbolStore.nuspec"
+
+    NuGet (fun p -> 
+    { p with
+        Version = buildVersion
+        WorkingDir = "Exe/bin/Release"
+        OutputPath = bin
+    }) "Exe/Exe.nuspec"
 )
 
 // --------------------------------------------------------------------------------------

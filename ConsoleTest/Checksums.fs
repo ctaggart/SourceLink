@@ -6,9 +6,9 @@ open System.Collections.Generic
 open System.IO
 open SourceLink
 
-let printRevision dir =
+let printCommit dir =
     use repo = new GitRepo(dir)
-    printfn "revision: %s" repo.Revision
+    printfn "commit: %s" repo.Commit
 
 let printChecksumsGit dir proj =
     let p = VsProj.Load proj ["Configuration", "Debug"]

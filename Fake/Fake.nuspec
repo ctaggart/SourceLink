@@ -14,9 +14,9 @@
     <file src="*.xaml" target="tools" />
     <file src="build.cmd" target="tools" />
     <file src="build.sh" target="tools" />
-    <file src="..\SourceLink\bin\Release\SourceLink.dll" target="tools" />
-    <file src="..\SourceLink\bin\Release\SourceLink.pdb" target="tools" />
-    <file src="..\SourceLink\bin\Release\SourceLink.xml" target="tools" />
+    <file src="..\SourceLink\bin\Release\SourceLink.Core.dll" target="tools" />
+    <file src="..\SourceLink\bin\Release\SourceLink.Core.pdb" target="tools" />
+    <file src="..\SourceLink\bin\Release\SourceLink.Core.xml" target="tools" />
     <file src="..\Build\bin\Release\LibGit2Sharp.dll" target="tools" />
     <file src="..\Build\bin\Release\NativeBinaries\amd64\*.dll" target="tools\NativeBinaries\amd64" />
     <file src="..\Build\bin\Release\NativeBinaries\x86\*.dll" target="tools\NativeBinaries\x86" />

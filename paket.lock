@@ -3,17 +3,18 @@ NUGET
   specs:
     FAKE (3.9.9)
     FSharp.Compiler.Service (0.0.67)
+    FSharp.Core.4.3.0.0.Microsoft.Signed (3.0.0.1)
     FSharp.Formatting (2.4.36)
       FSharp.Compiler.Service (0.0.67)
       Microsoft.AspNet.Razor (2.0.30506.0)
       RazorEngine (3.3.0)
     LibGit2Sharp (0.20.0)
-    MDbg (0.1.0)
     Microsoft.AspNet.Razor (2.0.30506.0)
     Mono.Cecil (0.9.5.4)
     NuGet.CommandLine (2.8.3)
     RazorEngine (3.3.0)
       Microsoft.AspNet.Razor (>= 2.0.30506.0)
+    UnionArgParser (0.8.2)
   remote: https://ci.appveyor.com/nuget/sourcelink-helmesfwai2a
   specs:
-    SourceLink.Fake (0.5.0-ci1411161908)
+    SourceLink.Fake (0.5.0-ci1411242102)

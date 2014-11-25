@@ -10,7 +10,6 @@
     <iconUrl>http://ctaggart.github.io/SourceLink/SourceLink128.jpg</iconUrl>
     @dependencies@
     <frameworkAssemblies>
-      <frameworkAssembly assemblyName="FSharp.Core" />
       <frameworkAssembly assemblyName="Microsoft.TeamFoundation.Build.Activities" />
       <frameworkAssembly assemblyName="Microsoft.TeamFoundation.Build.Client" />
       <frameworkAssembly assemblyName="Microsoft.TeamFoundation.Build.Common" />

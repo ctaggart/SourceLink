@@ -18,7 +18,7 @@ The [SourceLink.Fake](https://www.nuget.org/packages/SourceLink.Fake) NuGet pack
             let files = (proj.Compiles -- "SolutionInfo.cs").SetBaseDirectory __SOURCE_DIRECTORY__
             repo.VerifyChecksums files
             proj.VerifyPdbChecksums files
-            proj.CreateSrcSrv "%s/{0}/%var2%" rawUrl repo.Revision (repo.Paths files)
+            proj.CreateSrcSrv "%s/{0}/%var2%" rawUrl repo.Commit (repo.Paths files)
             Pdbstr.exec proj.OutputFilePdb proj.OutputFilePdbSrcSrv
         )
     )

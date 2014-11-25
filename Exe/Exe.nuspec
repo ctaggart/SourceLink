@@ -1,0 +1,28 @@
+﻿<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>SourceLink</id>
+    <version>0.0.0</version>
+    <authors>Cameron Taggart</authors>
+    <description>SourceLink: Source Code On Demand</description>
+    <projectUrl>http://ctaggart.github.io/SourceLink/</projectUrl>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <iconUrl>http://ctaggart.github.io/SourceLink/SourceLink128.jpg</iconUrl>
+  </metadata>
+  <files>
+    <file src="SourceLink.exe" target="tools" />
+    <file src="SourceLink.pdb" target="tools" />
+    <file src="SourceLink.xml" target="tools" />
+    <file src="..\..\..\SourceLink\bin\Release\SourceLink.Core.dll" target="tools" />
+    <file src="..\..\..\SourceLink\bin\Release\SourceLink.Core.pdb" target="tools" />
+    <file src="..\..\..\SourceLink\bin\Release\SourceLink.Core.xml" target="tools" />
+    <file src="..\..\..\Git\bin\Release\SourceLink.Git.dll" target="tools" />
+    <file src="..\..\..\Git\bin\Release\SourceLink.Git.pdb" target="tools" />
+    <file src="..\..\..\Git\bin\Release\SourceLink.Git.xml" target="tools" />
+    <file src="LibGit2Sharp.dll" target="tools" />
+    <file src="NativeBinaries\amd64\*.dll" target="tools\NativeBinaries\amd64" />
+    <file src="NativeBinaries\x86\*.dll" target="tools\NativeBinaries\x86" />
+    <file src="FSharp.Core.dll" target="tools" />
+    <file src="UnionArgParser.dll" target="tools" />
+  </files>
+</package>
