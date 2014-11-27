@@ -1,7 +1,5 @@
 build_script:
   - cmd: build.cmd %fakeargs%
-environment:
-  VisualStudioVersion: 12.0
 test: off
 artifacts:
   - path: bin\*.nupkg
