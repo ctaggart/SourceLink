@@ -33,7 +33,7 @@ let run (proj:string option) (projProps:(string * string) list)
         | None -> [], []
         | Some proj ->
             let p = VsProj.Load proj projProps
-            p.ItemsCompile, [p.OutputFilePdb]
+            p.ItemsCompilePath, [p.OutputFilePdb]
 
     let cd = Directory.GetCurrentDirectory()
     let pdbs = pPdbs @ ({BaseDirectory=cd; Includes=pdbs; Excludes=[]} |> List.ofSeq)

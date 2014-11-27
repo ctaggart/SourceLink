@@ -4,7 +4,7 @@
 
 #I __SOURCE_DIRECTORY__
 //#r "../packages/FAKE/tools/FakeLib.dll" // in dev
-//#r "../packages/LibGit2Sharp.0.17.0.0/lib/net35/LibGit2Sharp.dll" // in dev
+//#r "../packages/LibGit2Sharp/lib/net40/LibGit2Sharp.dll" // in dev
 //#r "../SourceLink/bin/Debug/SourceLink.Core.dll" // in dev
 //#r "../Git/bin/Debug/SourceLink.Git.dll" // in dev
 #r "LibGit2Sharp.dll"
@@ -20,10 +20,21 @@ let getBuildConfig dir =
     AppConfig.get (Path.combine dir "build.config")
 
 type Microsoft.Build.Evaluation.Project with
+    /// all items with a build action of compile
     member x.Compiles : FileIncludes = {
         BaseDirectory = x.DirectoryPath
-        Includes = x.ItemsCompile
+        Includes = x.ItemsCompilePath
         Excludes = [] }
+    /// all items with a build action of compile that are linked
+    member x.CompilesLinked : FileIncludes = {
+        BaseDirectory = x.DirectoryPath
+        Includes = x.ItemsCompileLinkPath
+        Excludes = [] }
+    /// all items with a build action of compile that are not linked
+    member x.CompilesNotLinked : FileIncludes = {
+        BaseDirectory = x.DirectoryPath
+        Includes = x.ItemsCompilePath
+        Excludes = x.ItemsCompileLinkPath }
 
 type GitRepo with
     member x.VerifyChecksums files =

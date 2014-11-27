@@ -241,7 +241,6 @@
     <Compile Include="Checksums.fs" />
     <Compile Include="RootAndInfo.fs" />
     <Compile Include="Program.fs" />
-    <None Include="Git.fsx" />
     <None Include="BuildInfo.fsx" />
     <None Include="paket.references" />
   </ItemGroup>

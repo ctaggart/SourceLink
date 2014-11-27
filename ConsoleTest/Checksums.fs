@@ -13,7 +13,7 @@ let printCommit dir =
 let printChecksumsGit dir proj =
     let p = VsProj.Load proj ["Configuration", "Debug"]
     use repo = new GitRepo(dir)
-    for file, checksum in repo.Checksums p.ItemsCompile do
+    for file, checksum in repo.Checksums p.ItemsCompilePath do
         printfn "%s %s" file checksum
 
 let printChecksumsPdb proj =

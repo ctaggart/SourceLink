@@ -8,4 +8,4 @@ open SourceLink
 let getCompiles (file:string) (excludes:ISet<string>) =
     ProjectCollection.GlobalProjectCollection.UnloadAllProjects()
     let p = Project(file)
-    p.ItemsCompile
+    p.ItemsCompilePath

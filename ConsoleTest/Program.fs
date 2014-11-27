@@ -45,8 +45,16 @@ let printMethods() =
                     printfn "    %s" browserUrl 
     )
 
+let getItemsCompileLink() =
+    let p = VsProj.LoadRelease @"C:\Projects\FSharp.Compiler.Service\src\fsharp\FSharp.Compiler.Service\FSharp.Compiler.Service.fsproj"
+    for i in p.Items do
+        if i.HasMetadata "Link" then
+            printfn "%s" i.EvaluatedInclude
+
+
 [<EntryPoint>]
 let main argv =
-    printPdbDocuments()
-    printMethods()
+//    printPdbDocuments()
+//    printMethods()
+    getItemsCompileLink()
     0
