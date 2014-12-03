@@ -2,4 +2,3 @@ FAKE
 SourceLink.Fake
 FSharp.Formatting
 NuGet.CommandLine
-SourceLink.SymbolStore
