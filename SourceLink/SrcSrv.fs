@@ -7,7 +7,10 @@ module SrcSrv =
     let createTrg rawUrl (commit:string) =
         String.Format(rawUrl, commit)
 
-    let create rawUrl (commit:string) (paths:seq<string*string>) =
+    let noFormatting (s: string) = s
+
+    /// creates the SrcSrv with callback for formatting the path
+    let createFormat rawUrl (commit:string) (paths:seq<string*string>) (formatPath: string -> string) =
         use ms = new MemoryStream()
         use sw = new StreamWriter(ms)
         let scheme = Uri(rawUrl).Scheme
@@ -23,9 +26,21 @@ module SrcSrv =
         sw.Flush()
         ms.ToArray()
 
+    let create rawUrl commit paths =
+        createFormat rawUrl commit paths noFormatting
+
+    /// create the SrcSrv with the paths escaped using Uri.EscapeDataString
+    let createEscaped rawUrl commit paths =
+        createFormat rawUrl commit paths Uri.EscapeDataString
 
 [<AutoOpen>]
 module PdbFileCreateSrcSrv =
     type PdbFile with
+
+        /// create the SrcSrv
         member x.CreateSrcSrv repoUrl commit paths =
+            File.WriteAllBytes(x.PathSrcSrv, SrcSrv.create repoUrl commit paths)
+
+        /// create the SrcSrv with the paths escaped using Uri.EscapeDataString
+        member x.CreateSrcSrvEscaped repoUrl commit paths =
             File.WriteAllBytes(x.PathSrcSrv, SrcSrv.create repoUrl commit paths)
