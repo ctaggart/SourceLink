@@ -1,3 +1,3 @@
 paket.bootstrapper.exe
-paket.exe install
+paket.exe restore
 packages\FAKE\tools\FAKE.exe build.fsx %*
