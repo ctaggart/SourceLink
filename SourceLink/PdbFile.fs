@@ -103,9 +103,13 @@ type PdbFile(path) =
         for i in 0 .. flags.Length - 1 do
             flags.[i] <- br.ReadInt32() 
         let hasName i =
-            let a = flags.[i / 32]
-            let b = 1 <<< (i % 32)
-            a &&& b <> 0
+            let word = i / 32;
+            if word >= flags.Length then
+                false
+            else
+                let a = flags.[word]
+                let b = 1 <<< (i % 32)
+                a &&& b <> 0
         br.Skip 4 // 0
         let positions = List<int*PdbName>(nameCount)
         for i in 0 .. info.FlagIndexMax - 1 do
