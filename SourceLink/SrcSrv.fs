@@ -21,7 +21,7 @@ module SrcSrv =
         fprintfn sw "SRCSRVTRG=%s" (createTrg rawUrl commit)
         fprintfn sw "SRCSRV: source files ---------------------------------------"
         for file, path in paths do
-            fprintfn sw "%s*%s" file path
+            fprintfn sw "%s*%s" file (formatPath path)
         fprintfn sw "SRCSRV: end ------------------------------------------------"
         sw.Flush()
         ms.ToArray()
