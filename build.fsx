@@ -18,11 +18,8 @@ let revision =
     use repo = new GitRepo(__SOURCE_DIRECTORY__)
     repo.Commit
 
-type AppVeyorEnvironment with
-    static member IsRepoTag = environVar "APPVEYOR_REPO_TAG" = "True"
-
 let isAppVeyorBuild = buildServer = BuildServer.AppVeyor
-let hasRepoVersionTag = isAppVeyorBuild && AppVeyorEnvironment.IsRepoTag && AppVeyorEnvironment.RepoBranch.StartsWith "v"
+let hasRepoVersionTag = isAppVeyorBuild && AppVeyorEnvironment.RepoTag && AppVeyorEnvironment.RepoTagName.StartsWith "v"
 
 let release = ReleaseNotesHelper.LoadReleaseNotes "RELEASE_NOTES.md"
 

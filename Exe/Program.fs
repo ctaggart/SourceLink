@@ -24,20 +24,22 @@ tracefn "SourceLink %s" version
 
 type Command =
     | Index
+    | SrcToolx
     | Unknown
 
 type CLIArguments =
     | [<First>][<NoAppSettings>][<CustomCommandLine("index")>] Index
+    | [<First>][<NoAppSettings>][<CustomCommandLine("srctoolx")>] SrcToolx
     | [<AltCommandLine("-v")>] Verbose
-    | [<AltCommandLine("-p")>] Proj of string
+    | [<AltCommandLine("-pr")>] Proj of string
     | [<AltCommandLine("-pp")>] Proj_Prop of string * string
     | [<AltCommandLine("-u")>] Url of string
-    | Commit of string
-    | Pdb of string
+    | [<AltCommandLine("-c")>] Commit of string
+    | [<AltCommandLine("-p")>] Pdb of string
     | [<AltCommandLine("-f")>] File of string
     | [<AltCommandLine("-nf")>] Not_File of string
-    | Verify_Git of bool
-    | Verify_Pdb of bool
+    | [<AltCommandLine("-vg")>] Verify_Git of bool
+    | [<AltCommandLine("-vp")>] Verify_Pdb of bool
     | [<AltCommandLine("-r")>] Repo of string
     | [<AltCommandLine("-m")>] Map of string * string
 
@@ -61,6 +63,8 @@ with
             | Repo _ -> "Git repository directory, defaults to current directory"
             | Map _ -> "manual mapping of file path to repo path, disables verify, supports multiple"
 
+            | SrcToolx _ -> "lists the URLs for the soure indexed files like `SrcTool -x`"
+
 let parser = UnionArgParser.Create<CLIArguments>("USAGE: sourcelink [index] ... options")
  
 let results =
@@ -68,6 +72,7 @@ let results =
         let results = parser.Parse()
         let command = 
             if results.Contains <@ CLIArguments.Index @> then Command.Index
+            else if results.Contains <@ CLIArguments.SrcToolx @> then Command.SrcToolx
             else Command.Unknown
         if results.Contains <@ CLIArguments.Verbose @> then
             verbose <- true
@@ -96,6 +101,11 @@ try
             let repoDir = defaultArg (results.TryGetResult <@ CLIArguments.Repo @>) (Directory.GetCurrentDirectory())
             let paths = results.GetResults <@ CLIArguments.Map @>
             IndexCmd.run proj projProps url commit pdbs verifyGit verifyPdb files notFiles repoDir paths
+
+        | Command.SrcToolx ->
+            let pdb = results.GetResult <@ CLIArguments.Pdb @>
+            printfn "pdb file: %s" pdb
+            ()
 
         | _ -> traceErrorfn "no command given.%s" (parser.Usage())
         
