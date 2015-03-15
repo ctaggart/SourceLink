@@ -33,14 +33,13 @@ let buildVersion =
 
 MSBuildDefaults <- { MSBuildDefaults with Verbosity = Some MSBuildVerbosity.Minimal }
 
-Target "Clean" (fun _ -> !! "**/bin/" ++ "**/obj/" ++ "**/docs/output/" |> CleanDirs)
+Target "Clean" <| fun _ -> !! "**/bin/" ++ "**/obj/" ++ "**/docs/output/" |> CleanDirs
 
-Target "BuildVersion" (fun _ ->
+Target "BuildVersion" <| fun _ ->
     let args = sprintf "UpdateBuild -Version \"%s\"" buildVersion
     Shell.Exec("appveyor", args) |> ignore
-)
 
-Target "AssemblyInfo" (fun _ ->
+Target "AssemblyInfo" <| fun _ ->
     let iv = Text.StringBuilder() // json
     iv.Appendf "{\\\"buildVersion\\\":\\\"%s\\\"" buildVersion
     iv.Appendf ",\\\"buildDate\\\":\\\"%s\\\"" (buildDate.ToString "yyyy'-'MM'-'dd'T'HH':'mm':'sszzz")
@@ -58,13 +57,11 @@ Target "AssemblyInfo" (fun _ ->
     common |> CreateFSharpAssemblyInfo "SymbolStore/AssemblyInfo.fs"
     common |> CreateCSharpAssemblyInfo "CorSym/Properties/AssemblyInfo.cs"
     common |> CreateFSharpAssemblyInfo "Exe/AssemblyInfo.fs"
-)
 
-Target "Build" (fun _ ->
+Target "Build" <| fun _ ->
     !! "SourceLink.sln" |> MSBuildRelease "" "Rebuild" |> ignore
-)
 
-Target "SourceLink" (fun _ ->
+Target "SourceLink" <| fun _ ->
     printfn "starting SourceLink"
     let sourceIndex proj pdb =
         use repo = new GitRepo(__SOURCE_DIRECTORY__)
@@ -82,9 +79,8 @@ Target "SourceLink" (fun _ ->
     sourceIndex "SymbolStore/SymbolStore.fsproj" None
     sourceIndex "CorSym/CorSym.csproj" (Some "SymbolStore/bin/Release/SourceLink.SymbolStore.CorSym.pdb")
     sourceIndex "Exe/Exe.fsproj" None
-)
 
-Target "NuGet" (fun _ ->
+Target "NuGet" <| fun _ ->
     let bin = "bin"
     Directory.CreateDirectory bin |> ignore
 
@@ -146,15 +142,10 @@ Target "NuGet" (fun _ ->
         WorkingDir = "Exe/bin/Release"
         OutputPath = bin
     }) "Exe/Exe.nuspec"
-)
 
-// --------------------------------------------------------------------------------------
-// Generate the documentation
-
-//Target "GenerateReferenceDocs" (fun _ ->
+//Target "GenerateReferenceDocs" <| fun _ ->
 //    if not <| executeFSIWithArgs "docs/tools" "generate.fsx" ["--define:RELEASE"; "--define:REFERENCE"] [] then
 //      failwith "generating reference documentation failed"
-//)
 
 let generateDocs fail =
     if executeFSIWithArgs "docs/tools" "generate.fsx" ["--define:RELEASE"; "--define:HELP"] [] then
@@ -164,9 +155,8 @@ let generateDocs fail =
             failwith "generating help documentation failed"
         else
             traceImportant "generating help documentation failed"
-    
 
-Target "Docs" (fun _ ->
+Target "Docs" <| fun _ ->
     DeleteFile "docs/content/release-notes.md"    
     CopyFile "docs/content/" "RELEASE_NOTES.md"
     Rename "docs/content/release-notes.md" "docs/content/RELEASE_NOTES.md"
@@ -177,10 +167,8 @@ Target "Docs" (fun _ ->
 
     generateDocs true
     CopyFile "docs/output" "SourceLink128.jpg" // icon used by all NuGet packages
-)
 
-
-Target "DocsRun" (fun _ ->    
+Target "DocsRun" <| fun _ ->
     use watcher = new FileSystemWatcher(DirectoryInfo("docs/content").FullName,"*.*")
     watcher.EnableRaisingEvents <- true
     watcher.Changed.Add(fun e -> generateDocs false)
@@ -194,15 +182,23 @@ Target "DocsRun" (fun _ ->
 
     watcher.EnableRaisingEvents <- false
     watcher.Dispose()
-)
 
-// --------------------------------------------------------------------------------------
+Target "Help" <| fun _ ->
+    printfn "build.cmd [<target>] [options]"
+    printfn @"for FAKE help: packages\FAKE\tools\FAKE.exe --help"
+    printfn "targets:"
+    printfn "  * `Clean` removes temporary directories"
+    printfn "  * `Build` builds the solution"
+    printfn "  * `SourceLink` source indexes the built pdb files"
+    printfn "  * `NuGet` creates the nupkg files"
+    printfn "  * `Docs` creates the documentation"
 
-"Clean"
-    =?> ("BuildVersion", isAppVeyorBuild)
-    ==> "AssemblyInfo"
-    ==> "Build"
-    =?> ("SourceLink", isAppVeyorBuild || (isMono = false && hasBuildParam "link"))
-    ==> "NuGet"
+// chain targets together only on AppVeyor
+let chain a b = a =?> (b, isAppVeyorBuild)
+"BuildVersion"
+chain "AssemblyInfo"
+chain "Build"
+chain "SourceLink"
+chain "NuGet"
 
-RunTargetOrDefault "NuGet"
+RunTargetOrDefault "Help"

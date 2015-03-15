@@ -104,8 +104,7 @@ try
 
         | Command.SrcToolx ->
             let pdb = results.GetResult <@ CLIArguments.Pdb @>
-            printfn "pdb file: %s" pdb
-            ()
+            SrcToolx.run pdb
 
         | _ -> traceErrorfn "no command given.%s" (parser.Usage())
         
