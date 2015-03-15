@@ -127,4 +127,12 @@
       </ItemGroup>
     </When>
   </Choose>
+  <Choose>
+    <When Condition="($(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.0' Or $(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.1' Or $(TargetFrameworkVersion) == 'v4.5.2' Or $(TargetFrameworkVersion) == 'v4.5.3')) Or ($(TargetFrameworkIdentifier) == 'MonoAndroid') Or ($(TargetFrameworkIdentifier) == 'MonoTouch')">
+      <PropertyGroup>
+        <__paket__LibGit2Sharp_props>net40\LibGit2Sharp</__paket__LibGit2Sharp_props>
+      </PropertyGroup>
+    </When>
+  </Choose>
+  <Import Project="..\packages\LibGit2Sharp\build\$(__paket__LibGit2Sharp_props).props" Condition="Exists('..\packages\LibGit2Sharp\build\$(__paket__LibGit2Sharp_props).props')" Label="Paket" />
 </Project>

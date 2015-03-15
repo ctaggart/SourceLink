@@ -21,10 +21,10 @@
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DocumentationFile>
     </DocumentationFile>
-    <Prefer32Bit>true</Prefer32Bit>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -33,9 +33,9 @@
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DocumentationFile>bin\Release\SourceLink.xml</DocumentationFile>
-    <Prefer32Bit>true</Prefer32Bit>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Build" />
@@ -48,12 +48,21 @@
     <Compile Include="Logging.fs" />
     <Compile Include="Utils.fs" />
     <Compile Include="IndexCmd.fs" />
+    <Compile Include="SrcToolx.fs" />
     <Compile Include="Program.fs" />
     <None Include="App.config" />
     <None Include="paket.references" />
     <None Include="Exe.nuspec" />
+    <None Include="srcsrv.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CorSym\CorSym.csproj">
+      <Name>CorSym</Name>
+      <Project>{f764ced4-2f3c-49ec-ba9f-99105707b607}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\Git\Git.fsproj">
       <Name>Git</Name>
       <Project>{726a13b9-f319-40fa-aef6-fe629cfdaf6a}</Project>
@@ -62,6 +71,11 @@
     <ProjectReference Include="..\SourceLink\SourceLink.fsproj">
       <Name>SourceLink</Name>
       <Project>{aaf1b8d7-791e-40f1-a278-9a16d9667866}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\SymbolStore\SymbolStore.fsproj">
+      <Name>SymbolStore</Name>
+      <Project>{22d889db-96e8-475d-922e-4e7eebb60045}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
@@ -115,6 +129,14 @@
       </ItemGroup>
     </When>
   </Choose>
+  <Choose>
+    <When Condition="($(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.0' Or $(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.1' Or $(TargetFrameworkVersion) == 'v4.5.2' Or $(TargetFrameworkVersion) == 'v4.5.3')) Or ($(TargetFrameworkIdentifier) == 'MonoAndroid') Or ($(TargetFrameworkIdentifier) == 'MonoTouch')">
+      <PropertyGroup>
+        <__paket__LibGit2Sharp_props>net40\LibGit2Sharp</__paket__LibGit2Sharp_props>
+      </PropertyGroup>
+    </When>
+  </Choose>
+  <Import Project="..\packages\LibGit2Sharp\build\$(__paket__LibGit2Sharp_props).props" Condition="Exists('..\packages\LibGit2Sharp\build\$(__paket__LibGit2Sharp_props).props')" Label="Paket" />
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v3.5'">
       <ItemGroup>
