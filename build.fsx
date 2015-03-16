@@ -194,11 +194,12 @@ Target "Help" <| fun _ ->
     printfn "  * `Docs` creates the documentation"
 
 // chain targets together only on AppVeyor
-let chain a b = a =?> (b, isAppVeyorBuild)
+let (==>) a b = a =?> (b, isAppVeyorBuild)
+
 "BuildVersion"
-chain "AssemblyInfo"
-chain "Build"
-chain "SourceLink"
-chain "NuGet"
+==> "AssemblyInfo"
+==> "Build"
+==> "SourceLink"
+==> "NuGet"
 
 RunTargetOrDefault "Help"
