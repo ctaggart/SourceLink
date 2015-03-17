@@ -81,18 +81,16 @@ Target "SourceLink" <| fun _ ->
     sourceIndex "CorSym/CorSym.csproj" (Some "SymbolStore/bin/Release/SourceLink.SymbolStore.CorSym.pdb")
     sourceIndex "Exe/Exe.fsproj" None
 
-Target "NuGet" <| fun _ ->
-    let bin = "bin"
-    Directory.CreateDirectory bin |> ignore
+let bin = "bin"
 
-    NuGet (fun p -> 
+let pSourceLink (p: NuGetParams) =
     { p with
         Version = buildVersion
         WorkingDir = "SourceLink/bin/Release"
-        OutputPath = bin
-    }) "SourceLink/SourceLink.nuspec"
+        OutputPath = bin 
+    }
 
-    NuGet (fun p -> 
+let pTfs (p: NuGetParams) =
     { p with
         Version = buildVersion
         WorkingDir = "Tfs/bin/Release"
@@ -102,23 +100,23 @@ Target "NuGet" <| fun _ ->
             FrameworkVersion = "net45"
             Dependencies = ["SourceLink.Core", sprintf "[%s]" buildVersion] // exact version
         }]
-    }) "Tfs/Tfs.nuspec"
+    }
 
-    NuGet (fun p -> 
+let pBuild (p: NuGetParams) =
     { p with
         Version = buildVersion
         WorkingDir = "Build/bin/Release"
         OutputPath = bin
-    }) "Build/Build.nuspec"
+    }
 
-    NuGet (fun p -> 
+let pFake (p: NuGetParams) =
     { p with
         Version = buildVersion
         WorkingDir = "Fake"
         OutputPath = bin
-    }) "Fake/Fake.nuspec"
+    }
 
-    NuGet (fun p -> 
+let pGit (p: NuGetParams) =
     { p with
         Version = buildVersion
         WorkingDir = "Git/bin/Release"
@@ -128,21 +126,40 @@ Target "NuGet" <| fun _ ->
             FrameworkVersion = "net45"
             Dependencies = ["LibGit2Sharp", GetPackageVersion "./packages/" "LibGit2Sharp"]
         }]
-    }) "Git/Git.nuspec"
+    }
 
-    NuGet (fun p -> 
+let pSymbolStore (p: NuGetParams) =
     { p with
         Version = buildVersion
         WorkingDir = "SymbolStore/bin/Release"
         OutputPath = bin
-    }) "SymbolStore/SymbolStore.nuspec"
+    }
 
-    NuGet (fun p -> 
+let pExe (p: NuGetParams) =
     { p with
         Version = buildVersion
         WorkingDir = "Exe/bin/Release"
         OutputPath = bin
-    }) "Exe/Exe.nuspec"
+    }
+
+Target "NuGet" <| fun _ ->
+    Directory.CreateDirectory bin |> ignore
+    NuGet pSourceLink "SourceLink/SourceLink.nuspec"
+    NuGet pTfs "Tfs/Tfs.nuspec"
+    NuGet pBuild "Build/Build.nuspec"
+    NuGet pFake "Fake/Fake.nuspec"
+    NuGet pGit "Git/Git.nuspec"
+    NuGet pSymbolStore "SymbolStore/SymbolStore.nuspec"
+    NuGet pExe "Exe/Exe.nuspec"
+
+Target "Publish" <| fun _ ->
+    NuGetPublish pSourceLink 
+    NuGetPublish pTfs
+//    NuGetPublish pBuild
+    NuGetPublish pFake
+    NuGetPublish pGit
+    NuGetPublish pSymbolStore
+    NuGetPublish pExe
 
 //Target "GenerateReferenceDocs" <| fun _ ->
 //    if not <| executeFSIWithArgs "docs/tools" "generate.fsx" ["--define:RELEASE"; "--define:REFERENCE"] [] then
@@ -202,6 +219,7 @@ let (==>) a b = a =?> (b, isAppVeyorBuild)
 ==> "Build"
 ==> "SourceLink"
 ==> "NuGet"
+==> "Publish"
 
 let runTargets() =
     // when on AppVeyor, allow targets to be specified as #hashtags
