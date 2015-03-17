@@ -82,57 +82,70 @@ Target "SourceLink" <| fun _ ->
     sourceIndex "Exe/Exe.fsproj" None
 
 let bin = "bin"
+let nugetApiKey = environVarOrDefault "NuGetApiKey" ""
 
 let pSourceLink (p: NuGetParams) =
     { p with
+        Project = "SourceLink"
         Version = buildVersion
         WorkingDir = "SourceLink/bin/Release"
-        OutputPath = bin 
+        OutputPath = bin
+        AccessKey = nugetApiKey
     }
 
 let pTfs (p: NuGetParams) =
     { p with
+        Project = "SourceLink.Tfs"
         Version = buildVersion
         WorkingDir = "Tfs/bin/Release"
         OutputPath = bin
         DependenciesByFramework =
-        [{ 
-            FrameworkVersion = "net45"
-            Dependencies = ["SourceLink.Core", sprintf "[%s]" buildVersion] // exact version
-        }]
+            [{ 
+                FrameworkVersion = "net45"
+                Dependencies = ["SourceLink.Core", sprintf "[%s]" buildVersion] // exact version
+            }]
+        AccessKey = nugetApiKey
     }
 
 let pBuild (p: NuGetParams) =
     { p with
+        Project = "SourceLink.Build"
         Version = buildVersion
         WorkingDir = "Build/bin/Release"
         OutputPath = bin
+        AccessKey = nugetApiKey
     }
 
 let pFake (p: NuGetParams) =
     { p with
+        Project = "SourceLink.Fake"
         Version = buildVersion
         WorkingDir = "Fake"
         OutputPath = bin
+        AccessKey = nugetApiKey
     }
 
 let pGit (p: NuGetParams) =
     { p with
+        Project = "SourceLink.Git"
         Version = buildVersion
         WorkingDir = "Git/bin/Release"
         OutputPath = bin
         DependenciesByFramework =
-        [{ 
-            FrameworkVersion = "net45"
-            Dependencies = ["LibGit2Sharp", GetPackageVersion "./packages/" "LibGit2Sharp"]
-        }]
+            [{ 
+                FrameworkVersion = "net45"
+                Dependencies = ["LibGit2Sharp", GetPackageVersion "./packages/" "LibGit2Sharp"]
+            }]
+        AccessKey = nugetApiKey
     }
 
 let pSymbolStore (p: NuGetParams) =
     { p with
+        Project = "SourceLink.SymbolStore"
         Version = buildVersion
         WorkingDir = "SymbolStore/bin/Release"
         OutputPath = bin
+        AccessKey = nugetApiKey
     }
 
 let pExe (p: NuGetParams) =
@@ -140,6 +153,7 @@ let pExe (p: NuGetParams) =
         Version = buildVersion
         WorkingDir = "Exe/bin/Release"
         OutputPath = bin
+        AccessKey = nugetApiKey
     }
 
 Target "NuGet" <| fun _ ->
