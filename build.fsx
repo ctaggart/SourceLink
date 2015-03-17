@@ -8,6 +8,7 @@ open Fake
 open Fake.AssemblyInfoFile
 open SourceLink
 open Fake.AppVeyor
+open System.Collections.Generic
 
 let buildDate =
     let pst = TimeZoneInfo.FindSystemTimeZoneById "Pacific Standard Time"
@@ -202,4 +203,22 @@ let (==>) a b = a =?> (b, isAppVeyorBuild)
 ==> "SourceLink"
 ==> "NuGet"
 
-RunTargetOrDefault "Help"
+let runTargets() =
+    // when on AppVeyor, allow targets to be specified as #hashtags
+    if isAppVeyorBuild then
+        let targets = getAllTargetsNames() |> (HashSet.ofSeqCmp StringComparer.OrdinalIgnoreCase)
+        let cm = AppVeyorEnvironment.RepoCommitMessage
+        let rx = Text.RegularExpressions.Regex @"\B#([a-zA-Z]\w+)"
+        let hashtags = seq {
+            for m in rx.Matches cm do
+                yield m.Groups.[1].Value } |> List.ofSeq
+        if hashtags.Length = 0 then
+            RunTargetOrDefault "Help"
+        else
+            for ht in hashtags do
+                if targets.Contains ht then
+                    run ht
+    else
+        RunTargetOrDefault "Help"
+
+runTargets()

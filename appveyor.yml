@@ -1,3 +1,4 @@
+clone_depth: 1
 build_script:
   - cmd: build.cmd %fakeargs%
 environment:
