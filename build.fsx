@@ -204,21 +204,20 @@ let (==>) a b = a =?> (b, isAppVeyorBuild)
 ==> "NuGet"
 
 let runTargets() =
+    // when on AppVeyor, allow targets to be specified as #hashtags
     if isAppVeyorBuild then
         let targets = getAllTargetsNames() |> (HashSet.ofSeqCmp StringComparer.OrdinalIgnoreCase)
-        for t in targets do
-            printfn "t: %s" t
-
         let cm = AppVeyorEnvironment.RepoCommitMessage
         let rx = Text.RegularExpressions.Regex @"\B#(\w\w+)"
         let hashtags = seq {
             for m in rx.Matches cm do
-                yield m.Groups.[1].Value }
-        for ht in hashtags do
-            printfn "ht: %s" ht
-            if targets.Contains ht then
-                printfn "  it is a target!" 
-        ()
+                yield m.Groups.[1].Value } |> List.ofSeq
+        if hashtags.Length = 0 then
+            RunTargetOrDefault "Help"
+        else
+            for ht in hashtags do
+                if targets.Contains ht then
+                    run ht
     else
         RunTargetOrDefault "Help"
 
