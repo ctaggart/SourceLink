@@ -208,7 +208,7 @@ let runTargets() =
     if isAppVeyorBuild then
         let targets = getAllTargetsNames() |> (HashSet.ofSeqCmp StringComparer.OrdinalIgnoreCase)
         let cm = AppVeyorEnvironment.RepoCommitMessage
-        let rx = Text.RegularExpressions.Regex @"\B#(\w\w+)"
+        let rx = Text.RegularExpressions.Regex @"\B#([a-zA-Z]\w+)"
         let hashtags = seq {
             for m in rx.Matches cm do
                 yield m.Groups.[1].Value } |> List.ofSeq
