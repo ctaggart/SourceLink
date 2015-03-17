@@ -83,10 +83,11 @@ Target "SourceLink" <| fun _ ->
 
 let bin = "bin"
 let nugetApiKey = environVarOrDefault "NuGetApiKey" ""
+let chocolateyApiKey = environVarOrDefault "ChocolateyApiKey" ""
 
 let pSourceLink (p: NuGetParams) =
     { p with
-        Project = "SourceLink"
+        Project = "SourceLink.Core"
         Version = buildVersion
         WorkingDir = "SourceLink/bin/Release"
         OutputPath = bin
@@ -150,10 +151,17 @@ let pSymbolStore (p: NuGetParams) =
 
 let pExe (p: NuGetParams) =
     { p with
+        Project = "SourceLink"
         Version = buildVersion
         WorkingDir = "Exe/bin/Release"
         OutputPath = bin
         AccessKey = nugetApiKey
+    }
+
+let pExeChocolatey (p: NuGetParams) =
+    { pExe p with
+        PublishUrl = "https://chocolatey.org/"
+        AccessKey = chocolateyApiKey
     }
 
 Target "NuGet" <| fun _ ->
@@ -174,6 +182,7 @@ Target "Publish" <| fun _ ->
     NuGetPublish pGit
     NuGetPublish pSymbolStore
     NuGetPublish pExe
+    NuGetPublish pExeChocolatey
 
 //Target "GenerateReferenceDocs" <| fun _ ->
 //    if not <| executeFSIWithArgs "docs/tools" "generate.fsx" ["--define:RELEASE"; "--define:REFERENCE"] [] then
