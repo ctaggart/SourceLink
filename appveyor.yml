@@ -1,6 +1,7 @@
 init:
   - git config --global user.email "AppVeyor"
   - git config --global user.name "AppVeyor"
+  - git config --global push.default simple
 clone_depth: 1
 build_script:
   - cmd: build.cmd %fakeargs%
