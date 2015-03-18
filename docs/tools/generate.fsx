@@ -22,16 +22,19 @@ let info =
 // For typical project, no changes are needed below
 // --------------------------------------------------------------------------------------
 
+#I "../../packages/FSharpVSPowerTools.Core/lib/net45"
 #I "../../packages/FSharp.Formatting/lib/net40"
 #I "../../packages/RazorEngine/lib/net40"
-#I "../../packages/FSharp.Compiler.Service/lib/net40"
-#r "../../packages/Microsoft.AspNet.Razor/lib/net40/System.Web.Razor.dll"
+#I "../../packages/FSharp.Compiler.Service/lib/net45"
+#r "../../packages/Microsoft.AspNet.Razor/lib/net45/System.Web.Razor.dll"
 #r "../../packages/FAKE/tools/NuGet.Core.dll"
 #r "../../packages/FAKE/tools/FakeLib.dll"
+#r "FSharpVSPowerTools.Core.dll"
 #r "RazorEngine.dll"
 #r "FSharp.Literate.dll"
 #r "FSharp.CodeFormat.dll"
 #r "FSharp.MetadataFormat.dll"
+#r "FSharp.Markdown.dll"
 open Fake
 open System.IO
 open Fake.FileHelper
@@ -50,7 +53,7 @@ let root = "file://" + (__SOURCE_DIRECTORY__ @@ "../output")
 let bin        = __SOURCE_DIRECTORY__ @@ "../../bin"
 let content    = __SOURCE_DIRECTORY__ @@ "../content"
 let output     = __SOURCE_DIRECTORY__ @@ "../output"
-let files      = __SOURCE_DIRECTORY__ @@ "../files"
+//let files      = __SOURCE_DIRECTORY__ @@ "../files"
 let templates  = __SOURCE_DIRECTORY__ @@ "templates"
 let formatting = __SOURCE_DIRECTORY__ @@ "../../packages/FSharp.Formatting/"
 let docTemplate = formatting @@ "templates/docpage.cshtml"
@@ -62,7 +65,8 @@ let layoutRoots =
 
 // Copy static files and CSS + JS from F# Formatting
 let copyFiles () =
-  CopyRecursive files output true |> Log "Copying file: "
+  CreateDir output
+//  CopyRecursive files output true |> Log "Copying file: "
   ensureDirectory (output @@ "content")
   CopyRecursive (formatting @@ "styles") (output @@ "content") true 
     |> Log "Copying styles and scripts: "

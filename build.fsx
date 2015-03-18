@@ -9,6 +9,7 @@ open Fake.AssemblyInfoFile
 open SourceLink
 open Fake.AppVeyor
 open System.Collections.Generic
+open Fake.Git
 
 let buildDate =
     let pst = TimeZoneInfo.FindSystemTimeZoneById "Pacific Standard Time"
@@ -224,6 +225,15 @@ Target "DocsRun" <| fun _ ->
     watcher.EnableRaisingEvents <- false
     watcher.Dispose()
 
+Target "UpdateDocs" <| fun _ ->
+    CleanDir "gh-pages"
+    cloneSingleBranch "" "https://github.com/ctaggart/SourceLink.git" "gh-pages" "gh-pages"
+    fullclean "gh-pages"
+    CopyRecursive "docs/output" "gh-pages" true |> printfn "%A"
+    StageAll "gh-pages"
+    Commit "gh-pages" (sprintf "updated docs from %s" buildVersion)
+    Branches.push "gh-pages"
+
 Target "Help" <| fun _ ->
     printfn "build.cmd [<target>] [options]"
     printfn @"for FAKE help: packages\FAKE\tools\FAKE.exe --help"
@@ -243,6 +253,9 @@ let (==>) a b = a =?> (b, isAppVeyorBuild)
 ==> "SourceLink"
 ==> "NuGet"
 ==> "Publish"
+
+"Docs"
+==> "UpdateDocs"
 
 let runTargets() =
     // when on AppVeyor, allow targets to be specified as #hashtags

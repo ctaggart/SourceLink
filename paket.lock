@@ -1,7 +1,7 @@
 NUGET
   remote: http://nuget.org/api/v2
   specs:
-    FAKE (3.20.1)
+    FAKE (3.23.0)
     FSharp.Compiler.Service (0.0.86)
     FSharp.Core (3.0.2)
     FSharp.Formatting (2.7.5)
@@ -10,9 +10,11 @@ NUGET
     FSharpVSPowerTools.Core (1.7.0)
       FSharp.Compiler.Service (>= 0.0.81)
     LibGit2Sharp (0.21.0.176)
+    Microsoft.AspNet.Razor (3.2.3) - framework: >= net45
     Mono.Cecil (0.9.5.4)
     NuGet.CommandLine (2.8.3)
+    RazorEngine (3.6.1)
+      Microsoft.AspNet.Razor (>= 3.0.0) - framework: >= net45
+      Microsoft.AspNet.Razor (2.0.30506.0) - framework: >= net40 < net45
+    SourceLink.Fake (0.5.0-ci1503171444)
     UnionArgParser (0.8.6)
-  remote: https://ci.appveyor.com/nuget/sourcelink-helmesfwai2a
-  specs:
-    SourceLink.Fake (0.5.0-ci1503082110)

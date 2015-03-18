@@ -5,6 +5,7 @@ nuget FAKE
 nuget SourceLink.Fake prerelease
 nuget FSharp.Formatting
 nuget NuGet.CommandLine
+nuget RazorEngine
 
 nuget FSharp.Core 3.0.2
 nuget LibGit2Sharp
