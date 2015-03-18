@@ -85,6 +85,7 @@ Target "SourceLink" <| fun _ ->
 let bin = "bin"
 let nugetApiKey = environVarOrDefault "NuGetApiKey" ""
 let chocolateyApiKey = environVarOrDefault "ChocolateyApiKey" ""
+let githubToken = environVarOrDefault "GitHubToken" ""
 
 let pSourceLink (p: NuGetParams) =
     { p with
@@ -227,7 +228,7 @@ Target "WatchDocs" <| fun _ ->
 
 Target "UpdateDocs" <| fun _ ->
     CleanDir "gh-pages"
-    cloneSingleBranch "" "https://github.com/ctaggart/SourceLink.git" "gh-pages" "gh-pages"
+    cloneSingleBranch "" (sprintf "https://%s@github.com/ctaggart/SourceLink.git" githubToken) "gh-pages" "gh-pages"
     fullclean "gh-pages"
     CopyRecursive "docs/output" "gh-pages" true |> printfn "%A"
     StageAll "gh-pages"
