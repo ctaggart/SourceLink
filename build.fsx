@@ -210,7 +210,7 @@ Target "Docs" <| fun _ ->
     generateDocs true
     CopyFile "docs/output" "SourceLink128.jpg" // icon used by all NuGet packages
 
-Target "DocsRun" <| fun _ ->
+Target "WatchDocs" <| fun _ ->
     use watcher = new FileSystemWatcher(DirectoryInfo("docs/content").FullName,"*.*")
     watcher.EnableRaisingEvents <- true
     watcher.Changed.Add(fun e -> generateDocs false)

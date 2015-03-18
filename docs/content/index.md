@@ -6,13 +6,13 @@ SourceLink allows you to download on demand the exact version of the source file
 
 When you NuGet package includes the source indexed `pdb` files, users of the libraries can step directly into the source code using Visual Studio.
 
-<iframe width="700" height="450" src="https://www.youtube.com/embed/k_jeSP_rMp8&rel=0" frameborder="0" allowfullscreen></iframe>
+<iframe width="700" height="450" src="https://www.youtube.com/embed/k_jeSP_rMp8?rel=0" frameborder="0" allowfullscreen></iframe>
 
 ### Demo: Go To Source during Design Time
 
 Visual F# Power Tools 1.8 beta uses the source indexed pdb files to get the source code during design time. In the case of GitHub, it opens your browser to the exact line.
 
-<iframe width="700" height="450" src="https://www.youtube.com/embed/5n3TUqMiysk&rel=0" frameborder="0" allowfullscreen></iframe>
+<iframe title="YouTube video player" width="700" height="450" src="https://www.youtube.com/embed/5n3TUqMiysk?rel=0" frameborder="0" allowfullscreen></iframe>
 
 ### Typical Usage with SourceLink.exe
 
