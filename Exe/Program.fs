@@ -25,11 +25,13 @@ tracefn "SourceLink %s" version
 type Command =
     | Index
     | SrcToolx
+    | Checksums
     | Unknown
 
 type CLIArguments =
     | [<First>][<NoAppSettings>][<CustomCommandLine("index")>] Index
     | [<First>][<NoAppSettings>][<CustomCommandLine("srctoolx")>] SrcToolx
+    | [<First>][<NoAppSettings>][<CustomCommandLine("checksums")>] Checksums
     | [<AltCommandLine("-v")>] Verbose
     | [<AltCommandLine("-pr")>] Proj of string
     | [<AltCommandLine("-pp")>] Proj_Prop of string * string
@@ -64,6 +66,8 @@ with
             | Map _ -> "manual mapping of file path to repo path, disables verify, supports multiple"
 
             | SrcToolx _ -> "lists the URLs for the soure indexed files like `SrcTool -x`"
+            
+            | Checksums _ -> "lists all the files in the pdb and their checksums"
 
 let parser = UnionArgParser.Create<CLIArguments>("USAGE: sourcelink [index] ... options")
  
@@ -73,6 +77,7 @@ let results =
         let command = 
             if results.Contains <@ CLIArguments.Index @> then Command.Index
             else if results.Contains <@ CLIArguments.SrcToolx @> then Command.SrcToolx
+            else if results.Contains <@ CLIArguments.Checksums @> then Command.Checksums
             else Command.Unknown
         if results.Contains <@ CLIArguments.Verbose @> then
             verbose <- true
@@ -105,6 +110,10 @@ try
         | Command.SrcToolx ->
             let pdb = results.GetResult <@ CLIArguments.Pdb @>
             SrcToolx.run pdb
+
+        | Command.Checksums ->
+            let pdb = results.GetResult <@ CLIArguments.Pdb @>
+            Checksums.run pdb
 
         | _ -> traceErrorfn "no command given.%s" (parser.Usage())
         

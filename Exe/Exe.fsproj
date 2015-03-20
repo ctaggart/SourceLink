@@ -49,6 +49,7 @@
     <Compile Include="Utils.fs" />
     <Compile Include="IndexCmd.fs" />
     <Compile Include="SrcToolx.fs" />
+    <Compile Include="Checksums.fs" />
     <Compile Include="Program.fs" />
     <None Include="App.config" />
     <None Include="paket.references" />
