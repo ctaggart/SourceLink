@@ -4,7 +4,7 @@ open System
 open System.Text
 open System.Collections.Generic
 
-let run (pdb: string) showFiles showUrls verify =
+let run (pdb: string) showFiles showUrls check =
 
     let urls =
         SrcToolx.getSourceFilePathAndUrl pdb
@@ -23,7 +23,7 @@ let run (pdb: string) showFiles showUrls verify =
         if urls.ContainsKey file then
             if showUrls then
                 sb.Appendf " %s " urls.[file]
-            if verify then
+            if check then
                 () // TODO
         printfn "%s" (sb.ToString())
 

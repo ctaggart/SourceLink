@@ -1,15 +1,17 @@
-﻿// thanks Paket! derived from https://github.com/fsprojects/Paket/blob/master/src/Paket/Program.fs
-module SourceLink.Program
+﻿module SourceLink.Program
+
+// UnionArgParser usage base on Paket
+// https://github.com/fsprojects/Paket/blob/master/src/Paket/Program.fs
 
 open System
 open Nessos.UnionArgParser
 open System.Diagnostics
 open System.Reflection
 open System.IO
-open SourceLink
+open SourceLink.Commands
 
-//let private stopWatch = new Stopwatch()
-//stopWatch.Start()
+let stopWatch = Stopwatch()
+stopWatch.Start()
 
 let version =
     let assembly = Assembly.GetExecutingAssembly()
@@ -22,113 +24,93 @@ let version =
 
 tracefn "SourceLink %s" version
 
-type Command =
-    | Index
-    | SrcToolx
-    | Checksums
-    | Unknown
+let filterGlobalArgs args = 
+    let globalResults = 
+        UnionArgParser.Create<GlobalArgs>()
+            .Parse(ignoreMissing = true, 
+                   ignoreUnrecognized = true, 
+                   raiseOnUsage = false)
+    let verbose = globalResults.Contains <@ GlobalArgs.Verbose @>
+    
+    let rest = 
+        if verbose then 
+            args |> Array.filter (fun a -> a <> "-v" && a <> "--verbose")
+        else args
+    
+    verbose, rest
 
-type CLIArguments =
-    | [<First>][<NoAppSettings>][<CustomCommandLine("index")>] Index
-    | [<First>][<NoAppSettings>][<CustomCommandLine("srctoolx")>] SrcToolx
-    | [<First>][<NoAppSettings>][<CustomCommandLine("checksums")>] Checksums
-    | [<AltCommandLine("-v")>] Verbose
-    | [<AltCommandLine("-pr")>] Proj of string
-    | [<AltCommandLine("-pp")>] Proj_Prop of string * string
-    | [<AltCommandLine("-u")>] Url of string
-    | [<AltCommandLine("-c")>] Commit of string
-    | [<AltCommandLine("-p")>] Pdb of string
-    | [<AltCommandLine("-f")>] File of string
-    | [<AltCommandLine("-nf")>] Not_File of string
-    | [<AltCommandLine("-vg")>] Verify_Git of bool
-    | [<AltCommandLine("-vp")>] Verify_Pdb of bool
-    | [<AltCommandLine("-r")>] Repo of string
-    | [<AltCommandLine("-m")>] Map of string * string
+let processWithValidation<'T when 'T :> IArgParserTemplate> validateF commandF command 
+    args = 
+    let parser = UnionArgParser.Create<'T>()
+    let results = 
+        parser.Parse
+            (inputs = args, raiseOnUsage = false, ignoreMissing = true, 
+             errorHandler = ProcessExiter())
+    let resultsValid = validateF (results)
+    if results.IsUsageRequested || not resultsValid then 
+        parser.Usage(Commands.cmdLineUsageMessage command parser) |> trace
+    else 
+        commandF results
+        if Logging.verbose then
+            let elapsedTime = Utils.TimeSpanToReadableString stopWatch.Elapsed
+            tracefn "elapsed time: %s" elapsedTime
 
-with
-    interface IArgParserTemplate with
-        // TODO the arg descriptions don't quite match for each different command
-        // For now, will just put the correct info on the website
-        member s.Usage =
-            match s with
-            | Verbose -> "displays verbose output"
+let processCommand<'T when 'T :> IArgParserTemplate> (commandF : ArgParseResults<'T> -> unit) = 
+    processWithValidation (fun _ -> true) commandF 
 
-            | Index -> "source indexes a pdb file"
+let v, args = filterGlobalArgs (Environment.GetCommandLineArgs().[1..])
+Logging.verbose <- v
 
-            | Proj _ -> "project file path"
-            | Proj_Prop _ -> "project property, supports multiple"
-            | Url _ -> "URL for downloading the source files, use {0} for commit and %var2% for path"
-            | Commit _ -> "Git commit or Hg changeset ID or SVN revision number or TFVC changeset ID"
-            | Pdb _ -> "pdb file to add the index to, supports multiple and globs"
-            | File _ -> "source file to put in the index, supports multiple and globs"
-            | Not_File _ -> "exclude this file, supports multiple and globs"
-            | Verify_Git _ -> "verify the file checksums using the Git repo, default true"
-            | Verify_Pdb _-> "verify the file checksums using the pdb file, default true"
-            | Repo _ -> "Git repository directory, defaults to current directory"
-            | Map _ -> "manual mapping of file path to repo path, disables verify, supports multiple"
+let index (results: ArgParseResults<_>) =
+    let proj = results.TryGetResult <@ IndexArgs.Proj @>
+    let projProps = results.GetResults <@ IndexArgs.Proj_Prop @>
+    let url = results.GetResult <@ IndexArgs.Url @>
+    let commit = results.TryGetResult <@ IndexArgs.Commit @>
+    let pdbs = results.GetResults <@ IndexArgs.Pdb @>
+    let verifyGit = defaultArg (results.TryGetResult <@ IndexArgs.Verify_Git @>) true
+    let verifyPdb = defaultArg (results.TryGetResult <@ IndexArgs.Verify_Pdb @>) true
+    let files = results.GetResults <@ IndexArgs.File @>
+    let notFiles = results.GetResults <@ IndexArgs.Not_File @>
+    let repoDir = defaultArg (results.TryGetResult <@ IndexArgs.Repo @>) (Directory.GetCurrentDirectory())
+    let paths = results.GetResults <@ IndexArgs.Map @>
+    IndexCmd.run proj projProps url commit pdbs verifyGit verifyPdb files notFiles repoDir paths
 
-            | SrcToolx _ -> "lists the URLs for the soure indexed files like `SrcTool -x`"
-            
-            | Checksums _ -> "lists all the files in the pdb and their checksums"
+let srctoolx (results: ArgParseResults<_>) =
+    let pdb = results.GetResult <@ SrcToolxArgs.Pdb @>
+    SrcToolx.run pdb
 
-let parser = UnionArgParser.Create<CLIArguments>("USAGE: sourcelink [index] ... options")
- 
-let results =
-    try
-        let results = parser.Parse()
-        let command = 
-            if results.Contains <@ CLIArguments.Index @> then Command.Index
-            else if results.Contains <@ CLIArguments.SrcToolx @> then Command.SrcToolx
-            else if results.Contains <@ CLIArguments.Checksums @> then Command.Checksums
-            else Command.Unknown
-        if results.Contains <@ CLIArguments.Verbose @> then
-            verbose <- true
-
-        Some(command,results)
-    with
-    | _ ->
-        tracefn "%s %s%s" (String.Join(" ",Environment.GetCommandLineArgs())) Environment.NewLine (parser.Usage())
-        None
+let checksums (results: ArgParseResults<_>) =
+    let pdb = results.GetResult <@ ChecksumsArgs.Pdb @>
+    let file = defaultArg (results.TryGetResult <@ ChecksumsArgs.File @>) true
+    let url = defaultArg (results.TryGetResult <@ ChecksumsArgs.Url @>) false
+    let check = defaultArg (results.TryGetResult <@ ChecksumsArgs.Check @>) false
+    Checksums.run pdb file url check
 
 try
-    match results with
-    | Some(command,results) ->
-        
-        match command with
-        | Command.Index ->
-            let proj = results.TryGetResult <@ CLIArguments.Proj @>
-            let projProps = results.GetResults <@ CLIArguments.Proj_Prop @>
-            let url = results.GetResult <@ CLIArguments.Url @>
-            let commit = results.TryGetResult <@ CLIArguments.Commit @>
-            let pdbs = results.GetResults <@ CLIArguments.Pdb @>
-            let verifyGit = defaultArg (results.TryGetResult <@ CLIArguments.Verify_Git @>) true
-            let verifyPdb = defaultArg (results.TryGetResult <@ CLIArguments.Verify_Pdb @>) true
-            let files = results.GetResults <@ CLIArguments.File @>
-            let notFiles = results.GetResults <@ CLIArguments.Not_File @>
-            let repoDir = defaultArg (results.TryGetResult <@ CLIArguments.Repo @>) (Directory.GetCurrentDirectory())
-            let paths = results.GetResults <@ CLIArguments.Map @>
-            IndexCmd.run proj projProps url commit pdbs verifyGit verifyPdb files notFiles repoDir paths
+    let parser = UnionArgParser.Create<Command>()
+    let results = 
+        parser.Parse(inputs = args,
+                   ignoreMissing = true, 
+                   ignoreUnrecognized = true, 
+                   raiseOnUsage = false)
 
-        | Command.SrcToolx ->
-            let pdb = results.GetResult <@ CLIArguments.Pdb @>
-            SrcToolx.run pdb
+    match results.GetAllResults() with
+    | [ command ] -> 
+        let handler =
+            match command with
+            | Index -> processCommand index
+            | SrcToolx -> processCommand srctoolx
+            | Checksums -> processCommand checksums
 
-        | Command.Checksums ->
-            let pdb = results.GetResult <@ CLIArguments.Pdb @>
-            // TODO this isn't right, I need these to be booleans
-            let showFiles = results.Contains <@ CLIArguments.File @>
-            let showUrls = results.Contains <@ CLIArguments.Url @>
-            let verify = false // TODO
-            Checksums.run pdb showFiles showUrls verify
-
-        | _ -> traceErrorfn "no command given.%s" (parser.Usage())
-        
-//        let elapsedTime = Utils.TimeSpanToReadableString stopWatch.Elapsed
-//        tracefn "%s - ready." elapsedTime
-    | None -> ()
+        let args = args.[1..]
+        handler command args
+    | [] -> 
+        parser.Usage("available commands:") |> trace
+    | _ -> failwith "expected only one command"
 with
-| ex -> 
+| exn when not (exn :? System.NullReferenceException) -> 
     Environment.ExitCode <- 1
-    traceErrorfn "SourceLink failed with:%s  %s" Environment.NewLine ex.Message
+    traceErrorfn "SourceLink failed with:%s  %s" Environment.NewLine exn.Message
+
     if verbose then
-        traceErrorfn "StackTrace:%s  %s" Environment.NewLine ex.StackTrace
+        traceErrorfn "StackTrace:%s  %s" Environment.NewLine exn.StackTrace
