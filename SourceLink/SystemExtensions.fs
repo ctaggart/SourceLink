@@ -97,6 +97,10 @@ type Dictionary<'K,'V> with
         let d = Dictionary()
         d.AddAll tuples
         d
+    static member ofTuplesCmp (cmp:IEqualityComparer<_>) (tuples:seq<_*_>) = 
+        let d = Dictionary(cmp)
+        d.AddAll tuples
+        d
 
 type HashSet<'T> with
     static member ofSeq (s:seq<'T>) = HashSet s

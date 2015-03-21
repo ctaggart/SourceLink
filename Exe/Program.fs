@@ -47,11 +47,13 @@ type CLIArguments =
 
 with
     interface IArgParserTemplate with
+        // TODO the arg descriptions don't quite match for each different command
+        // For now, will just put the correct info on the website
         member s.Usage =
             match s with
-            | Index -> "source indexes a pdb file"
-
             | Verbose -> "displays verbose output"
+
+            | Index -> "source indexes a pdb file"
 
             | Proj _ -> "project file path"
             | Proj_Prop _ -> "project property, supports multiple"
@@ -113,7 +115,11 @@ try
 
         | Command.Checksums ->
             let pdb = results.GetResult <@ CLIArguments.Pdb @>
-            Checksums.run pdb
+            // TODO this isn't right, I need these to be booleans
+            let showFiles = results.Contains <@ CLIArguments.File @>
+            let showUrls = results.Contains <@ CLIArguments.Url @>
+            let verify = false // TODO
+            Checksums.run pdb showFiles showUrls verify
 
         | _ -> traceErrorfn "no command given.%s" (parser.Usage())
         
