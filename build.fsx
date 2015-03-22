@@ -26,7 +26,7 @@ let hasRepoVersionTag = isAppVeyorBuild && AppVeyorEnvironment.RepoTag && AppVey
 let release = ReleaseNotesHelper.LoadReleaseNotes "RELEASE_NOTES.md"
 
 let versionAssembly =
-    if hasRepoVersionTag then AppVeyor.AppVeyorEnvironment.RepoBranch.Substring 1
+    if hasRepoVersionTag then AppVeyor.AppVeyorEnvironment.RepoTagName.Substring 1
     else release.NugetVersion
 
 let buildVersion =
