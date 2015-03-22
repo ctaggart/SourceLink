@@ -53,6 +53,7 @@ let run (pdb: string) showFiles showUrls check =
         if showFiles then
             sb.Appendf " %s" file
         if urls.ContainsKey file then
+            incr nUrls
             let url = urls.[file]
             if showUrls then
                 sb.Appendf " %s " url
@@ -72,7 +73,7 @@ let run (pdb: string) showFiles showUrls check =
 
     let sb = StringBuilder()
     sb.Appendf "%s has %d source files" pdb !nFiles
-    if showUrls then
+    if showUrls || check then
         if !nFiles = !nUrls then sb.Appendf ", ALL indexed"
         else sb.Appendf ", %d indexed, %d not indexed" !nUrls (!nFiles - !nUrls)
     if check then
