@@ -1,6 +1,6 @@
 ﻿module SourceLink.Program
 
-// UnionArgParser usage base on Paket
+// UnionArgParser usage based on Paket
 // https://github.com/fsprojects/Paket/blob/master/src/Paket/Program.fs
 
 open System

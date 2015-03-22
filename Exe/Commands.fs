@@ -1,21 +1,21 @@
 ﻿module SourceLink.Commands
 
-// UnionArgParser usage base on Paket
+// UnionArgParser usage based on Paket
 // https://github.com/fsprojects/Paket/blob/master/src/Paket/Commands.fs
 
 open Nessos.UnionArgParser
 
 type Command =
     | [<First>][<CustomCommandLine "index">] Index
-    | [<First>][<CustomCommandLine "srctoolx">] SrcToolx
     | [<First>][<CustomCommandLine "checksums">] Checksums
+    | [<First>][<CustomCommandLine "srctoolx">] SrcToolx
 with
     interface IArgParserTemplate with
         member x.Usage =
             match x with
             | Index -> "source indexes a pdb file"
-            | SrcToolx _ -> "lists the URLs for the soure indexed files like `SrcTool -x`"
             | Checksums _ -> "lists all the files in the pdb and their checksums"
+            | SrcToolx _ -> "lists the URLs for the soure indexed files like `SrcTool -x`"
 
     member this.Name = 
         let uci,_ = Microsoft.FSharp.Reflection.FSharpValue.GetUnionFields(this, typeof<Command>)

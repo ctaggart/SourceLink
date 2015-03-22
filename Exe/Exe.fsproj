@@ -41,6 +41,7 @@
     <Reference Include="Microsoft.Build" />
     <Reference Include="mscorlib" />
     <Reference Include="System" />
+    <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" Condition="Exists('AssemblyInfo.fs')" />
@@ -49,6 +50,7 @@
     <Compile Include="Utils.fs" />
     <Compile Include="IndexCmd.fs" />
     <Compile Include="SrcToolx.fs" />
+    <Compile Include="Http.fs" />
     <Compile Include="Checksums.fs" />
     <Compile Include="Commands.fs" />
     <Compile Include="Program.fs" />
