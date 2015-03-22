@@ -67,8 +67,8 @@ let index (results: ArgParseResults<_>) =
     let url = results.GetResult <@ IndexArgs.Url @>
     let commit = results.TryGetResult <@ IndexArgs.Commit @>
     let pdbs = results.GetResults <@ IndexArgs.Pdb @>
-    let verifyGit = defaultArg (results.TryGetResult <@ IndexArgs.Verify_Git @>) true
-    let verifyPdb = defaultArg (results.TryGetResult <@ IndexArgs.Verify_Pdb @>) true
+    let verifyGit = results.Contains <@ IndexArgs.Not_Verify_Git @> = false
+    let verifyPdb = results.Contains <@ IndexArgs.Not_Verify_Pdb @> = false
     let files = results.GetResults <@ IndexArgs.File @>
     let notFiles = results.GetResults <@ IndexArgs.Not_File @>
     let repoDir = defaultArg (results.TryGetResult <@ IndexArgs.Repo @>) (Directory.GetCurrentDirectory())
@@ -77,9 +77,9 @@ let index (results: ArgParseResults<_>) =
 
 let checksums (results: ArgParseResults<_>) =
     let pdb = results.GetResult <@ ChecksumsArgs.Pdb @>
-    let file = defaultArg (results.TryGetResult <@ ChecksumsArgs.File @>) true
-    let url = defaultArg (results.TryGetResult <@ ChecksumsArgs.Url @>) false
-    let check = defaultArg (results.TryGetResult <@ ChecksumsArgs.Check @>) false
+    let file = results.Contains <@ ChecksumsArgs.Not_File @> = false
+    let url = results.Contains <@ ChecksumsArgs.Url @>
+    let check = results.Contains <@ ChecksumsArgs.Check @>
     Checksums.run pdb file url check
 
 let pdbstrr (results: ArgParseResults<_>) =

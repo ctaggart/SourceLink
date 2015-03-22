@@ -31,5 +31,6 @@
     <file src="FSharp.Core.dll" target="tools" />
     <file src="UnionArgParser.dll" target="tools" />
     <file src="srcsrv.dll" target="tools" />
+    <file src="pdbstr.exe" target="tools" />
   </files>
 </package>

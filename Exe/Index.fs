@@ -89,7 +89,7 @@ let run (proj:string option) (projProps:(string * string) list)
 //        let pdbstr = Pdbstr.tryFind()
 //        if pdbstr.IsNone then
 //            failwith "pdbstr.exe not found, install Debugging Tools for Windows"
-        let pdbstr = Path.combine (System.Reflection.Assembly.GetExecutingAssembly().Location) "pdbstr.exe"
+        let pdbstr = Path.combine (System.Reflection.Assembly.GetExecutingAssembly().Location |> Path.GetDirectoryName) "pdbstr.exe"
         
         let p = Process()
         p.FileName <- pdbstr

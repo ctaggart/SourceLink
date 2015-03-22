@@ -15,7 +15,7 @@ with
         member x.Usage =
             match x with
             | Index -> "source indexes a pdb file"
-            | Checksums _ -> "lists all the files in the pdb and their checksums"
+            | Checksums _ -> "prints the pdb files and their checksums, supports verifying them"
             | Pdbstrr _ -> "prints the source index like `pdbstr -r -s:srcsrv`"
             | Srctoolx _ -> "lists the URLs for the soure indexed files like `srctool -x`"
 
@@ -39,8 +39,8 @@ type IndexArgs =
     | [<AltCommandLine "-p">] Pdb of string
     | [<AltCommandLine "-f">] File of string
     | [<AltCommandLine "-nf">] Not_File of string
-    | [<AltCommandLine "-vg">] Verify_Git of bool
-    | [<AltCommandLine "-vp">] Verify_Pdb of bool
+    | [<AltCommandLine "-nvg">] Not_Verify_Git
+    | [<AltCommandLine "-nvp">] Not_Verify_Pdb
     | [<AltCommandLine "-r">] Repo of string
     | [<AltCommandLine "-m">] Map of string * string
 with
@@ -54,24 +54,24 @@ with
             | Pdb _ -> "pdb file to add the index to, supports multiple and globs"
             | File _ -> "source file to put in the index, supports multiple and globs"
             | Not_File _ -> "exclude this file, supports multiple and globs"
-            | Verify_Git _ -> "verify the file checksums using the Git repo, default true"
-            | Verify_Pdb _-> "verify the file checksums using the pdb file, default true"
+            | Not_Verify_Git _ -> "do not verify the file checksums using the Git repo"
+            | Not_Verify_Pdb _-> "do not verify the file checksums using the pdb file"
             | Repo _ -> "Git repository directory, defaults to current directory"
             | Map _ -> "manual mapping of file path to repo path, disables verify, supports multiple"
 
 type ChecksumsArgs =
     | [<AltCommandLine "-p">] Pdb of string
-    | [<AltCommandLine "-f">] File of bool
-    | [<AltCommandLine "-u">] Url of bool
-    | [<AltCommandLine "-c">] Check of bool
+    | [<AltCommandLine "-nf">] Not_File
+    | [<AltCommandLine "-u">] Url
+    | [<AltCommandLine "-c">] Check
 with
     interface IArgParserTemplate with
         member x.Usage =
             match x with
             | Pdb _ -> "pdb file"
-            | File _ -> "print the source file path, default true"
-            | Url _ -> "print the download URL, default false"
-            | Check _ -> "check the checksums by downloading and calculating in memory"
+            | Not_File _ -> "do not print the source file path"
+            | Url _ -> "print the download URL"
+            | Check _ -> "verify the checksums by downloading and calculating in memory"
 
 type PdbstrrArgs =
     | [<AltCommandLine("-p")>] Pdb of string
