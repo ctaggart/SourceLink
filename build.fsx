@@ -228,7 +228,8 @@ Target "WatchDocs" <| fun _ ->
 
 Target "UpdateDocs" <| fun _ ->
     CleanDir "gh-pages"
-    cloneSingleBranch "" (sprintf "https://%s@github.com/ctaggart/SourceLink.git" githubToken) "gh-pages" "gh-pages"
+    let auth = if githubToken = "" then "" else sprintf "%s@" githubToken
+    cloneSingleBranch "" (sprintf "https://%sgithub.com/ctaggart/SourceLink.git" auth) "gh-pages" "gh-pages"
     fullclean "gh-pages"
     CopyRecursive "docs/output" "gh-pages" true |> printfn "%A"
     StageAll "gh-pages"

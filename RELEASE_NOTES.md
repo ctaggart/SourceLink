@@ -1,3 +1,5 @@
+### 0.5.1 _ in development
+   * [issues](https://github.com/ctaggart/SourceLink/issues?q=milestone%3A0.5.1)
 
 ### 0.5.0 _ 2015-03
   * [SourceLink.exe](http://www.nuget.org/packages/SourceLink) also [on chocolatey](https://chocolatey.org/packages/SourceLink)
