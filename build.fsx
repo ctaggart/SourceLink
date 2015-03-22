@@ -261,18 +261,21 @@ let (==>) a b = a =?> (b, isAppVeyorBuild)
 let runTargets() =
     // when on AppVeyor, allow targets to be specified as #hashtags
     if isAppVeyorBuild then
-        let targets = getAllTargetsNames() |> (HashSet.ofSeqCmp StringComparer.OrdinalIgnoreCase)
-        let cm = AppVeyorEnvironment.RepoCommitMessage
-        let rx = Text.RegularExpressions.Regex @"\B#([a-zA-Z]\w+)"
-        let hashtags = seq {
-            for m in rx.Matches cm do
-                yield m.Groups.[1].Value } |> List.ofSeq
-        if hashtags.Length = 0 then
-            RunTargetOrDefault "Help"
+        if hasRepoVersionTag then
+            run "Publish"
         else
-            for ht in hashtags do
-                if targets.Contains ht then
-                    run ht
+            let targets = getAllTargetsNames() |> (HashSet.ofSeqCmp StringComparer.OrdinalIgnoreCase)
+            let cm = AppVeyorEnvironment.RepoCommitMessage
+            let rx = Text.RegularExpressions.Regex @"\B#([a-zA-Z]\w+)"
+            let hashtags = seq {
+                for m in rx.Matches cm do
+                    yield m.Groups.[1].Value } |> List.ofSeq
+            if hashtags.Length = 0 then
+                RunTargetOrDefault "NuGet"
+            else
+                for ht in hashtags do
+                    if targets.Contains ht then
+                        run ht
     else
         RunTargetOrDefault "Help"
 
