@@ -1,7 +1,10 @@
+
 ### 0.5.0 _ 2015-03
   * [SourceLink.exe](http://www.nuget.org/packages/SourceLink) also [on chocolatey](https://chocolatey.org/packages/SourceLink)
   * [SourceLink.SymbolStore](http://www.nuget.org/packages/SourceLink.Store)
   * SourceLink NuGet Package is now [SourceLink.Core](https://www.nuget.org/packages/SourceLink.Core)
+  * better TFS logging with FAKE, bug #45 fixed by Chet Husk
+  * bug fixed in PdFile.hasName by Jeremy Ansel, bug #61 IndexOutOfRange
   * [issues](https://github.com/ctaggart/SourceLink/issues?q=milestone%3A0.5.0)
 
 ### 0.4.2 _ 2014-11
