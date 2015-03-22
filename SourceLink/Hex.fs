@@ -4,7 +4,7 @@ module SourceLink.Hex
 open System
 
 let toHexDigit n =
-    if n < 10 then char (n + 0x30) else char (n + 0x37)
+    if n < 10 then char (n + 0x30) else char (n + 0x57) // 0x37 for uppercase, 0x57 for lowercase
     
 let fromHexDigit c =
     if c >= '0' && c <= '9' then int c - int '0'
