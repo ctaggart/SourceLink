@@ -86,12 +86,13 @@ let run (proj:string option) (projProps:(string * string) list)
             pdb.PathSrcSrv
 
         File.WriteAllBytes(srcsrvPath, SrcSrv.create url commit paths)
-        let pdbstr = Pdbstr.tryFind()
-        if pdbstr.IsNone then
-            failwith "pdbstr.exe not found, install Debugging Tools for Windows"
+//        let pdbstr = Pdbstr.tryFind()
+//        if pdbstr.IsNone then
+//            failwith "pdbstr.exe not found, install Debugging Tools for Windows"
+        let pdbstr = Path.combine (System.Reflection.Assembly.GetExecutingAssembly().Location) "pdbstr.exe"
         
         let p = Process()
-        p.FileName <- pdbstr.Value
+        p.FileName <- pdbstr
         p.Arguments <- sprintf "-w -s:srcsrv -i:\"%s\" -p:\"%s\"" srcsrvPath pdbPath
         p.WorkingDirectory <- cd
         p.Stdout |> Observable.add traceVerbose
