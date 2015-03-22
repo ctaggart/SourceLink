@@ -73,11 +73,7 @@ let index (results: ArgParseResults<_>) =
     let notFiles = results.GetResults <@ IndexArgs.Not_File @>
     let repoDir = defaultArg (results.TryGetResult <@ IndexArgs.Repo @>) (Directory.GetCurrentDirectory())
     let paths = results.GetResults <@ IndexArgs.Map @>
-    IndexCmd.run proj projProps url commit pdbs verifyGit verifyPdb files notFiles repoDir paths
-
-let srctoolx (results: ArgParseResults<_>) =
-    let pdb = results.GetResult <@ SrcToolxArgs.Pdb @>
-    SrcToolx.run pdb
+    Index.run proj projProps url commit pdbs verifyGit verifyPdb files notFiles repoDir paths
 
 let checksums (results: ArgParseResults<_>) =
     let pdb = results.GetResult <@ ChecksumsArgs.Pdb @>
@@ -85,6 +81,14 @@ let checksums (results: ArgParseResults<_>) =
     let url = defaultArg (results.TryGetResult <@ ChecksumsArgs.Url @>) false
     let check = defaultArg (results.TryGetResult <@ ChecksumsArgs.Check @>) false
     Checksums.run pdb file url check
+
+let pdbstrr (results: ArgParseResults<_>) =
+    let pdb = results.GetResult <@ SrctoolxArgs.Pdb @>
+    Pdbstrr.run pdb
+
+let srctoolx (results: ArgParseResults<_>) =
+    let pdb = results.GetResult <@ SrctoolxArgs.Pdb @>
+    SrcToolx.run pdb
 
 try
     let parser = UnionArgParser.Create<Command>()
@@ -99,8 +103,9 @@ try
         let handler =
             match command with
             | Index -> processCommand index
-            | SrcToolx -> processCommand srctoolx
             | Checksums -> processCommand checksums
+            | Pdbstrr -> processCommand pdbstrr
+            | Srctoolx -> processCommand srctoolx
 
         let args = args.[1..]
         handler command args

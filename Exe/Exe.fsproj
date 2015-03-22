@@ -48,8 +48,9 @@
     <Compile Include="FileSystem.fs" />
     <Compile Include="Logging.fs" />
     <Compile Include="Utils.fs" />
-    <Compile Include="IndexCmd.fs" />
-    <Compile Include="SrcToolx.fs" />
+    <Compile Include="Index.fs" />
+    <Compile Include="Pdbstrr.fs" />
+    <Compile Include="Srctool.fs" />
     <Compile Include="Http.fs" />
     <Compile Include="Checksums.fs" />
     <Compile Include="Commands.fs" />

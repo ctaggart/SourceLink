@@ -1,4 +1,4 @@
-﻿module SourceLink.IndexCmd
+﻿module SourceLink.Index
 
 open System.IO
 open SourceLink

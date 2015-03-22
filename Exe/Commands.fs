@@ -8,14 +8,16 @@ open Nessos.UnionArgParser
 type Command =
     | [<First>][<CustomCommandLine "index">] Index
     | [<First>][<CustomCommandLine "checksums">] Checksums
-    | [<First>][<CustomCommandLine "srctoolx">] SrcToolx
+    | [<First>][<CustomCommandLine "pdbstrr">] Pdbstrr
+    | [<First>][<CustomCommandLine "srctoolx">] Srctoolx
 with
     interface IArgParserTemplate with
         member x.Usage =
             match x with
             | Index -> "source indexes a pdb file"
             | Checksums _ -> "lists all the files in the pdb and their checksums"
-            | SrcToolx _ -> "lists the URLs for the soure indexed files like `SrcTool -x`"
+            | Pdbstrr _ -> "prints the source index like `pdbstr -r -s:srcsrv`"
+            | Srctoolx _ -> "lists the URLs for the soure indexed files like `srctool -x`"
 
     member this.Name = 
         let uci,_ = Microsoft.FSharp.Reflection.FSharpValue.GetUnionFields(this, typeof<Command>)
@@ -57,14 +59,6 @@ with
             | Repo _ -> "Git repository directory, defaults to current directory"
             | Map _ -> "manual mapping of file path to repo path, disables verify, supports multiple"
 
-type SrcToolxArgs =
-    | [<AltCommandLine("-p")>] Pdb of string
-with
-    interface IArgParserTemplate with
-        member x.Usage =
-            match x with
-            | Pdb _ -> "pdb file"
-
 type ChecksumsArgs =
     | [<AltCommandLine "-p">] Pdb of string
     | [<AltCommandLine "-f">] File of bool
@@ -78,6 +72,22 @@ with
             | File _ -> "print the source file path, default true"
             | Url _ -> "print the download URL, default false"
             | Check _ -> "check the checksums by downloading and calculating in memory"
+
+type PdbstrrArgs =
+    | [<AltCommandLine("-p")>] Pdb of string
+with
+    interface IArgParserTemplate with
+        member x.Usage =
+            match x with
+            | Pdb _ -> "pdb file"
+
+type SrctoolxArgs =
+    | [<AltCommandLine("-p")>] Pdb of string
+with
+    interface IArgParserTemplate with
+        member x.Usage =
+            match x with
+            | Pdb _ -> "pdb file"
 
 let cmdLineSyntax (parser:UnionArgParser<_>) commandName = 
     "$ SourceLink " + commandName + " " + parser.PrintCommandLineSyntax()
