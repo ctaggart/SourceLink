@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.22310.1
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "SourceLink", "SourceLink\SourceLink.fsproj", "{AAF1B8D7-791E-40F1-A278-9A16D9667866}"
 EndProject
@@ -33,6 +33,7 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Git", "Git\Git.fsproj", "{7
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{D3E73D0A-292F-463C-B834-F8FCD9AA36BD}"
 	ProjectSection(SolutionItems) = preProject
+		docs\content\exe.md = docs\content\exe.md
 		docs\content\fake.md = docs\content\fake.md
 		docs\tools\generate.fsx = docs\tools\generate.fsx
 		docs\content\github.md = docs\content\github.md
@@ -40,6 +41,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{D3E73D0A-2
 		docs\content\index.md = docs\content\index.md
 		docs\tools\templates\template.cshtml = docs\tools\templates\template.cshtml
 		docs\content\tfs.md = docs\content\tfs.md
+		docs\content\users.md = docs\content\users.md
 		docs\content\visualstudio.md = docs\content\visualstudio.md
 	EndProjectSection
 EndProject
