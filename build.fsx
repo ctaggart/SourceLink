@@ -64,23 +64,33 @@ Target "Build" <| fun _ ->
     !! "SourceLink.sln" |> MSBuildRelease "" "Rebuild" |> ignore
 
 Target "SourceLink" <| fun _ ->
-    printfn "starting SourceLink"
-    let sourceIndex proj pdb =
-        use repo = new GitRepo(__SOURCE_DIRECTORY__)
-        let p = VsProj.Load proj ["Configuration","Release"; "VisualStudioVersion","12.0"]
-        let pdbToIndex = if Option.isSome pdb then pdb.Value else p.OutputFilePdb
-        logfn "source indexing %s" pdbToIndex
-        let files = p.Compiles -- "**/AssemblyInfo.fs"
-        repo.VerifyChecksums files
-        p.VerifyPdbChecksums files
-        p.CreateSrcSrv "https://raw.githubusercontent.com/ctaggart/SourceLink/{0}/%var2%" repo.Commit (repo.Paths files)
-        Pdbstr.exec pdbToIndex p.OutputFilePdbSrcSrv
-    sourceIndex "Tfs/Tfs.fsproj" None 
-    sourceIndex "SourceLink/SourceLink.fsproj" None
-    sourceIndex "Git/Git.fsproj" None
-    sourceIndex "SymbolStore/SymbolStore.fsproj" None
-    sourceIndex "CorSym/CorSym.csproj" (Some "SymbolStore/bin/Release/SourceLink.SymbolStore.CorSym.pdb")
-    sourceIndex "Exe/Exe.fsproj" None
+//    printfn "starting SourceLink"
+//    let sourceIndex proj pdb =
+//        use repo = new GitRepo(__SOURCE_DIRECTORY__)
+//        let p = VsProj.Load proj ["Configuration","Release"; "VisualStudioVersion","12.0"]
+//        let pdbToIndex = if Option.isSome pdb then pdb.Value else p.OutputFilePdb
+//        logfn "source indexing %s" pdbToIndex
+//        let files = p.Compiles -- "**/AssemblyInfo.fs"
+//        repo.VerifyChecksums files
+//        p.VerifyPdbChecksums files
+//        p.CreateSrcSrv "https://raw.githubusercontent.com/ctaggart/SourceLink/{0}/%var2%" repo.Commit (repo.Paths files)
+//        Pdbstr.exec pdbToIndex p.OutputFilePdbSrcSrv
+//    sourceIndex "Tfs/Tfs.fsproj" None 
+//    sourceIndex "SourceLink/SourceLink.fsproj" None
+//    sourceIndex "Git/Git.fsproj" None
+//    sourceIndex "SymbolStore/SymbolStore.fsproj" None
+//    sourceIndex "CorSym/CorSym.csproj" (Some "SymbolStore/bin/Release/SourceLink.SymbolStore.CorSym.pdb")
+//    sourceIndex "Exe/Exe.fsproj" None
+    let p = VsProj.Load "SourceLink/SourceLink.fsproj" ["Configuration","Release"]//; "VisualStudioVersion","12.0"]
+    for pr in p.Properties do
+      if pr.Name.EqualsI "VisualStudioVersion" then
+        printfn "property: %s, value: %s, global: %b, environ: %b, imported: %b, reserved, %b" 
+          pr.Name pr.UnevaluatedValue pr.IsGlobalProperty pr.IsEnvironmentProperty pr.IsImported pr.IsReservedProperty
+//    let vp = Microsoft.Build.Evaluation.ProjectProperty.
+//    printfn "ToolsVersion: %s" p.ToolsVersion
+
+//    printfn "SubToolsetVersion: %s" p.SubToolsetVersion
+    ()
 
 let bin = "bin"
 let nugetApiKey = environVarOrDefault "NuGetApiKey" ""
@@ -272,7 +282,7 @@ let runTargets() =
                 for m in rx.Matches cm do
                     yield m.Groups.[1].Value } |> List.ofSeq
             if hashtags.Length = 0 then
-                RunTargetOrDefault "NuGet"
+                RunTargetOrDefault "SourceLink"
             else
                 for ht in hashtags do
                     if targets.Contains ht then
