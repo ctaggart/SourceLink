@@ -282,7 +282,7 @@ let runTargets() =
                 for m in rx.Matches cm do
                     yield m.Groups.[1].Value } |> List.ofSeq
             if hashtags.Length = 0 then
-                RunTargetOrDefault "SourceLink"
+                RunTargetOrDefault "NuGet"
             else
                 for ht in hashtags do
                     if targets.Contains ht then
