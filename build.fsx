@@ -67,7 +67,7 @@ Target "SourceLink" <| fun _ ->
     printfn "starting SourceLink"
     let sourceIndex proj pdb =
         use repo = new GitRepo(__SOURCE_DIRECTORY__)
-        let p = VsProj.Load proj ["Configuration","Release"; "VisualStudioVersion","12.0"]
+        let p = VsProj.LoadRelease proj
         let pdbToIndex = if Option.isSome pdb then pdb.Value else p.OutputFilePdb
         logfn "source indexing %s" pdbToIndex
         let files = p.Compiles -- "**/AssemblyInfo.fs"
