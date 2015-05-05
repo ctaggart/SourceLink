@@ -93,6 +93,11 @@ let pSourceLink (p: NuGetParams) =
         Version = buildVersion
         WorkingDir = "SourceLink/bin/Release"
         OutputPath = bin
+        DependenciesByFramework =
+            [{ 
+                FrameworkVersion = "net45"
+                Dependencies = [ "FSharp.Core", GetPackageVersion "./packages/" "FSharp.Core" ] 
+            }]
         AccessKey = nugetApiKey
     }
 
@@ -105,7 +110,8 @@ let pTfs (p: NuGetParams) =
         DependenciesByFramework =
             [{ 
                 FrameworkVersion = "net45"
-                Dependencies = ["SourceLink.Core", sprintf "[%s]" buildVersion] // exact version
+                Dependencies = [    "SourceLink.Core", sprintf "[%s]" buildVersion // exact version
+                                    "FSharp.Core", GetPackageVersion "./packages/" "FSharp.Core" ] 
             }]
         AccessKey = nugetApiKey
     }
@@ -128,7 +134,8 @@ let pGit (p: NuGetParams) =
         DependenciesByFramework =
             [{ 
                 FrameworkVersion = "net45"
-                Dependencies = ["LibGit2Sharp", GetPackageVersion "./packages/" "LibGit2Sharp"]
+                Dependencies = [    "LibGit2Sharp", GetPackageVersion "./packages/" "LibGit2Sharp"
+                                    "FSharp.Core", GetPackageVersion "./packages/" "FSharp.Core" ]
             }]
         AccessKey = nugetApiKey
     }
@@ -139,6 +146,11 @@ let pSymbolStore (p: NuGetParams) =
         Version = buildVersion
         WorkingDir = "SymbolStore/bin/Release"
         OutputPath = bin
+        DependenciesByFramework =
+            [{ 
+                FrameworkVersion = "net45"
+                Dependencies = [ "FSharp.Core", GetPackageVersion "./packages/" "FSharp.Core" ] 
+            }]
         AccessKey = nugetApiKey
     }
 
@@ -169,7 +181,6 @@ Target "NuGet" <| fun _ ->
 Target "Publish" <| fun _ ->
     NuGetPublish pSourceLink 
     NuGetPublish pTfs
-//    NuGetPublish pBuild
     NuGetPublish pFake
     NuGetPublish pGit
     NuGetPublish pSymbolStore
