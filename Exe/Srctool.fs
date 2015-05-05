@@ -13,6 +13,7 @@ let getSourceFilePathAndUrl (pdb: string) =
 
 let run (pdb: string) =
     let i = ref 0
+    let pdb = if Path.GetExtension pdb = ".dll" then Path.ChangeExtension(pdb, ".pdb") else pdb
     getSourceFilePathAndUrl pdb
     |> Seq.filter (fun (_, url) -> url.IsSome)
     |> Seq.iter (fun (sf, url) ->
