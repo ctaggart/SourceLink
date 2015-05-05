@@ -29,9 +29,9 @@ namespace SourceLink.SymbolStore.CorSym
         void __GetMethodVersion(/*...*/);
 
         /// <summary>
-        /// Get a symbol reader method given a method token and an E&C
+        /// Get a symbol reader method given a method token and an EC
         /// version number. Version numbers start at 1 and are incremented
-        /// each time the method is changed due to an E&C operation.
+        /// each time the method is changed due to an EC operation.
         /// </summary>
         void __GetMethodByVersionPreRemap(/*[in] mdMethodDef token,
                                            [in] int version,

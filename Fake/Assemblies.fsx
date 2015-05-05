@@ -1,6 +1,5 @@
 ﻿
 #r "System.Xml"
-#r "Microsoft.Build"
 #r "System.Configuration"
 
 //#r "../packages/FAKE/tools/FakeLib.dll"
@@ -8,6 +7,8 @@
 //#r "../packages/SourceLink.Fake/tools/SourceLink.dll"
 //#r "../packages/SourceLink.Fake/tools/SourceLink.Git.dll"
 #I __SOURCE_DIRECTORY__
+#r "SourceLink.Build.Framework.dll"
+#r "SourceLink.Build.dll"
 #r "LibGit2Sharp.dll"
 #r "SourceLink.dll"
 #r "SourceLink.Git.dll"

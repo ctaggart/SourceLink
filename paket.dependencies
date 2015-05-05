@@ -1,5 +1,6 @@
 source http://nuget.org/api/v2
 source https://ci.appveyor.com/nuget/sourcelink-helmesfwai2a
+source https://ci.appveyor.com/nuget/msbuild-kn0ejscjf29k
 
 nuget FAKE
 nuget SourceLink.Fake prerelease
@@ -7,7 +8,8 @@ nuget FSharp.Formatting
 nuget NuGet.CommandLine
 nuget RazorEngine
 
-nuget FSharp.Core 3.0.2
+nuget FSharp.Core
 nuget LibGit2Sharp
 nuget Mono.Cecil
 nuget UnionArgParser
+nuget SourceLink.MSBuild
