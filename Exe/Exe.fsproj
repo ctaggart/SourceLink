@@ -23,6 +23,10 @@
     <DocumentationFile>
     </DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
+    <StartArguments>
+    </StartArguments>
+    <StartWorkingDirectory>
+    </StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -34,6 +38,10 @@
     <PlatformTarget>x86</PlatformTarget>
     <DocumentationFile>bin\Release\SourceLink.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
+    <StartArguments>
+    </StartArguments>
+    <StartWorkingDirectory>
+    </StartWorkingDirectory>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
@@ -183,6 +191,11 @@
       <ItemGroup>
         <Reference Include="SourceLink.Build.Framework">
           <HintPath>..\packages\SourceLink.MSBuild\lib\net45\SourceLink.Build.Framework.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="SourceLink.Build.Utilities.Core">
+          <HintPath>..\packages\SourceLink.MSBuild\lib\net45\SourceLink.Build.Utilities.Core.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>

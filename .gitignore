@@ -15,3 +15,4 @@ AssemblyInfo.cs
 /docs/SourceLink128.jpg
 *.sln.ide
 /gh-pages
+*.sdf

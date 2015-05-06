@@ -138,6 +138,11 @@
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
+        <Reference Include="SourceLink.Build.Utilities.Core">
+          <HintPath>..\packages\SourceLink.MSBuild\lib\net45\SourceLink.Build.Utilities.Core.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
         <Reference Include="SourceLink.Build">
           <HintPath>..\packages\SourceLink.MSBuild\lib\net45\SourceLink.Build.dll</HintPath>
           <Private>True</Private>

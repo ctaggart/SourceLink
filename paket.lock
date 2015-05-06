@@ -1,7 +1,7 @@
 NUGET
   remote: http://nuget.org/api/v2
   specs:
-    FAKE (3.30.3)
+    FAKE (3.31.0)
     FSharp.Compiler.Service (0.0.89)
     FSharp.Core (3.1.2.1)
     FSharp.Formatting (2.9.4)
@@ -19,7 +19,7 @@ NUGET
     UnionArgParser (0.8.7)
   remote: https://ci.appveyor.com/nuget/sourcelink-helmesfwai2a
   specs:
-    SourceLink.Fake (0.5.1-ci1504051942)
+    SourceLink.Fake (0.5.1-ci1505042129)
   remote: https://ci.appveyor.com/nuget/msbuild-kn0ejscjf29k
   specs:
-    SourceLink.MSBuild (14.1.0)
+    SourceLink.MSBuild (14.1.0-b043)
