@@ -26,8 +26,13 @@
     <file src="..\Git\bin\Release\SourceLink.Git.xml" target="tools" />
     <file src="..\SourceLink\bin\Release\SourceLink.Build.dll" target="tools" />
     <file src="..\SourceLink\bin\Release\SourceLink.Build.pdb" target="tools" />
+    <file src="..\SourceLink\bin\Release\SourceLink.Build.xml" target="tools" />
     <file src="..\SourceLink\bin\Release\SourceLink.Build.Framework.dll" target="tools" />
     <file src="..\SourceLink\bin\Release\SourceLink.Build.Framework.pdb" target="tools" />
+    <file src="..\SourceLink\bin\Release\SourceLink.Build.Framework.xml" target="tools" />
+    <file src="..\SourceLink\bin\Release\SourceLink.Build.Utilities.Core.dll" target="tools" />
+    <file src="..\SourceLink\bin\Release\SourceLink.Build.Utilities.Core.pdb" target="tools" />
+    <file src="..\SourceLink\bin\Release\SourceLink.Build.Utilities.Core.xml" target="tools" />
     <file src="..\SourceLink\bin\Release\System.Threading.Tasks.Dataflow.dll" target="tools" />
   </files>
 </package>

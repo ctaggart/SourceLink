@@ -39,6 +39,9 @@
     <file src="SourceLink.Build.Framework.dll" target="tools" />
     <file src="SourceLink.Build.Framework.pdb" target="tools" />
     <file src="SourceLink.Build.Framework.xml" target="tools" />
+    <file src="SourceLink.Build.Utilities.Core.dll" target="tools" />
+    <file src="SourceLink.Build.Utilities.Core.pdb" target="tools" />
+    <file src="SourceLink.Build.Utilities.Core.xml" target="tools" />
     <file src="System.Threading.Tasks.Dataflow.dll" target="tools" />
   </files>
 </package>
