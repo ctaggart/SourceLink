@@ -28,5 +28,6 @@
     <file src="..\SourceLink\bin\Release\SourceLink.Build.pdb" target="tools" />
     <file src="..\SourceLink\bin\Release\SourceLink.Build.Framework.dll" target="tools" />
     <file src="..\SourceLink\bin\Release\SourceLink.Build.Framework.pdb" target="tools" />
+    <file src="..\SourceLink\bin\Release\System.Threading.Tasks.Dataflow.dll" target="tools" />
   </files>
 </package>

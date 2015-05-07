@@ -35,7 +35,10 @@
     <file src="pdbstr.exe" target="tools" />
     <file src="SourceLink.Build.dll" target="tools" />
     <file src="SourceLink.Build.pdb" target="tools" />
+    <file src="SourceLink.Build.xml" target="tools" />
     <file src="SourceLink.Build.Framework.dll" target="tools" />
     <file src="SourceLink.Build.Framework.pdb" target="tools" />
+    <file src="SourceLink.Build.Framework.xml" target="tools" />
+    <file src="System.Threading.Tasks.Dataflow.dll" target="tools" />
   </files>
 </package>

@@ -4,13 +4,14 @@ NUGET
     FAKE (3.31.0)
     FSharp.Compiler.Service (0.0.89)
     FSharp.Core (3.1.2.1)
-    FSharp.Formatting (2.9.4)
+    FSharp.Formatting (2.9.5)
       FSharp.Compiler.Service (>= 0.0.87)
       FSharpVSPowerTools.Core (1.8.0)
     FSharpVSPowerTools.Core (1.8.0)
       FSharp.Compiler.Service (>= 0.0.87)
     LibGit2Sharp (0.21.0.176)
     Microsoft.AspNet.Razor (3.2.3) - framework: >= net45
+    Microsoft.Tpl.Dataflow (4.5.24)
     Mono.Cecil (0.9.6.1)
     NuGet.CommandLine (2.8.5)
     RazorEngine (3.7.0)
@@ -22,4 +23,5 @@ NUGET
     SourceLink.Fake (0.5.1-ci1505042129)
   remote: https://ci.appveyor.com/nuget/msbuild-kn0ejscjf29k
   specs:
-    SourceLink.MSBuild (14.1.0-b043)
+    SourceLink.MSBuild (14.1.0)
+      Microsoft.Tpl.Dataflow (>= 4.5.24)
