@@ -7,7 +7,8 @@ clone_depth: 1
 build_script:
   - ps: >-
       $env:PSModulePath = "C:\ProgramData\chocolatey\lib\Paket.PowerShell\tools;$env:PSModulePath"
-      .\build.ps1
+      
+	  .\build.ps1
 test: off
 artifacts:
   - path: bin\*.nupkg
