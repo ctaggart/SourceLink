@@ -2,11 +2,12 @@ init:
   - git config --global user.email "AppVeyor"
   - git config --global user.name "AppVeyor"
   - git config --global push.default simple
-  - choco install Paket.PowerShell
-  - ps: (Get-Item Env:\PSModulePath).Value -Split ';'
+  - choco install Paket.PowerShell -y
 clone_depth: 1
 build_script:
-  - ps: .\build.ps1
+  - ps: >
+    $env:PSModulePath = "C:\ProgramData\chocolatey\lib\Paket.PowerShell\tools;$env:PSModulePath"
+    .\build.ps1
 test: off
 artifacts:
   - path: bin\*.nupkg
