@@ -76,7 +76,8 @@ type Microsoft.Build.Evaluation.Project with // VsProj
             failwith errMsg
 
     /// Verifies the checksums for the list of files
-    member x.SourceIndex pdbFile sourceFiles gitRepoPath rawUrl =
+    member x.SourceIndex pdbFile sourceFiles gitRepoPath url =
+        logfn "source indexing %s" pdbFile
         use pdb = new PdbFile(pdbFile)
 
         // verify checksums in the pdb 1st
@@ -99,5 +100,5 @@ type Microsoft.Build.Evaluation.Project with // VsProj
             failwith errMsg
 
         let srcsrvFile = pdbFile + ".srcsrv"
-        File.WriteAllBytes(srcsrvFile, SrcSrv.create rawUrl repo.Commit (repo.Paths checksums.MatchedFiles))
+        File.WriteAllBytes(srcsrvFile, SrcSrv.create url repo.Commit (repo.Paths checksums.MatchedFiles))
         Pdbstr.exec pdbFile srcsrvFile
