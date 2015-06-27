@@ -6,6 +6,7 @@
 //#r "../packages/LibGit2Sharp/lib/net40/LibGit2Sharp.dll" // in dev
 //#r "../SourceLink/bin/Debug/SourceLink.Core.dll" // in dev
 //#r "../Git/bin/Debug/SourceLink.Git.dll" // in dev
+//#r "../packages/SourceLink.MSBuild/lib/net45/SourceLink.Build.dll" // in dev
 #r "SourceLink.Build.Framework.dll"
 #r "SourceLink.Build.dll"
 #r "LibGit2Sharp.dll"
@@ -38,6 +39,7 @@ type Microsoft.Build.Evaluation.Project with
         Excludes = x.ItemsCompileLinkPath }
 
 type GitRepo with
+    [<Obsolete "use VsProj.SourceIndex">]
     member x.VerifyChecksums files =
         let different = x.VerifyFiles files
         if different.Length <> 0 then
@@ -45,16 +47,6 @@ type GitRepo with
             log errMsg
             for file in different do
                 logfn "no checksum match found for %s" file
-            failwith errMsg
-
-type Microsoft.Build.Evaluation.Project with // VsProj
-    member x.VerifyPdbChecksums files =
-        let missing = x.VerifyPdbFiles files
-        if missing.Count > 0 then
-            let errMsg = sprintf "cannot find %d source files" missing.Count
-            log errMsg
-            for file, checksum in missing.KeyValues do
-                logfn "cannot find %s with checksum of %s" file checksum
             failwith errMsg
 
 type Pdbstr with
@@ -71,3 +63,41 @@ type Pdbstr with
         if exe.IsNone then
             failwith "pdbstr.exe not found, install Debugging Tools for Windows"
         Pdbstr.execWith exe.Value pdb srcsrv
+
+type Microsoft.Build.Evaluation.Project with // VsProj
+    [<Obsolete "use VsProj.SourceIndex">]
+    member x.VerifyPdbChecksums files =
+        let missing = x.VerifyPdbFiles files
+        if missing.Count > 0 then
+            let errMsg = sprintf "cannot find %d source files" missing.Count
+            log errMsg
+            for file, checksum in missing.KeyValues do
+                logfn "cannot find %s with checksum of %s" file checksum
+            failwith errMsg
+
+    /// Verifies the checksums for the list of files
+    member x.SourceIndex pdbFile sourceFiles gitRepoPath rawUrl =
+        use pdb = new PdbFile(pdbFile)
+
+        // verify checksums in the pdb 1st
+        let checksums = pdb.MatchChecksums sourceFiles
+        if checksums.Unmatched.Count > 0 then
+            let errMsg = sprintf "cannot find %d source files" checksums.Unmatched.Count
+            log errMsg
+            for um in checksums.Unmatched do
+                logfn "cannot find %s with checksum of %s" um.File um.Checksum
+            failwith errMsg
+
+        // verify checksums in git 2nd
+        use repo = new GitRepo(gitRepoPath)
+        let different = repo.VerifyFiles checksums.MatchedFiles
+        if different.Length <> 0 then
+            let errMsg = sprintf "%d source files do not have matching checksums in the git repository" different.Length
+            log errMsg
+            for file in different do
+                logfn "no checksum match found for %s" file
+            failwith errMsg
+
+        let srcsrvFile = pdbFile + ".srcsrv"
+        File.WriteAllBytes(srcsrvFile, SrcSrv.create rawUrl repo.Commit (repo.Paths checksums.MatchedFiles))
+        Pdbstr.exec pdbFile srcsrvFile

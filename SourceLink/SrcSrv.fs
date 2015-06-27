@@ -10,6 +10,7 @@ module SrcSrv =
     let noFormatting (s: string) = s
 
     /// creates the SrcSrv with callback for formatting the path
+    /// paths is the list of original file system paths and their repository paths
     let createFormat rawUrl (commit:string) (paths:seq<string*string>) (formatPath: string -> string) =
         use ms = new MemoryStream()
         use sw = new StreamWriter(ms)
