@@ -56,7 +56,7 @@ type Pdbstr with
         let srcsrv = if workdir.EqualsI <| Path.GetDirectoryName srcsrv then Path.GetFileName srcsrv else srcsrv
         let pdb = if workdir.EqualsI <| Path.GetDirectoryName pdb then Path.GetFileName pdb else pdb
         let args = sprintf "-w -s:srcsrv -i:\"%s\" -p:\"%s\"" srcsrv pdb
-        logfn "%s>\"%s\" %s" workdir exe args
+        logVerbosefn "%s>\"%s\" %s" workdir exe args
         Shell.Exec(exe, args, workdir) |> ignore
     static member exec pdb srcsrv =
         let exe = Pdbstr.tryFind()
