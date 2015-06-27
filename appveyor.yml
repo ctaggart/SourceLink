@@ -2,7 +2,7 @@ init:
   - git config --global user.email "AppVeyor"
   - git config --global user.name "AppVeyor"
   - git config --global push.default simple
-  - choco update Chocolatey -y
+  - ps: cmd /c choco update Chocolatey -y
   - ps: echo 'done upgrading Chocolatey'
   - choco install Paket.PowerShell -y
 clone_depth: 1
