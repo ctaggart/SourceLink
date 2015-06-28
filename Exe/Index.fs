@@ -67,7 +67,7 @@ let run (proj:string option) (projProps:(string * string) list)
                     let error = sprintf "%d files do not have matching checksums in the pdb" checksums.Unmatched.Count
                     traceError error
                     for um in checksums.Unmatched do
-                        traceErrorfn "  %s %s" um.Checksum um.File
+                        traceErrorfn "  pdb %s, file %s %s" um.ChecksumInPdb um.ChecksumOfFile um.File
                     failwith error
 
                 // verify checksums in git 2nd
