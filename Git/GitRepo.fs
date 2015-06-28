@@ -6,6 +6,15 @@ open LibGit2Sharp
 open System.Collections.Generic
 open System.Runtime.InteropServices
 
+type GitChecksum = {
+    File: string
+    ChecksumOfFile: string
+    ChecksumInGit: string }
+
+type GitChecksums = {
+    Matched: List<GitChecksum>
+    Unmatched: List<GitChecksum> }
+
 type GitRepo(dir) =
     let dir = Path.absolute dir
     let repo = new Repository(dir)
@@ -28,20 +37,18 @@ type GitRepo(dir) =
     static member ComputeChecksum file =
         GitRepo.ComputeChecksums [file] |> Seq.head |> fst
 
-    member x.Checksums files =
-        files |> Seq.map (fun (file:string) ->
-            let f =
-                if Path.IsPathRooted file then
-                    file.Substring(dir.Length + 1)
-                else
-                    file
-            let ie = repo.Index.[f]
-            if ie <> null then file, ie.Id.Sha
-            else file, ""
-        )
-
     member x.Checksum file =
-        x.Checksums [file] |> Seq.head |> snd
+        let f =
+            if Path.IsPathRooted file then
+                file.Substring(dir.Length + 1)
+            else
+                file
+        match repo.Index.[f] with
+        | null -> ""
+        | ie -> ie.Id.Sha
+
+    member x.Checksums files =
+        files |> Seq.map (fun file -> file, x.Checksum file)
 
     member x.ChecksumSet files = 
         let checksums = 
@@ -50,13 +57,24 @@ type GitRepo(dir) =
             |> Seq.filter (not << String.IsNullOrEmpty)
         HashSet(checksums, StringComparer.OrdinalIgnoreCase)
 
-    /// returns a sorted list of files with checksums that do not match
-    member x.VerifyFiles files =
-        let committed = x.ChecksumSet files
-        let different = SortedSet(StringComparer.OrdinalIgnoreCase)
+    member x.MatchChecksums files =
+        let matched = List<_>()
+        let unmatched = List<_>()
         for checksum, file in GitRepo.ComputeChecksums files do
-            if false = committed.Contains checksum then
-                different.Add file |> ignore
+            let gitChecksum = x.Checksum file
+            let gc = { File = file; ChecksumOfFile = checksum; ChecksumInGit = gitChecksum }
+            if checksum = gitChecksum then
+                matched.Add gc
+            else unmatched.Add gc
+        { Matched = matched; Unmatched = unmatched }
+
+    /// returns a sorted list of files with checksums that do not match
+    [<Obsolete "use .MatchChecksums instead">]
+    member x.VerifyFiles files =
+        let mc = x.MatchChecksums files
+        let different = SortedSet(StringComparer.OrdinalIgnoreCase)
+        for gc in mc.Unmatched do
+            different.Add gc.File |> ignore
         different |> Array.ofSeq
 
     static member IsRepo dir =

@@ -4,14 +4,14 @@ module SourceLink.PdbChecksums
 open System
 open System.Collections.Generic
 
-type FileChecksum = {
+type PdbChecksum = {
     File: string
     ChecksumOfFile: string
     ChecksumInPdb: string }
 
 type PdbChecksums = {
-    Matched: List<FileChecksum>
-    Unmatched: List<FileChecksum> }
+    Matched: List<PdbChecksum>
+    Unmatched: List<PdbChecksum> }
    
     with 
         member x.MatchedFiles =
@@ -46,7 +46,7 @@ type PdbFile with
             d
     
     /// Computes the checksums for the list of files passed in and verifies that the pdb contains them.
-    /// Returns a sorted list of matched and unmatched files and their checksums.
+    /// Returns a list of matched and unmatched files and their checksums.
     /// Only matches when filenames match.
     member x.MatchChecksums files =
         let matched = List<_>()
@@ -63,10 +63,10 @@ type PdbFile with
         for checksum, file in fileChecksums.KeyValues do
             if pdbFileChecksums.ContainsKey file then
                 let checksumInPdb = pdbFileChecksums.[file]
-                let fileChecksum = { File = file; ChecksumOfFile = checksum; ChecksumInPdb = checksumInPdb }
+                let pc = { File = file; ChecksumOfFile = checksum; ChecksumInPdb = checksumInPdb }
                 if checksum = checksumInPdb then
-                    matched.Add fileChecksum
-                else unmatched.Add fileChecksum
+                    matched.Add pc
+                else unmatched.Add pc
         { Matched = matched; Unmatched = unmatched }
 
     [<Obsolete "use .MatchChecksums instead">]

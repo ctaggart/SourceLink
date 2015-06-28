@@ -62,28 +62,28 @@ let run (proj:string option) (projProps:(string * string) list)
 
             // verify checksums in the pdb 1st
             if verifyPdb then
-                let checksums = pdb.MatchChecksums projectFiles
-                if checksums.Unmatched.Count > 0 then
-                    let error = sprintf "%d files do not have matching checksums in the pdb" checksums.Unmatched.Count
+                let pc = pdb.MatchChecksums projectFiles
+                if pc.Unmatched.Count > 0 then
+                    let error = sprintf "%d files do not have matching checksums in the pdb" pc.Unmatched.Count
                     traceError error
-                    for um in checksums.Unmatched do
+                    for um in pc.Unmatched do
                         traceErrorfn "  pdb %s, file %s %s" um.ChecksumInPdb um.ChecksumOfFile um.File
                     failwith error
 
                 // verify checksums in git 2nd
                 if verifyGit then
-                    let gitFiles = checksums.MatchedFiles
+                    let gitFiles = pc.MatchedFiles
                     use repo = new GitRepo(repoDir)
                     tracefn "verifying checksums for %d source files in Git repository" gitFiles.Length
                     use repo = new GitRepo(repoDir)
-                    let different = repo.VerifyFiles gitFiles
-                    if different.Length > 0 then
-                        let error = sprintf "%d files do not have matching checksums in Git" different.Length
+                    let gc = repo.MatchChecksums gitFiles
+                    if gc.Unmatched.Count > 0 then
+                        let error = sprintf "%d files do not have matching checksums in Git" gc.Unmatched.Count
                         traceError error
                         traceErrorfn "make sure the source code is committed and line endings match"
                         traceErrorfn "http://ctaggart.github.io/SourceLink/how-it-works.html"
-                        for file in different do
-                            traceErrorfn "  %s" file
+                        for um in gc.Unmatched do
+                            traceErrorfn "  git %s, file %s %s" um.ChecksumInGit um.ChecksumOfFile um.File
                         failwith error
 
             pdb.PathSrcSrv

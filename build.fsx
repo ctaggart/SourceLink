@@ -80,7 +80,7 @@ Target "SourceLink" <| fun _ ->
 //        p.VerifyPdbChecksums files
 //        p.CreateSrcSrv "https://raw.githubusercontent.com/ctaggart/SourceLink/{0}/%var2%" repo.Commit (repo.Paths files)
 //        Pdbstr.exec pdbToIndex p.OutputFilePdbSrcSrv
-    sourceIndex "Tfs/Tfs.fsproj" None 
+//    sourceIndex "Tfs/Tfs.fsproj" None 
     sourceIndex "SourceLink/SourceLink.fsproj" None
     sourceIndex "Git/Git.fsproj" None
     sourceIndex "SymbolStore/SymbolStore.fsproj" None
@@ -178,7 +178,7 @@ let pExeChocolatey (p: NuGetParams) =
 Target "NuGet" <| fun _ ->
     Directory.CreateDirectory bin |> ignore
     NuGet pSourceLink "SourceLink/SourceLink.nuspec"
-    NuGet pTfs "Tfs/Tfs.nuspec"
+//    NuGet pTfs "Tfs/Tfs.nuspec"
     NuGet pFake "Fake/Fake.nuspec"
     NuGet pGit "Git/Git.nuspec"
     NuGet pSymbolStore "SymbolStore/SymbolStore.nuspec"
