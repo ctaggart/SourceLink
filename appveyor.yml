@@ -2,9 +2,7 @@ init:
   - git config --global user.email "AppVeyor"
   - git config --global user.name "AppVeyor"
   - git config --global push.default simple
-  - where appveyor
-  - ps: choco source list
-  - ps: choco list -lo
+  - ps: choco source list -y
   - ps: rm C:\ProgramData\chocolatey -Recurse -Force
   - ps: iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))
   - choco install Paket.PowerShell -y

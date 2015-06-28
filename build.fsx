@@ -39,7 +39,7 @@ Target "Clean" <| fun _ -> !! "**/bin/" ++ "**/obj/" ++ "**/docs/output/" |> Cle
 
 Target "BuildVersion" <| fun _ ->
     let args = sprintf "UpdateBuild -Version \"%s\"" buildVersion
-    Shell.Exec("appveyor", args) |> ignore
+    Shell.Exec("C:\Program Files\AppVeyor\BuildAgent\appveyor.exe", args) |> ignore
 
 Target "AssemblyInfo" <| fun _ ->
     let iv = Text.StringBuilder() // json
