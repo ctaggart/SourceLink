@@ -2,8 +2,8 @@ init:
   - git config --global user.email "AppVeyor"
   - git config --global user.name "AppVeyor"
   - git config --global push.default simple
-  - ps: '& choco update Chocolatey -y 2>&1 > $null'
-  - ps: echo 'done upgrading Chocolatey'
+  - ps: rm C:\ProgramData\chocolatey -Recurse -Force
+  - ps: iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))
   - choco install Paket.PowerShell -y
 clone_depth: 1
 build_script:
