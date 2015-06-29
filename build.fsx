@@ -73,6 +73,7 @@ Target "SourceLink" <| fun _ ->
         let pdbToIndex = if Option.isSome pdb then pdb.Value else p.OutputFilePdb
         let url = "https://raw.githubusercontent.com/ctaggart/SourceLink/{0}/%var2%"
         p.SourceIndex pdbToIndex p.Compiles __SOURCE_DIRECTORY__ url
+    sourceIndex "Tfs/Tfs.fsproj" None
     sourceIndex "SourceLink/SourceLink.fsproj" None
     sourceIndex "Git/Git.fsproj" None
     sourceIndex "SymbolStore/SymbolStore.fsproj" None
