@@ -6,6 +6,7 @@ init:
   - ps: "$env:PSModulePath = [Environment]::GetEnvironmentVariable('PSModulePath', 'Machine')"
 clone_depth: 1
 build_script:
+  - ps: Paket-Restore
   - ps: .\build.ps1
 test: off
 artifacts:
