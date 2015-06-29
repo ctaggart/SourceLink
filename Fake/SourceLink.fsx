@@ -2,16 +2,16 @@
 #r "System.Configuration"
 
 #I __SOURCE_DIRECTORY__
-#r "../packages/FAKE/tools/FakeLib.dll" // in dev
-#r "../packages/LibGit2Sharp/lib/net40/LibGit2Sharp.dll" // in dev
-#r "../SourceLink/bin/Debug/SourceLink.Core.dll" // in dev
-#r "../Git/bin/Debug/SourceLink.Git.dll" // in dev
-#r "../packages/SourceLink.MSBuild/lib/net45/SourceLink.Build.dll" // in dev
-//#r "SourceLink.Build.Framework.dll"
-//#r "SourceLink.Build.dll"
-//#r "LibGit2Sharp.dll"
-//#r "SourceLink.Core.dll"
-//#r "SourceLink.Git.dll"
+//#r "../packages/FAKE/tools/FakeLib.dll" // in dev
+//#r "../packages/LibGit2Sharp/lib/net40/LibGit2Sharp.dll" // in dev
+//#r "../SourceLink/bin/Debug/SourceLink.Core.dll" // in dev
+//#r "../Git/bin/Debug/SourceLink.Git.dll" // in dev
+//#r "../packages/SourceLink.MSBuild/lib/net45/SourceLink.Build.dll" // in dev
+#r "SourceLink.Build.Framework.dll"
+#r "SourceLink.Build.dll"
+#r "LibGit2Sharp.dll"
+#r "SourceLink.Core.dll"
+#r "SourceLink.Git.dll"
 
 open System
 open System.IO
