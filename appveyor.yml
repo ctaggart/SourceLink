@@ -2,15 +2,11 @@ init:
   - git config --global user.email "AppVeyor"
   - git config --global user.name "AppVeyor"
   - git config --global push.default simple
-  - ps: rm C:\ProgramData\chocolatey -Recurse -Force
-  - ps: iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))
   - choco install Paket.PowerShell -y
+  - "$env:PSModulePath = [Environment]::GetEnvironmentVariable('PSModulePath', 'Machine')"
 clone_depth: 1
 build_script:
-  - ps: >-
-      $env:PSModulePath = "C:\ProgramData\chocolatey\lib\Paket.PowerShell\tools;$env:PSModulePath"
-
-      .\build.ps1
+  - ps: .\build.ps1
 test: off
 artifacts:
   - path: bin\*.nupkg
