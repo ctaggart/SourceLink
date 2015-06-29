@@ -3,7 +3,7 @@ source https://ci.appveyor.com/nuget/sourcelink-helmesfwai2a
 #source https://ci.appveyor.com/nuget/msbuild-kn0ejscjf29k
 
 nuget FAKE
-nuget SourceLink.Fake 0.6.0-b218
+nuget SourceLink.Fake 0.6.0-b221
 nuget FSharp.Formatting
 nuget NuGet.CommandLine
 nuget RazorEngine
