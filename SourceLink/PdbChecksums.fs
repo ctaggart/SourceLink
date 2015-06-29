@@ -4,6 +4,19 @@ module SourceLink.PdbChecksums
 open System
 open System.Collections.Generic
 
+type PdbChecksum = {
+    File: string
+    ChecksumOfFile: string
+    ChecksumInPdb: string }
+
+type PdbChecksums = {
+    Matched: List<PdbChecksum>
+    Unmatched: List<PdbChecksum> }
+   
+    with 
+        member x.MatchedFiles =
+            x.Matched |> Seq.map (fun fc -> fc.File) |> List.ofSeq
+
 type PdbFile with
     
     member x.Files
@@ -19,12 +32,25 @@ type PdbFile with
         with get() =
             let d = Dictionary StringComparer.OrdinalIgnoreCase
             x.Files
-            |> Seq.map (fun (file, hash) -> Hex.encode hash, file)
+            |> Seq.map (fun (file, checksum) -> Hex.encode checksum, file)
             |> d.AddAll
             d
 
-    member x.VerifyChecksums files =
-        let missing = SortedDictionary StringComparer.OrdinalIgnoreCase // file, checksum
+    /// A set of files and their checksums
+    member x.FileChecksums
+        with get() =
+            let d = Dictionary StringComparer.OrdinalIgnoreCase
+            x.Files
+            |> Seq.map (fun (file, checksum) -> file, Hex.encode checksum)
+            |> d.AddAll
+            d
+    
+    /// Computes the checksums for the list of files passed in and verifies that the pdb contains them.
+    /// Returns a list of matched and unmatched files and their checksums.
+    /// Only matches when filenames match.
+    member x.MatchChecksums files =
+        let matched = List<_>()
+        let unmatched = List<_>()
         let pdbChecksums = x.Checksums
         let fileChecksums =
             let d = Dictionary StringComparer.OrdinalIgnoreCase
@@ -32,7 +58,20 @@ type PdbFile with
             |> Seq.map (fun (hash, file) -> Hex.encode hash, file)
             |> d.AddAll
             d
-        for checksum, file in pdbChecksums.KeyValues do
-            if fileChecksums.ContainsKey checksum = false then
-                missing.[file] <- checksum
+
+        let pdbFileChecksums = x.FileChecksums
+        for checksum, file in fileChecksums.KeyValues do
+            if pdbFileChecksums.ContainsKey file then
+                let checksumInPdb = pdbFileChecksums.[file]
+                let pc = { File = file; ChecksumOfFile = checksum; ChecksumInPdb = checksumInPdb }
+                if checksum = checksumInPdb then
+                    matched.Add pc
+                else unmatched.Add pc
+        { Matched = matched; Unmatched = unmatched }
+
+    [<Obsolete "use .MatchChecksums instead">]
+    member x.VerifyChecksums files =
+        let missing = SortedDictionary StringComparer.OrdinalIgnoreCase // file, checksum
+        for um in (x.MatchChecksums files).Unmatched do
+            missing.[um.File] <- um.ChecksumOfFile
         missing

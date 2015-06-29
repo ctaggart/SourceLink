@@ -69,17 +69,11 @@ Target "Build" <| fun _ ->
 Target "SourceLink" <| fun _ ->
     printfn "starting SourceLink"
     let sourceIndex proj pdb =
-        use repo = new GitRepo(__SOURCE_DIRECTORY__)
         let p = VsProj.LoadRelease proj
-//        let p = VsProj.Load proj ["Configuration","Release"; "VisualStudioVersion","12.0"] // on AppVeyor
         let pdbToIndex = if Option.isSome pdb then pdb.Value else p.OutputFilePdb
-        logfn "source indexing %s" pdbToIndex
-        let files = p.Compiles -- "**/AssemblyInfo.fs"
-        repo.VerifyChecksums files
-        p.VerifyPdbChecksums files
-        p.CreateSrcSrv "https://raw.githubusercontent.com/ctaggart/SourceLink/{0}/%var2%" repo.Commit (repo.Paths files)
-        Pdbstr.exec pdbToIndex p.OutputFilePdbSrcSrv
-    sourceIndex "Tfs/Tfs.fsproj" None 
+        let url = "https://raw.githubusercontent.com/ctaggart/SourceLink/{0}/%var2%"
+        p.SourceIndex pdbToIndex p.Compiles __SOURCE_DIRECTORY__ url
+    sourceIndex "Tfs/Tfs.fsproj" None
     sourceIndex "SourceLink/SourceLink.fsproj" None
     sourceIndex "Git/Git.fsproj" None
     sourceIndex "SymbolStore/SymbolStore.fsproj" None

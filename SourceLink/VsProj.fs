@@ -59,6 +59,7 @@ type Project with
     member x.OutputFilePdb with get() = Path.ChangeExtension(x.OutputFile, ".pdb")
     member x.OutputFilePdbSrcSrv with get() = x.OutputFilePdb + ".srcsrv"
 
+//    [<Obsolete>]
     member x.VerifyPdbFiles (files:seq<string>) = 
         use pdb = new PdbFile(x.OutputFilePdb)
         pdb.VerifyChecksums files

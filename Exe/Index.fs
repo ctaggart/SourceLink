@@ -37,31 +37,15 @@ let run (proj:string option) (projProps:(string * string) list)
 
     let cd = Directory.GetCurrentDirectory()
     let pdbs = pPdbs @ ({BaseDirectory=cd; Includes=pdbs; Excludes=[]} |> List.ofSeq)
-    let gitFiles = {BaseDirectory=cd; Includes= pFiles @ files; Excludes=notFiles} |> List.ofSeq
-    let pdbVerifyFiles = {BaseDirectory=cd; Includes= pFiles @ files; Excludes=[]} |> List.ofSeq
+    let projectFiles = {BaseDirectory=cd; Includes= pFiles @ files; Excludes=notFiles} |> List.ofSeq
 
-    verbosefn "\nglobbed pdbs: %A" gitFiles
-    verbosefn "globbed gitFiles: %A" gitFiles
-    verbosefn "globbed pdbVerifyFiles: %A" pdbVerifyFiles
-
-    if verifyGit then
-        use repo = new GitRepo(repoDir)
-        tracefn "verifying checksums for %d source files in Git repository" gitFiles.Length
-        use repo = new GitRepo(repoDir)
-        let different = repo.VerifyFiles gitFiles
-        if different.Length > 0 then
-            let error = sprintf "%d files do not have matching checksums in Git" different.Length
-            traceError error
-            traceErrorfn "make sure the source code is committed and line endings match"
-            traceErrorfn "http://ctaggart.github.io/SourceLink/how-it-works.html"
-            for file in different do
-                traceErrorfn "  %s" file
-            failwith error
+    verbosefn "\nglobbed pdbs: %A" pdbs
+    verbosefn "globbed gitFiles: %A" projectFiles
 
     let paths =
         if noPaths then
             use repo = new GitRepo(repoDir)
-            repo.Paths gitFiles
+            repo.Paths projectFiles
         else paths |> Seq.ofList
 
     let commit =
@@ -75,20 +59,36 @@ let run (proj:string option) (projProps:(string * string) list)
 
         let srcsrvPath =
             use pdb = new PdbFile(pdbPath)
+
+            // verify checksums in the pdb 1st
             if verifyPdb then
-                let missing = pdb.VerifyChecksums pdbVerifyFiles
-                if missing.Count > 0 then
-                    let error = sprintf "%d files do not have matching checksums in the pdb" missing.Count
+                let pc = pdb.MatchChecksums projectFiles
+                if pc.Unmatched.Count > 0 then
+                    let error = sprintf "%d files do not have matching checksums in the pdb" pc.Unmatched.Count
                     traceError error
-                    for file, checksum in missing.KeyValues do
-                        traceErrorfn "  %s" file
+                    for um in pc.Unmatched do
+                        traceErrorfn "  pdb %s, file %s %s" um.ChecksumInPdb um.ChecksumOfFile um.File
                     failwith error
+
+                // verify checksums in git 2nd
+                if verifyGit then
+                    let gitFiles = pc.MatchedFiles
+                    use repo = new GitRepo(repoDir)
+                    tracefn "verifying checksums for %d source files in Git repository" gitFiles.Length
+                    use repo = new GitRepo(repoDir)
+                    let gc = repo.MatchChecksums gitFiles
+                    if gc.Unmatched.Count > 0 then
+                        let error = sprintf "%d files do not have matching checksums in Git" gc.Unmatched.Count
+                        traceError error
+                        traceErrorfn "make sure the source code is committed and line endings match"
+                        traceErrorfn "http://ctaggart.github.io/SourceLink/how-it-works.html"
+                        for um in gc.Unmatched do
+                            traceErrorfn "  git %s, file %s %s" um.ChecksumInGit um.ChecksumOfFile um.File
+                        failwith error
+
             pdb.PathSrcSrv
 
         File.WriteAllBytes(srcsrvPath, SrcSrv.create url commit paths)
-//        let pdbstr = Pdbstr.tryFind()
-//        if pdbstr.IsNone then
-//            failwith "pdbstr.exe not found, install Debugging Tools for Windows"
         let pdbstr = Path.combine (System.Reflection.Assembly.GetExecutingAssembly().Location |> Path.GetDirectoryName) "pdbstr.exe"
         
         let p = Process()
