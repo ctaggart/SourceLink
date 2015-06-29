@@ -3,7 +3,7 @@ init:
   - git config --global user.name "AppVeyor"
   - git config --global push.default simple
   - choco install Paket.PowerShell -y
-  - "$env:PSModulePath = [Environment]::GetEnvironmentVariable('PSModulePath', 'Machine')"
+  - ps: "$env:PSModulePath = [Environment]::GetEnvironmentVariable('PSModulePath', 'Machine')"
 clone_depth: 1
 build_script:
   - ps: .\build.ps1
