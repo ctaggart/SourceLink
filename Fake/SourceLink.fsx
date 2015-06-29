@@ -76,7 +76,7 @@ type Microsoft.Build.Evaluation.Project with // VsProj
             failwith errMsg
 
     /// Verifies the checksums for the list of files
-    member x.SourceIndex pdbFile sourceFiles gitRepoPath url =
+    member x.SourceIndex sourceFiles pdbFile gitRepoPath url =
         logfn "source indexing %s" pdbFile
         let srcsrvFile =
             use pdb = new PdbFile(pdbFile)
