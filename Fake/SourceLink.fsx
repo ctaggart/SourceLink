@@ -78,27 +78,29 @@ type Microsoft.Build.Evaluation.Project with // VsProj
     /// Verifies the checksums for the list of files
     member x.SourceIndex pdbFile sourceFiles gitRepoPath url =
         logfn "source indexing %s" pdbFile
-        use pdb = new PdbFile(pdbFile)
+        let srcsrvFile =
+            use pdb = new PdbFile(pdbFile)
 
-        // verify checksums in the pdb 1st
-        let pc = pdb.MatchChecksums sourceFiles
-        if pc.Unmatched.Count > 0 then
-            let errMsg = sprintf "%d source files do not have matching checksums in the pdb file" pc.Unmatched.Count
-            log errMsg
-            for um in pc.Unmatched do
-                logfn "  pdb %s, file %s %s" um.ChecksumInPdb um.ChecksumOfFile um.File
-            failwith errMsg
+            // verify checksums in the pdb 1st
+            let pc = pdb.MatchChecksums sourceFiles
+            if pc.Unmatched.Count > 0 then
+                let errMsg = sprintf "%d source files do not have matching checksums in the pdb file" pc.Unmatched.Count
+                log errMsg
+                for um in pc.Unmatched do
+                    logfn "  pdb %s, file %s %s" um.ChecksumInPdb um.ChecksumOfFile um.File
+                failwith errMsg
 
-        // verify checksums in git 2nd
-        use repo = new GitRepo(gitRepoPath)
-        let gc = repo.MatchChecksums pc.MatchedFiles
-        if gc.Unmatched.Count > 0 then
-            let errMsg = sprintf "%d source files do not have matching checksums in the Git repository" gc.Unmatched.Count
-            log errMsg
-            for um in gc.Unmatched do
-                logfn "  git %s, file %s %s" um.ChecksumInGit um.ChecksumOfFile um.File
-            failwith errMsg
+            // verify checksums in git 2nd
+            use repo = new GitRepo(gitRepoPath)
+            let gc = repo.MatchChecksums pc.MatchedFiles
+            if gc.Unmatched.Count > 0 then
+                let errMsg = sprintf "%d source files do not have matching checksums in the Git repository" gc.Unmatched.Count
+                log errMsg
+                for um in gc.Unmatched do
+                    logfn "  git %s, file %s %s" um.ChecksumInGit um.ChecksumOfFile um.File
+                failwith errMsg
 
-        let srcsrvFile = pdbFile + ".srcsrv"
-        File.WriteAllBytes(srcsrvFile, SrcSrv.create url repo.Commit (repo.Paths pc.MatchedFiles))
+            let srcsrvFile = pdbFile + ".srcsrv"
+            File.WriteAllBytes(srcsrvFile, SrcSrv.create url repo.Commit (repo.Paths pc.MatchedFiles))
+            srcsrvFile
         Pdbstr.exec pdbFile srcsrvFile
