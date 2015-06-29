@@ -75,8 +75,9 @@ type Microsoft.Build.Evaluation.Project with // VsProj
                 logfn "cannot find %s with checksum of %s" file checksum
             failwith errMsg
 
+type SourceLink =
     /// Verifies the checksums for the list of files
-    member x.SourceIndex sourceFiles pdbFile gitRepoPath url =
+    static member Index sourceFiles pdbFile gitRepoPath url =
         logfn "source indexing %s" pdbFile
         let srcsrvFile =
             use pdb = new PdbFile(pdbFile)
