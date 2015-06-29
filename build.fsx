@@ -75,8 +75,8 @@ Target "SourceLink" <| fun _ ->
         let pdbToIndex = if Option.isSome pdb then pdb.Value else p.OutputFilePdb
 //        logfn "source indexing %s" pdbToIndex
         let url = "https://raw.githubusercontent.com/ctaggart/SourceLink/{0}/%var2%"
-        p.SourceIndex pdbToIndex p.Compiles __SOURCE_DIRECTORY__ url
-
+//        p.SourceIndex pdbToIndex p.Compiles __SOURCE_DIRECTORY__ url
+        ()
 
 //        let files = p.Compiles -- "**/AssemblyInfo.fs"
 //        repo.VerifyChecksums files
