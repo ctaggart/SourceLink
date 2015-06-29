@@ -38,8 +38,11 @@ MSBuildDefaults <- { MSBuildDefaults with Verbosity = Some MSBuildVerbosity.Mini
 Target "Clean" <| fun _ -> !! "**/bin/" ++ "**/obj/" ++ "**/docs/output/" |> CleanDirs
 
 Target "BuildVersion" <| fun _ ->
-    let args = sprintf "UpdateBuild -Version \"%s\"" buildVersion
-    Shell.Exec("appveyor", args) |> ignore
+    let result =
+        ExecProcess (fun info ->
+            info.FileName <- @"C:\Program Files\AppVeyor\BuildAgent\appveyor.exe"
+            info.Arguments <- sprintf "UpdateBuild -Version \"%s\"" buildVersion) TimeSpan.MaxValue
+    if result <> 0 then failwithf "Error setting BuildVersion"
 
 Target "AssemblyInfo" <| fun _ ->
     let iv = Text.StringBuilder() // json
