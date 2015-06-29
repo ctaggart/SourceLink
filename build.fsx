@@ -69,21 +69,10 @@ Target "Build" <| fun _ ->
 Target "SourceLink" <| fun _ ->
     printfn "starting SourceLink"
     let sourceIndex proj pdb =
-//        use repo = new GitRepo(__SOURCE_DIRECTORY__)
         let p = VsProj.LoadRelease proj
-//        let p = VsProj.Load proj ["Configuration","Release"; "VisualStudioVersion","12.0"] // on AppVeyor
         let pdbToIndex = if Option.isSome pdb then pdb.Value else p.OutputFilePdb
-//        logfn "source indexing %s" pdbToIndex
         let url = "https://raw.githubusercontent.com/ctaggart/SourceLink/{0}/%var2%"
-//        p.SourceIndex pdbToIndex p.Compiles __SOURCE_DIRECTORY__ url
-        ()
-
-//        let files = p.Compiles -- "**/AssemblyInfo.fs"
-//        repo.VerifyChecksums files
-//        p.VerifyPdbChecksums files
-//        p.CreateSrcSrv "https://raw.githubusercontent.com/ctaggart/SourceLink/{0}/%var2%" repo.Commit (repo.Paths files)
-//        Pdbstr.exec pdbToIndex p.OutputFilePdbSrcSrv
-//    sourceIndex "Tfs/Tfs.fsproj" None 
+        p.SourceIndex pdbToIndex p.Compiles __SOURCE_DIRECTORY__ url
     sourceIndex "SourceLink/SourceLink.fsproj" None
     sourceIndex "Git/Git.fsproj" None
     sourceIndex "SymbolStore/SymbolStore.fsproj" None
@@ -181,7 +170,7 @@ let pExeChocolatey (p: NuGetParams) =
 Target "NuGet" <| fun _ ->
     Directory.CreateDirectory bin |> ignore
     NuGet pSourceLink "SourceLink/SourceLink.nuspec"
-//    NuGet pTfs "Tfs/Tfs.nuspec"
+    NuGet pTfs "Tfs/Tfs.nuspec"
     NuGet pFake "Fake/Fake.nuspec"
     NuGet pGit "Git/Git.nuspec"
     NuGet pSymbolStore "SymbolStore/SymbolStore.nuspec"
@@ -262,7 +251,7 @@ let (==>) a b = a =?> (b, isAppVeyorBuild)
 "BuildVersion"
 ==> "AssemblyInfo"
 ==> "Build"
-//==> "SourceLink"
+==> "SourceLink"
 ==> "NuGet"
 ==> "Publish"
 

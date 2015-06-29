@@ -69,7 +69,7 @@ type GitRepo(dir) =
         { Matched = matched; Unmatched = unmatched }
 
     /// returns a sorted list of files with checksums that do not match
-    [<Obsolete "use .MatchChecksums instead">]
+//    [<Obsolete "use .MatchChecksums instead">]
     member x.VerifyFiles files =
         let mc = x.MatchChecksums files
         let different = SortedSet(StringComparer.OrdinalIgnoreCase)
