@@ -39,7 +39,7 @@ type Microsoft.Build.Evaluation.Project with
         Excludes = x.ItemsCompileLinkPath }
 
 type GitRepo with
-    [<Obsolete "use VsProj.SourceIndex">]
+    [<Obsolete "use SourceLink.Index">]
     member x.VerifyChecksums files =
         let different = x.VerifyFiles files
         if different.Length <> 0 then
@@ -65,7 +65,7 @@ type Pdbstr with
         Pdbstr.execWith exe.Value pdb srcsrv
 
 type Microsoft.Build.Evaluation.Project with // VsProj
-    [<Obsolete "use VsProj.SourceIndex">]
+    [<Obsolete "use SourceLink.Index">]
     member x.VerifyPdbChecksums files =
         let missing = x.VerifyPdbFiles files
         if missing.Count > 0 then
