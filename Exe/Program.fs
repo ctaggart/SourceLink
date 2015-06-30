@@ -90,6 +90,13 @@ let srctoolx (results: ArgParseResults<_>) =
     let pdb = results.GetResult <@ SrctoolxArgs.Pdb @>
     SrcToolx.run pdb
 
+let lineFeed (results: ArgParseResults<_>) =
+    let proj = results.TryGetResult <@ IndexArgs.Proj @>
+    let projProps = results.GetResults <@ IndexArgs.Proj_Prop @>
+    let files = results.GetResults <@ IndexArgs.File @>
+    let notFiles = results.GetResults <@ IndexArgs.Not_File @>
+    LineFeed.run proj projProps files notFiles
+
 try
     let parser = UnionArgParser.Create<Command>()
     let results = 
@@ -106,6 +113,7 @@ try
             | Checksums -> processCommand checksums
             | Pdbstrr -> processCommand pdbstrr
             | Srctoolx -> processCommand srctoolx
+            | LineFeed -> processCommand lineFeed
 
         let args = args.[1..]
         handler command args

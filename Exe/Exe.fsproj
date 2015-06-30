@@ -53,6 +53,7 @@
     <Compile Include="FileSystem.fs" />
     <Compile Include="Logging.fs" />
     <Compile Include="Utils.fs" />
+    <Compile Include="LineFeed.fs" />
     <Compile Include="Index.fs" />
     <Compile Include="Pdbstrr.fs" />
     <Compile Include="Srctool.fs" />

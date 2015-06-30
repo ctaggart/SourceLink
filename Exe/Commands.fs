@@ -10,6 +10,7 @@ type Command =
     | [<First>][<CustomCommandLine "checksums">] Checksums
     | [<First>][<CustomCommandLine "pdbstrr">] Pdbstrr
     | [<First>][<CustomCommandLine "srctoolx">] Srctoolx
+    | [<First>][<CustomCommandLine "linefeed">] LineFeed
 with
     interface IArgParserTemplate with
         member x.Usage =
@@ -18,6 +19,7 @@ with
             | Checksums _ -> "prints the pdb files and their checksums, supports verifying them"
             | Pdbstrr _ -> "prints the source index like `pdbstr -r -s:srcsrv`"
             | Srctoolx _ -> "lists the URLs for the soure indexed files like `srctool -x`"
+            | LineFeed _ -> "update the source files to have LF line endings"
 
     member this.Name = 
         let uci,_ = Microsoft.FSharp.Reflection.FSharpValue.GetUnionFields(this, typeof<Command>)
@@ -64,6 +66,8 @@ type ChecksumsArgs =
     | [<AltCommandLine "-nf">] Not_File
     | [<AltCommandLine "-u">] Url
     | [<AltCommandLine "-c">] Check
+    | [<AltCommandLine "-un">] Username 
+    | [<AltCommandLine "-pw">] Password
 with
     interface IArgParserTemplate with
         member x.Usage =
@@ -72,6 +76,8 @@ with
             | Not_File _ -> "do not print the source file path"
             | Url _ -> "print the download URL"
             | Check _ -> "verify the checksums by downloading and calculating in memory"
+            | Username _ -> "the username for basic auth to a private repository"
+            | Password _ -> "the password for basic auto to a private repository"
 
 type PdbstrrArgs =
     | [<AltCommandLine("-p")>] Pdb of string
@@ -88,6 +94,20 @@ with
         member x.Usage =
             match x with
             | Pdb _ -> "pdb file"
+
+type LineFeedArgs =
+    | [<AltCommandLine "-pr">] Proj of string
+    | [<AltCommandLine "-pp">] Proj_Prop of string * string
+    | [<AltCommandLine "-f">] File of string
+    | [<AltCommandLine "-nf">] Not_File of string
+with
+    interface IArgParserTemplate with
+        member x.Usage =
+            match x with
+            | Proj _ -> "project file"
+            | Proj_Prop _ -> "project property, supports multiple"
+            | File _ -> "source file to put in the index, supports multiple and globs"
+            | Not_File _ -> "exclude this file, supports multiple and globs"
 
 let cmdLineSyntax (parser:UnionArgParser<_>) commandName = 
     "$ SourceLink " + commandName + " " + parser.PrintCommandLineSyntax()

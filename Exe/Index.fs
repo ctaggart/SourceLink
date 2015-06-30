@@ -40,7 +40,7 @@ let run (proj:string option) (projProps:(string * string) list)
     let projectFiles = {BaseDirectory=cd; Includes= pFiles @ files; Excludes=notFiles} |> List.ofSeq
 
     verbosefn "\nglobbed pdbs: %A" pdbs
-    verbosefn "globbed gitFiles: %A" projectFiles
+    verbosefn "globbed projectFiles: %A" projectFiles
 
     let paths =
         if noPaths then
