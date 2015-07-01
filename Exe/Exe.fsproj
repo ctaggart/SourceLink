@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" Condition="Exists('AssemblyInfo.fs')" />
+    <Compile Include="Version.fs" />
     <Compile Include="FileSystem.fs" />
     <Compile Include="Logging.fs" />
     <Compile Include="Utils.fs" />

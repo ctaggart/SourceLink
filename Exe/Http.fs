@@ -1,15 +1,20 @@
 ﻿module SourceLink.Http
 
 open System
-open System.IO
 open System.Net
 open System.Net.Http
+open System.Net.Http.Headers
 
 let createHttpClient() =
     let handler = new HttpClientHandler()
     if handler.SupportsAutomaticDecompression then
         handler.AutomaticDecompression <- DecompressionMethods.GZip ||| DecompressionMethods.Deflate
-    new HttpClient(handler)
+    let hc = new HttpClient(handler)
+    hc.DefaultRequestHeaders.UserAgent.Add(ProductInfoHeaderValue("SourceLink", version))
+    hc
+
+let base64Encode (s:string) = 
+    s |> Text.Encoding.UTF8.GetBytes |> Convert.ToBase64String
 
 [<RequireQualifiedAccess>]
 module Async =
@@ -30,6 +35,16 @@ module HttpExt =
     type HttpClient with
         member x.Send req = async {
             return! x.SendAsync req |> Async.AwaitTaskOne }
+
+        member x.SetBasicAuth (username: string option) (password: string option) =
+            match username with
+            | None -> ()
+            | Some un ->
+                let basic =
+                    match password with
+                    | None -> sprintf "%s:" un
+                    | Some pw -> sprintf "%s:%s" un pw
+                x.DefaultRequestHeaders.Authorization <- AuthenticationHeaderValue("Basic", base64Encode basic)
              
     type HttpContent with
         member x.ReadAsString() = async {

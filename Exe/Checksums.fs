@@ -25,7 +25,7 @@ let checkUrl (hc: HttpClient) url checksum = async {
         else return Fail hexChecksumUrl 
     else return Fail (sprintf "HTTP %d" (int rsp.StatusCode)) }
 
-let run (pdb: string) showFiles showUrls check =
+let run (pdb: string) showFiles showUrls check username password =
     let urls =
         if showUrls || check then
             SrcToolx.getSourceFilePathAndUrl pdb
@@ -34,7 +34,12 @@ let run (pdb: string) showFiles showUrls check =
             |> Dictionary.ofTuplesCmp StringComparer.OrdinalIgnoreCase
         else Dictionary()
 
-    use hc = if check then createHttpClient() else Unchecked.defaultof<_>
+    use hc = 
+        if check then
+            let hc = createHttpClient()
+            hc.SetBasicAuth username password
+            hc
+        else Unchecked.defaultof<_>
     
     let p = new PdbFile(pdb)
     let nFiles = ref 0

@@ -66,8 +66,8 @@ type ChecksumsArgs =
     | [<AltCommandLine "-nf">] Not_File
     | [<AltCommandLine "-u">] Url
     | [<AltCommandLine "-c">] Check
-    | [<AltCommandLine "-un">] Username 
-    | [<AltCommandLine "-pw">] Password
+    | [<AltCommandLine "-un">] Username of string
+    | [<AltCommandLine "-pw">] Password of string
 with
     interface IArgParserTemplate with
         member x.Usage =
