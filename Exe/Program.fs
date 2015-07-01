@@ -6,21 +6,11 @@
 open System
 open Nessos.UnionArgParser
 open System.Diagnostics
-open System.Reflection
 open System.IO
 open SourceLink.Commands
 
 let stopWatch = Stopwatch()
 stopWatch.Start()
-
-let version =
-    let assembly = Assembly.GetExecutingAssembly()
-    let iv = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>() |> Option.ofNull |> Option.map (fun at -> at.InformationalVersion)
-    match iv with
-    | None -> ""
-    | Some iv -> 
-        let ss = iv.Split [|'\"'|]
-        if ss.Length > 3 then ss.[3] else ""
 
 tracefn "SourceLink %s" version
 
@@ -80,7 +70,9 @@ let checksums (results: ArgParseResults<_>) =
     let file = results.Contains <@ ChecksumsArgs.Not_File @> = false
     let url = results.Contains <@ ChecksumsArgs.Url @>
     let check = results.Contains <@ ChecksumsArgs.Check @>
-    Checksums.run pdb file url check
+    let username = results.TryGetResult <@ ChecksumsArgs.Username @>
+    let password = results.TryGetResult <@ ChecksumsArgs.Password @>
+    Checksums.run pdb file url check username password
 
 let pdbstrr (results: ArgParseResults<_>) =
     let pdb = results.GetResult <@ SrctoolxArgs.Pdb @>
