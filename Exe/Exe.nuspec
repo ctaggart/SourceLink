@@ -11,6 +11,7 @@
   </metadata>
   <files>
     <file src="SourceLink.exe" target="tools" />
+    <file src="SourceLink.exe.config" target="tools" />
     <file src="SourceLink.pdb" target="tools" />
     <file src="SourceLink.xml" target="tools" />
     <file src="..\..\..\SourceLink\bin\Release\SourceLink.Core.dll" target="tools" />
