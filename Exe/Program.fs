@@ -45,9 +45,6 @@ let processWithValidation<'T when 'T :> IArgParserTemplate> validateF commandF c
             let elapsedTime = Utils.TimeSpanToReadableString stopWatch.Elapsed
             tracefn "elapsed time: %s" elapsedTime
 
-let processCommand<'T when 'T :> IArgParserTemplate> (commandF : ArgParseResults<'T> -> unit) = 
-    processWithValidation (fun _ -> true) commandF 
-
 let v, args = filterGlobalArgs (Environment.GetCommandLineArgs().[1..])
 Logging.verbose <- v
 
@@ -83,11 +80,18 @@ let srctoolx (results: ArgParseResults<_>) =
     SrcToolx.run pdb
 
 let lineFeed (results: ArgParseResults<_>) =
-    let proj = results.TryGetResult <@ IndexArgs.Proj @>
-    let projProps = results.GetResults <@ IndexArgs.Proj_Prop @>
-    let files = results.GetResults <@ IndexArgs.File @>
-    let notFiles = results.GetResults <@ IndexArgs.Not_File @>
+    let proj = results.TryGetResult <@ LineFeedArgs.Proj @>
+    let projProps = results.GetResults <@ LineFeedArgs.Proj_Prop @>
+    let files = results.GetResults <@ LineFeedArgs.File @>
+    let notFiles = results.GetResults <@ LineFeedArgs.Not_File @>
     LineFeed.run proj projProps files notFiles
+
+let validateHasArgs (results : ArgParseResults<_>) =
+    let args = results.GetAllResults()
+    args.Length > 0
+
+let processCommand<'T when 'T :> IArgParserTemplate> (commandF : ArgParseResults<'T> -> unit) = 
+    processWithValidation validateHasArgs commandF 
 
 try
     let parser = UnionArgParser.Create<Command>()
