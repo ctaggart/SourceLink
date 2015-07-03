@@ -1,6 +1,4 @@
 
-The [closed milestones](https://github.com/ctaggart/SourceLink/milestones?state=closed) on GitHub contain a detailed list of changes for each version.
-
 ### 1.0.0 _ 2015-07
   * created [SourceLink-Proxy](https://github.com/ctaggart/SourceLink-Proxy) to allow source indexing to private GitHub repositories
   * hosting a SourceLink-Proxy at https://sourcelink.azurewebsites.net

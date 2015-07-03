@@ -17,7 +17,7 @@ NUGET
     RazorEngine (3.7.0)
       Microsoft.AspNet.Razor (>= 3.0.0) - framework: >= net45
       Microsoft.AspNet.Razor (2.0.30506.0) - framework: >= net40 < net45
-    SourceLink.Fake (0.6.0)
+    SourceLink.Fake (1.0.0)
     SourceLink.MSBuild (14.1.0)
       Microsoft.Tpl.Dataflow (>= 4.5.24)
     UnionArgParser (0.8.7)
