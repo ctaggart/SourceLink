@@ -67,7 +67,6 @@ Target "Build" <| fun _ ->
     !! "SourceLink.sln" |> MSBuildRelease "" "Rebuild" |> ignore
 
 Target "SourceLink" <| fun _ ->
-    printfn "starting SourceLink"
     let sourceIndex proj pdb =
         let p = VsProj.LoadRelease proj
         let pdbToIndex = if Option.isSome pdb then pdb.Value else p.OutputFilePdb
