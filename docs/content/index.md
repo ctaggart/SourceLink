@@ -5,7 +5,9 @@ SourceLink allows library users to download on demand the exact version of the s
 ## For Library Authors
 Install [SourceLink.exe](https://chocolatey.org/packages/SourceLink) via chocolatey.
 
-      choco install SourceLink --version 1.0.0
+```
+choco install SourceLink --version 1.0.0
+```
 
 If you use FAKE for .NET builds, [SourceLink.Fake](fake.html) can be used. If you use TFS, you can use SourceLink.exe or [SourceLink.Tfs](tfs.html) which allows FAKE to be used from TFS 2013 and Visual Studio Online.
 
@@ -21,10 +23,12 @@ The `index` command is the one that will create the index and put it in the pdb 
 
 An example is [source indexing FSharp.Core.pdb](https://github.com/Microsoft/visualfsharp/issues/294#issuecomment-117922233):
 
-    SourceLink.exe index `
-    -pr .\src\fsharp\FSharp.Core\FSharp.Core.fsproj `
-    -pp Configuration Release `
-    -u 'https://raw.githubusercontent.com/Microsoft/visualfsharp/{0}/%var2%'
+```
+SourceLink.exe index `
+-pr ./src/fsharp/FSharp.Core/FSharp.Core.fsproj `
+-pp Configuration Release `
+-u 'https://raw.githubusercontent.com/Microsoft/visualfsharp/{0}/%var2%'
+```
 
 The pdb files can be distributed with the NuGet library, with your web app, app, or put in a symbol server. Ideally, all open source NuGet libraries in the NuGet Gallery would contain source indexed pdb files.
 
