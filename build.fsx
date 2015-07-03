@@ -225,7 +225,7 @@ Target "WatchDocs" <| fun _ ->
     watcher.EnableRaisingEvents <- false
     watcher.Dispose()
 
-Target "UpdateDocs" <| fun _ ->
+Target "PushDocs" <| fun _ ->
     CleanDir "gh-pages"
     let auth = if githubToken = "" then "" else sprintf "%s@" githubToken
     cloneSingleBranch "" (sprintf "https://%sgithub.com/ctaggart/SourceLink.git" auth) "gh-pages" "gh-pages"

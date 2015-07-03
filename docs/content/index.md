@@ -6,7 +6,7 @@ SourceLink allows library users to download on demand the exact version of the s
 Install [SourceLink.exe](https://chocolatey.org/packages/SourceLink) via chocolatey.
 
 ```
-choco install SourceLink --version 1.0.0
+choco install SourceLink
 ```
 
 If you use FAKE for .NET builds, [SourceLink.Fake](fake.html) can be used. If you use TFS, you can use SourceLink.exe or [SourceLink.Tfs](tfs.html) which allows FAKE to be used from TFS 2013 and Visual Studio Online.

@@ -68,7 +68,7 @@ let copyFiles () =
   CreateDir output
 //  CopyRecursive files output true |> Log "Copying file: "
   ensureDirectory (output @@ "content")
-  CopyRecursive (formatting @@ "styles") (output @@ "content") true 
+  CopyRecursive (formatting @@ "styles") (output @@ "content") true
     |> Log "Copying styles and scripts: "
 
 // When called from 'build.fsx', use the public project URL as <root>
@@ -84,7 +84,7 @@ let buildReference () =
   CleanDir (output @@ "reference")
   for lib in referenceBinaries do
     MetadataFormat.Generate
-      ( bin @@ lib, output @@ "reference", layoutRoots, 
+      ( bin @@ lib, output @@ "reference", layoutRoots,
         parameters = ("root", refRoot)::info,
         sourceRepo = githubLink @@ "tree/master",
         sourceFolder = __SOURCE_DIRECTORY__ @@ ".." @@ "..",

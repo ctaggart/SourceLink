@@ -6,9 +6,9 @@ To install Chocolatey using PowerShell as Administrator:
 
     iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))
 
-With Chocolatey installed a reliable way to install SourceLink using PowerShell as Administrator:
+The install SourceLink:
 
-    cinst SourceLink -version 0.5.0
+    choco install SourceLink
 
 With SourceLink.exe installed, simply run it to see the commands available:
 
@@ -28,7 +28,7 @@ The project file is used to get a list of source files and the pdb file to index
 
 ## Checksums
 
-The `checksums` command can be used to print a list of all the index source files and their checksums. 
+The `checksums` command can be used to print a list of all the index source files and their checksums.
 
 ![checksums](https://cloud.githubusercontent.com/assets/80104/6773188/87e38ff6-d0ca-11e4-93c5-99d05fc70295.png)
 
