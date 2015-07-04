@@ -1,4 +1,4 @@
-# Integrate with TFS
+# Source Index to TFS
 
 SourceLink.exe may be used to source index pdb files to on-premise TFS Git repositories. The `--url` maps to the download url for the repository, for example:
 

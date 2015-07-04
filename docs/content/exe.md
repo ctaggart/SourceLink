@@ -6,7 +6,7 @@ To install Chocolatey using PowerShell as Administrator:
 
     iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))
 
-The install SourceLink:
+Then install SourceLink:
 
     choco install SourceLink
 
