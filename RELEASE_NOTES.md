@@ -1,3 +1,5 @@
+### 1.1.0 _ under development
+  * [#95](https://github.com/ctaggart/SourceLink/issues/95) add Windows 10 SDK pdbstr.exe location
 
 ### 1.0.0 _ 2015-07
   * created [SourceLink-Proxy](https://github.com/ctaggart/SourceLink-Proxy) to allow source indexing to private GitHub repositories
