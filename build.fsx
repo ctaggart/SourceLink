@@ -255,9 +255,6 @@ let (==>) a b = a =?> (b, isAppVeyorBuild)
 ==> "NuGet"
 ==> "Publish"
 
-"Docs"
-==> "UpdateDocs"
-
 let runTargets() =
     // when on AppVeyor, allow targets to be specified as #hashtags
     if isAppVeyorBuild then
