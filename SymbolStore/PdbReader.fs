@@ -27,7 +27,7 @@ type PdbReader(reader:ISymUnmanagedReader, sessionCookie:IntPtr, fileName:string
 
     member x.GetDownloadUrl sourceFilePath =
         if isSourceIndexed then
-            SrcSrv.GetFileUrl(sessionCookie, moduleCookie, sourceFilePath) |> Option.ofNull
+            SrcSrv.GetFileUrl(sessionCookie, moduleCookie, sourceFilePath) |> Option.ofObj
         else None
 
     member x.Reader = reader

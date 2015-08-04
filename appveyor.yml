@@ -1,3 +1,4 @@
+os: Visual Studio 2015
 init:
   - git config --global user.email "AppVeyor"
   - git config --global user.name "AppVeyor"

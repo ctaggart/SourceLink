@@ -1,9 +1,9 @@
 NUGET
   remote: https://www.nuget.org/api/v2
   specs:
-    FAKE (3.35.5)
-    FSharp.Compiler.Service (0.0.90)
-    FSharp.Core (3.1.2.1)
+    FAKE (4.0.3)
+    FSharp.Compiler.Service (1.4.0.1)
+    FSharp.Core (4.0.0.1)
     FSharp.Formatting (2.9.9)
       FSharp.Compiler.Service (>= 0.0.87)
       FSharpVSPowerTools.Core (1.8.0)
@@ -13,7 +13,7 @@ NUGET
     Microsoft.AspNet.Razor (3.2.3) - framework: >= net45
     Microsoft.Tpl.Dataflow (4.5.24)
     Mono.Cecil (0.9.6.1)
-    NuGet.CommandLine (2.8.5)
+    NuGet.CommandLine (2.8.6)
     RazorEngine (3.7.0)
       Microsoft.AspNet.Razor (>= 3.0.0) - framework: >= net45
       Microsoft.AspNet.Razor (2.0.30506.0) - framework: >= net40 < net45

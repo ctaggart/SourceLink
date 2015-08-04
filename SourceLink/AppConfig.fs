@@ -30,7 +30,7 @@ type AppSettingsSection with
     member x.Item
         with get k =
             let kv = x.Settings.Item k
-            if kv = null then None
+            if isNull kv then None
             else kv.Value |> Some
         and set k (v:option<string>) =
             if v.IsSome then
