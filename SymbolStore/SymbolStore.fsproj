@@ -36,7 +36,6 @@
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\FSharp\Microsoft.FSharp.Targets" />
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" Condition="Exists('AssemblyInfo.fs')" />
-    <Compile Include="SystemExt.fs" />
     <Compile Include="Hex.fs" />
     <Compile Include="HResult.fs" />
     <Compile Include="CorSymExt.fs" />

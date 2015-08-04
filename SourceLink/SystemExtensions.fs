@@ -19,10 +19,6 @@ type String with
     /// string comparison ignoring case, similar to strcmpi
     static member cmpi a b = StringComparer.OrdinalIgnoreCase.Compare(a, b)
 
-type Uri with
-    /// create a Uri from a string, allows piping
-    static member from s = Uri s
-
 let private zulu (dt:DateTime) (fmt:string) =
     let s = dt.ToString fmt
     if dt.Kind = DateTimeKind.Utc then s + "Z" else s
@@ -48,12 +44,11 @@ type BinaryReader with
     member x.ReadCString() =
         let byte = ref 0uy
         byte := x.ReadByte()
-        seq {
+        [|
             while !byte <> 0uy do
                 yield !byte
                 byte := x.ReadByte()
-        }
-        |> Seq.toArray
+        |]
         |> Text.Encoding.UTF8.GetString
     member x.Position 
         with get() = int x.BaseStream.Position 
@@ -63,11 +58,10 @@ type BinaryReader with
 type StreamReader with
     static member ReadLines (bytes:byte[]) =
         use sr = new StreamReader(new MemoryStream(bytes))
-        seq {
+        [|
             while not sr.EndOfStream do
                 yield sr.ReadLine()
-        }
-        |> Seq.toArray
+        |]
 
 type BinaryWriter with
     member x.WriteGuid (guid:Guid) = x.Write (guid.ToByteArray())
@@ -101,14 +95,6 @@ type Dictionary<'K,'V> with
         let d = Dictionary(cmp)
         d.AddAll tuples
         d
-
-type HashSet<'T> with
-    static member ofSeq (s:seq<'T>) = HashSet s
-    static member ofSeqCmp cmp (seq:seq<'T>) = HashSet(seq, cmp)
-
-type SortedSet<'T> with
-    static member ofSeq (seq:seq<'T>) = SortedSet seq
-    static member ofSeqCmp cmp (seq:seq<'T>) = SortedSet(seq, cmp)
 
 let rec private rmdir dir =
     if Directory.Exists dir then
@@ -158,7 +144,3 @@ type Byte with
         Buffer.BlockCopy(a, 0, c, 0, a.Length)
         Buffer.BlockCopy(b, 0, c, a.Length, b.Length)
         c
-
-type Option<'A> with
-    static member ofNull (t:'T when 'T : null) =
-        if t = null then None else Some t

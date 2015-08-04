@@ -5,7 +5,7 @@ open System.Reflection
 
 let version =
     let assembly = Assembly.GetExecutingAssembly()
-    let iv = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>() |> Option.ofNull |> Option.map (fun at -> at.InformationalVersion)
+    let iv = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>() |> Option.ofObj |> Option.map (fun at -> at.InformationalVersion)
     match iv with
     | None -> ""
     | Some iv -> 
