@@ -8,7 +8,9 @@ init:
 clone_depth: 1
 build_script:
   - ps: Paket-Restore
-  - ps: .\build.ps1
+  - ps: >-
+      .\build.ps1
+      if ($lastexitcode -ne 0){ exit $lastexitcode }
 test: off
 artifacts:
   - path: bin\*.nupkg

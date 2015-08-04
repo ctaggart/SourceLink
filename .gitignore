@@ -16,3 +16,4 @@ AssemblyInfo.cs
 *.sln.ide
 /gh-pages
 *.sdf
+.fake/
