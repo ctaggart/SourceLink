@@ -21,8 +21,8 @@ type TfsBuild(project:TfsProject, agent:IBuildAgent, build:IBuildDetail, activit
             else tfsUser |> Hex.decode |> Text.Encoding.UTF8.GetString |> TfsUser.FromSimpleWebToken
         let tfs = new Tfs(Uri tfsUri, user.Credentials)
         let bs = tfs.BuildServer
-        let agent = tfsAgent |> Uri.from |> bs.GetBuildAgent
-        let build = tfsBuild |> Uri.from |> bs.GetBuild
+        let agent = tfsAgent |> Uri |> bs.GetBuildAgent
+        let build = tfsBuild |> Uri |> bs.GetBuild
         let tp = new TfsProject(tfs, build.TeamProject)
         new TfsBuild(tp, agent, build, Choice1Of2 nodeId)
 

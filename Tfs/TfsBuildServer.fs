@@ -18,11 +18,11 @@ type IWorkspaceTemplate with
             | None -> None
 
 type IBuildServer with
-    member x.GetBuildControllerUri id = sprintf "vstfs:///Build/Controller/%d" id |> Uri.from
+    member x.GetBuildControllerUri id = sprintf "vstfs:///Build/Controller/%d" id |> Uri
     member x.GetBuildController id = x.GetBuildController(x.GetBuildControllerUri id, false)
-    member x.GetBuildDefinitionUri id = sprintf "vstfs:///Build/Definition/%d" id |> Uri.from
+    member x.GetBuildDefinitionUri id = sprintf "vstfs:///Build/Definition/%d" id |> Uri
     member x.GetBuildDefinition id = x.GetBuildDefinitionUri id |> x.GetBuildDefinition
-    member x.GetBuildUri id = sprintf "vstfs:///Build/Build/%d" id |> Uri.from
+    member x.GetBuildUri id = sprintf "vstfs:///Build/Build/%d" id |> Uri
     member x.GetBuild id = x.GetBuildUri id |> x.GetBuild
     member x.CreateBuildRequest id = x.GetBuildUri id |> x.CreateBuildRequest
     member x.GetBuildDefinitions (projectName:string) = x.QueryBuildDefinitions projectName
