@@ -10,4 +10,3 @@ nuget FSharp.Core
 nuget LibGit2Sharp
 nuget Mono.Cecil
 nuget UnionArgParser
-nuget SourceLink.MSBuild 14.1.0

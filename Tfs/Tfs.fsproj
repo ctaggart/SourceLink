@@ -52,7 +52,10 @@
     <None Include="Tfs.nuspec" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Build" />
+    <Reference Include="Microsoft.Build">
+      <HintPath>..\lib\Microsoft.Build.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.TeamFoundation.Build.Activities">
       <HintPath>lib\Microsoft.TeamFoundation.Build.Activities.dll</HintPath>
     </Reference>

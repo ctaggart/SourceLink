@@ -53,6 +53,18 @@
     <None Include="paket.references" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Build">
+      <HintPath>..\lib\Microsoft.Build.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Build.Framework">
+      <HintPath>..\lib\Microsoft.Build.Framework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Build.Utilities.Core">
+      <HintPath>..\lib\Microsoft.Build.Utilities.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <ProjectReference Include="..\CorSym\CorSym.csproj">
       <Name>CorSym</Name>
       <Project>{f764ced4-2f3c-49ec-ba9f-99105707b607}</Project>
@@ -186,21 +198,6 @@ xcopy /s /y /d "$(SolutionDir)packages\LibGit2Sharp\lib\net40\NativeBinaries\x86
   <Choose>
     <When Condition="($(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.1' Or $(TargetFrameworkVersion) == 'v4.5.2' Or $(TargetFrameworkVersion) == 'v4.5.3' Or $(TargetFrameworkVersion) == 'v4.6')) Or ($(TargetFrameworkIdentifier) == 'MonoAndroid') Or ($(TargetFrameworkIdentifier) == 'MonoTouch')">
       <ItemGroup>
-        <Reference Include="SourceLink.Build.Framework">
-          <HintPath>..\packages\SourceLink.MSBuild\lib\net45\SourceLink.Build.Framework.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-        <Reference Include="SourceLink.Build.Utilities.Core">
-          <HintPath>..\packages\SourceLink.MSBuild\lib\net45\SourceLink.Build.Utilities.Core.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-        <Reference Include="SourceLink.Build">
-          <HintPath>..\packages\SourceLink.MSBuild\lib\net45\SourceLink.Build.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
         <Reference Include="System.Configuration">
           <Paket>True</Paket>
         </Reference>

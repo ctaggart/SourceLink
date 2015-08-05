@@ -18,3 +18,4 @@ AssemblyInfo.cs
 *.sdf
 .fake/
 Tfs/lib/*.dll
+lib/*.dll
