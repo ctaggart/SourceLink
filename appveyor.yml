@@ -9,7 +9,6 @@ clone_depth: 1
 build_script:
   - ps: |
       Paket-Restore
-      if ($lastexitcode -ne 0){ exit $lastexitcode }
       .\build.ps1
       if ($lastexitcode -ne 0){ exit $lastexitcode }
 test: off
