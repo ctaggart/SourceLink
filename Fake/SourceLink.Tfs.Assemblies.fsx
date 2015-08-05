@@ -5,7 +5,6 @@
 #r "Microsoft.TeamFoundation.Client"
 #r "Microsoft.TeamFoundation.Common"
 #r "Microsoft.TeamFoundation.Git.Client"
-#r "Microsoft.TeamFoundation.Git.Common"
 #r "Microsoft.TeamFoundation.SourceControl.WebApi"
 #r "Microsoft.TeamFoundation.TestManagement.Client"
 #r "Microsoft.TeamFoundation.TestManagement.Common"

@@ -17,7 +17,6 @@
       <frameworkAssembly assemblyName="Microsoft.TeamFoundation.Client" />
       <frameworkAssembly assemblyName="Microsoft.TeamFoundation.Common" />
       <frameworkAssembly assemblyName="Microsoft.TeamFoundation.Git.Client" />
-      <frameworkAssembly assemblyName="Microsoft.TeamFoundation.Git.Common" />
       <frameworkAssembly assemblyName="Microsoft.TeamFoundation.SourceControl.WebApi" />
       <frameworkAssembly assemblyName="Microsoft.TeamFoundation.TestManagement.Client" />
       <frameworkAssembly assemblyName="Microsoft.TeamFoundation.TestManagement.Common" />
