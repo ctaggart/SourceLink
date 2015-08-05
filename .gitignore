@@ -17,3 +17,5 @@ AssemblyInfo.cs
 /gh-pages
 *.sdf
 .fake/
+Tfs/lib/*.dll
+lib/*.dll
