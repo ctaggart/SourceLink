@@ -34,15 +34,9 @@
     <file src="srcsrv.dll" target="tools" />
     <file src="pdbstr.exe" target="tools" />
     <file src="pdbstr.exe" target="tools" />
-    <file src="SourceLink.Build.dll" target="tools" />
-    <file src="SourceLink.Build.pdb" target="tools" />
-    <file src="SourceLink.Build.xml" target="tools" />
-    <file src="SourceLink.Build.Framework.dll" target="tools" />
-    <file src="SourceLink.Build.Framework.pdb" target="tools" />
-    <file src="SourceLink.Build.Framework.xml" target="tools" />
-    <file src="SourceLink.Build.Utilities.Core.dll" target="tools" />
-    <file src="SourceLink.Build.Utilities.Core.pdb" target="tools" />
-    <file src="SourceLink.Build.Utilities.Core.xml" target="tools" />
+    <file src="Microsoft.Build.dll" target="tools" />
+    <file src="Microsoft.Build.Framework.dll" target="tools" />
+    <file src="Microsoft.Build.Utilities.Core.dll" target="tools" />
     <file src="System.Threading.Tasks.Dataflow.dll" target="tools" />
   </files>
 </package>
