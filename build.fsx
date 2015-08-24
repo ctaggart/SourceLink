@@ -260,7 +260,7 @@ let runTargets() =
         if hasRepoVersionTag then
             run "Publish"
         else
-            let targets = getAllTargetsNames() |> (HashSet.ofSeqCmp StringComparer.OrdinalIgnoreCase)
+            let targets =  HashSet(getAllTargetsNames(), StringComparer.OrdinalIgnoreCase)
             let cm = AppVeyorEnvironment.RepoCommitMessage
             let rx = Text.RegularExpressions.Regex @"\B#([a-zA-Z]\w+)"
             let hashtags = seq {

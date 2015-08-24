@@ -1,8 +1,8 @@
 source https://www.nuget.org/api/v2
-#source https://ci.appveyor.com/nuget/ctaggart-sourcelink
+source https://ci.appveyor.com/nuget/ctaggart-sourcelink
 
 nuget FAKE
-nuget SourceLink.Fake # 1.1.0-b273
+nuget SourceLink.Fake 1.1.0-b277
 nuget FSharp.Formatting
 nuget NuGet.CommandLine
 nuget RazorEngine
