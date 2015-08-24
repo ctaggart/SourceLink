@@ -36,61 +36,6 @@
     </DocumentationFile>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="mscorlib" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="printfn.fs" />
-    <Compile Include="Checksums.fs" />
-    <Compile Include="RootAndInfo.fs" />
-    <Compile Include="Program.fs" />
-    <None Include="BuildInfo.fsx" />
-    <None Include="paket.references" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="Microsoft.Build">
-      <HintPath>..\lib\Microsoft.Build.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.Build.Framework">
-      <HintPath>..\lib\Microsoft.Build.Framework.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.Build.Utilities.Core">
-      <HintPath>..\lib\Microsoft.Build.Utilities.Core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <ProjectReference Include="..\CorSym\CorSym.csproj">
-      <Name>CorSym</Name>
-      <Project>{f764ced4-2f3c-49ec-ba9f-99105707b607}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Git\Git.fsproj">
-      <Name>Git</Name>
-      <Project>{726a13b9-f319-40fa-aef6-fe629cfdaf6a}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Pe\Pe.fsproj">
-      <Name>Pe</Name>
-      <Project>{12331d73-8eb9-4a60-9079-00d26b71a04b}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\SourceLink\SourceLink.fsproj">
-      <Name>SourceLink</Name>
-      <Project>{aaf1b8d7-791e-40f1-a278-9a16d9667866}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\SymbolStore\SymbolStore.fsproj">
-      <Name>SymbolStore</Name>
-      <Project>{22d889db-96e8-475d-922e-4e7eebb60045}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\FSharp\Microsoft.FSharp.Targets" />
   <PropertyGroup>
     <PostBuildEvent>
@@ -184,4 +129,78 @@ xcopy /s /y /d "$(SolutionDir)packages\LibGit2Sharp\lib\net40\NativeBinaries\x86
     </When>
   </Choose>
   <Import Project="..\packages\LibGit2Sharp\build\$(__paket__LibGit2Sharp_props).props" Condition="Exists('..\packages\LibGit2Sharp\build\$(__paket__LibGit2Sharp_props).props')" Label="Paket" />
+  <Choose>
+    <When Condition="($(TargetFrameworkIdentifier) == 'WindowsPhone' And ($(TargetFrameworkVersion) == 'v8.0' Or $(TargetFrameworkVersion) == 'v8.1')) Or ($(TargetFrameworkProfile) == 'Profile31') Or ($(TargetFrameworkProfile) == 'Profile49') Or ($(TargetFrameworkProfile) == 'Profile78') Or ($(TargetFrameworkProfile) == 'Profile84') Or ($(TargetFrameworkProfile) == 'Profile157') Or ($(TargetFrameworkProfile) == 'Profile259')">
+      <ItemGroup>
+        <Reference Include="System.Threading.Tasks.Dataflow">
+          <HintPath>..\packages\System.Threading.Tasks.Dataflow\lib\portable-net45+win8+wp8+wpa81\System.Threading.Tasks.Dataflow.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="($(TargetFrameworkIdentifier) == 'WindowsPhoneApp') Or ($(TargetFrameworkIdentifier) == '.NETCore') Or ($(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.1' Or $(TargetFrameworkVersion) == 'v4.5.2' Or $(TargetFrameworkVersion) == 'v4.5.3' Or $(TargetFrameworkVersion) == 'v4.6')) Or ($(TargetFrameworkIdentifier) == 'MonoAndroid') Or ($(TargetFrameworkIdentifier) == 'MonoTouch') Or ($(TargetFrameworkIdentifier) == 'Xamarin.iOS') Or ($(TargetFrameworkIdentifier) == 'Xamarin.Mac') Or ($(TargetFrameworkProfile) == 'Profile7') Or ($(TargetFrameworkProfile) == 'Profile32') Or ($(TargetFrameworkProfile) == 'Profile44') Or ($(TargetFrameworkProfile) == 'Profile111') Or ($(TargetFrameworkProfile) == 'Profile151')">
+      <ItemGroup>
+        <Reference Include="System.Threading.Tasks.Dataflow">
+          <HintPath>..\packages\System.Threading.Tasks.Dataflow\lib\portable-net45+win8+wpa81\System.Threading.Tasks.Dataflow.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <ItemGroup>
+    <Compile Include="printfn.fs" />
+    <Compile Include="Checksums.fs" />
+    <Compile Include="RootAndInfo.fs" />
+    <Compile Include="Program.fs" />
+    <None Include="BuildInfo.fsx" />
+    <None Include="paket.references" />
+    <Content Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="Microsoft.Build">
+      <HintPath>..\lib\Microsoft.Build.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Build.Framework">
+      <HintPath>..\lib\Microsoft.Build.Framework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Build.Utilities.Core">
+      <HintPath>..\lib\Microsoft.Build.Utilities.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <ProjectReference Include="..\CorSym\CorSym.csproj">
+      <Name>CorSym</Name>
+      <Project>{f764ced4-2f3c-49ec-ba9f-99105707b607}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Git\Git.fsproj">
+      <Name>Git</Name>
+      <Project>{726a13b9-f319-40fa-aef6-fe629cfdaf6a}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Pe\Pe.fsproj">
+      <Name>Pe</Name>
+      <Project>{12331d73-8eb9-4a60-9079-00d26b71a04b}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\SourceLink\SourceLink.fsproj">
+      <Name>SourceLink</Name>
+      <Project>{aaf1b8d7-791e-40f1-a278-9a16d9667866}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\SymbolStore\SymbolStore.fsproj">
+      <Name>SymbolStore</Name>
+      <Project>{22d889db-96e8-475d-922e-4e7eebb60045}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
 </Project>

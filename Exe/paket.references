@@ -1,3 +1,4 @@
 FSharp.Core
 LibGit2Sharp
 UnionArgParser
+System.Threading.Tasks.Dataflow
