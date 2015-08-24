@@ -22,3 +22,11 @@ let hashSHA1 file =
 let hashesSHA1 files =
     use ha = SHA1.Create()
     files |> Seq.map (hash ha) |> Array.ofSeq
+
+let hashSHA256 file =
+    use ha = SHA256.Create()
+    hash ha file |> fst
+
+let hashesSHA256 files =
+    use ha = SHA256.Create()
+    files |> Seq.map (hash ha) |> Array.ofSeq
