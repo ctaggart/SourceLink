@@ -27,6 +27,6 @@
     <file src="..\SourceLink\bin\Release\Microsoft.Build.dll" target="tools" />
     <file src="..\SourceLink\bin\Release\Microsoft.Build.Framework.dll" target="tools" />
     <file src="..\SourceLink\bin\Release\Microsoft.Build.Utilities.Core.dll" target="tools" />
-    <file src="..\SourceLink\bin\Release\System.Threading.Tasks.Dataflow.dll" target="tools" />
+    <file src="..\Exe\bin\Release\System.Threading.Tasks.Dataflow.dll" target="tools" />
   </files>
 </package>
