@@ -250,7 +250,7 @@ let (==>) a b = a =?> (b, isAppVeyorBuild)
 "BuildVersion"
 ==> "AssemblyInfo"
 ==> "Build"
-//==> "SourceLink"
+==> "SourceLink"
 ==> "NuGet"
 ==> "Publish"
 
