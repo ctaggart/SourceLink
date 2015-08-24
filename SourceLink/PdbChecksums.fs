@@ -59,12 +59,12 @@ type PdbFile with
                 let checksumInPdb = pdbFiles.[file]
                 let checksum =
                     match checksumInPdb.Length with
-                    | 88 -> Crypto.hashMD5 file
-                    | 92 -> Crypto.hashSHA1 file
-                    | 104 -> Crypto.hashSHA256 file
+                    | 16 -> Crypto.hashMD5 file
+                    | 20 -> Crypto.hashSHA1 file
+                    | 32 -> Crypto.hashSHA256 file
                     | _ -> Array.empty
                 let pc = { File = file; ChecksumOfFileBytes = checksum; ChecksumInPdbBytes = checksumInPdb }
-                if checksum = checksumInPdb then
+                if checksum.CollectionEquals checksumInPdb then
                     matched.Add pc
                 else unmatched.Add pc
         { Matched = matched; Unmatched = unmatched }

@@ -23,10 +23,8 @@
     <DocumentationFile>
     </DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
-    <StartArguments>
-    </StartArguments>
-    <StartWorkingDirectory>
-    </StartWorkingDirectory>
+    <StartArguments>index -pr .\Tfs\Tfs.fsproj -p .\Tfs\bin\Debug\SourceLink.Tfs.dll -u 'http://blah/{0}'</StartArguments>
+    <StartWorkingDirectory>C:\Projects\SourceLink1</StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
