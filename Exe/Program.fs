@@ -48,7 +48,7 @@ let processWithValidation<'T when 'T :> IArgParserTemplate> validateF commandF c
 let v, args = filterGlobalArgs (Environment.GetCommandLineArgs().[1..])
 Logging.verbose <- v
 
-let index (results: ArgParseResults<_>) =
+let index (results: ParseResults<_>) =
     let proj = results.TryGetResult <@ IndexArgs.Proj @>
     let projProps = results.GetResults <@ IndexArgs.Proj_Prop @>
     let url = results.GetResult <@ IndexArgs.Url @>
@@ -62,7 +62,7 @@ let index (results: ArgParseResults<_>) =
     let paths = results.GetResults <@ IndexArgs.Map @>
     Index.run proj projProps url commit pdbs verifyGit verifyPdb files notFiles repoDir paths
 
-let checksums (results: ArgParseResults<_>) =
+let checksums (results: ParseResults<_>) =
     let pdb = results.GetResult <@ ChecksumsArgs.Pdb @>
     let file = results.Contains <@ ChecksumsArgs.Not_File @> = false
     let url = results.Contains <@ ChecksumsArgs.Url @>
@@ -71,26 +71,26 @@ let checksums (results: ArgParseResults<_>) =
     let password = results.TryGetResult <@ ChecksumsArgs.Password @>
     Checksums.run pdb file url check username password
 
-let pdbstrr (results: ArgParseResults<_>) =
+let pdbstrr (results: ParseResults<_>) =
     let pdb = results.GetResult <@ SrctoolxArgs.Pdb @>
     Pdbstrr.run pdb
 
-let srctoolx (results: ArgParseResults<_>) =
+let srctoolx (results: ParseResults<_>) =
     let pdb = results.GetResult <@ SrctoolxArgs.Pdb @>
     SrcToolx.run pdb
 
-let lineFeed (results: ArgParseResults<_>) =
+let lineFeed (results: ParseResults<_>) =
     let proj = results.TryGetResult <@ LineFeedArgs.Proj @>
     let projProps = results.GetResults <@ LineFeedArgs.Proj_Prop @>
     let files = results.GetResults <@ LineFeedArgs.File @>
     let notFiles = results.GetResults <@ LineFeedArgs.Not_File @>
     LineFeed.run proj projProps files notFiles
 
-let validateHasArgs (results : ArgParseResults<_>) =
+let validateHasArgs (results : ParseResults<_>) =
     let args = results.GetAllResults()
     args.Length > 0
 
-let processCommand<'T when 'T :> IArgParserTemplate> (commandF : ArgParseResults<'T> -> unit) = 
+let processCommand<'T when 'T :> IArgParserTemplate> (commandF : ParseResults<'T> -> unit) = 
     processWithValidation validateHasArgs commandF 
 
 try

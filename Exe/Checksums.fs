@@ -11,18 +11,15 @@ type CheckResponse =
     | Pass
     | Fail of string
 
-let checkUrl (hc: HttpClient) url checksum = async {
-    use ha = MD5.Create() // not thread safe, get `Hash not valid for use in specified state.`
+let checkUrl (hc: HttpClient) url (checksum: byte[]) = async {
     use req = new HttpRequestMessage(HttpMethod.Get, Uri url)
     use! rsp = hc.Send req
     if rsp.IsSuccessStatusCode then
         use! file = rsp.Content.ReadAsStream()
-        let checksumUrl = ha.ComputeHash file
-        let hexChecksum = Hex.encode checksum
-        let hexChecksumUrl = Hex.encode checksumUrl
-        if hexChecksum = hexChecksumUrl then
+        let checksumUrl = Crypto.hashStream checksum.Length file
+        if checksum.CollectionEquals checksumUrl then
             return Pass
-        else return Fail hexChecksumUrl 
+        else return Fail (Hex.encode checksumUrl)
     else return Fail (sprintf "HTTP %d" (int rsp.StatusCode)) }
 
 let run (pdb: string) showFiles showUrls check username password =

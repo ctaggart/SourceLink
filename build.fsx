@@ -93,8 +93,7 @@ let pSourceLink (p: NuGetParams) =
         DependenciesByFramework =
             [{ 
                 FrameworkVersion = "net45"
-                Dependencies = [    "FSharp.Core", GetPackageVersion "./packages/" "FSharp.Core"
-                                    "SourceLink.MSBuild", GetPackageVersion "./packages/" "SourceLink.MSBuild" ] 
+                Dependencies = [    "FSharp.Core", GetPackageVersion "./packages/" "FSharp.Core" ] 
             }]
         AccessKey = nugetApiKey
     }
@@ -261,7 +260,7 @@ let runTargets() =
         if hasRepoVersionTag then
             run "Publish"
         else
-            let targets = getAllTargetsNames() |> (HashSet.ofSeqCmp StringComparer.OrdinalIgnoreCase)
+            let targets =  HashSet(getAllTargetsNames(), StringComparer.OrdinalIgnoreCase)
             let cm = AppVeyorEnvironment.RepoCommitMessage
             let rx = Text.RegularExpressions.Regex @"\B#([a-zA-Z]\w+)"
             let hashtags = seq {

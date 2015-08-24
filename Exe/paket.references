@@ -1,4 +1,4 @@
 FSharp.Core
 LibGit2Sharp
 UnionArgParser
-SourceLink.MSBuild
+System.Threading.Tasks.Dataflow
