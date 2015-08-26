@@ -1,4 +1,4 @@
-### 1.1.0 _ under development
+### 1.1.0 _ 2015-08
   * [#102](https://github.com/ctaggart/SourceLink/issues/102) support Visual Studio 2015 C# pdb files
   * [#104](https://github.com/ctaggart/SourceLink/pull/104) add support for SHA-1 and SHA-256 checksums in pdb
   * [#98](https://github.com/ctaggart/SourceLink/issues/98) update to TFS 2015 client libraries
