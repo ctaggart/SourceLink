@@ -1,19 +1,22 @@
 NUGET
-  remote: https://www.nuget.org/api/v2
+  remote: https://nuget.org/api/v2
   specs:
     FAKE (4.1.4)
     FSharp.Compiler.Service (1.4.0.1)
+    Argu (1.1.2)
+    FAKE (4.7.2)
+    FSharp.Compiler.Service (1.4.0.6)
     FSharp.Core (4.0.0.1)
-    FSharp.Formatting (2.10.0)
-      FSharp.Compiler.Service (>= 0.0.87)
-      FSharpVSPowerTools.Core (1.8.0)
-    FSharpVSPowerTools.Core (1.8.0)
-      FSharp.Compiler.Service (>= 0.0.87)
+    FSharp.Formatting (2.12.0)
+      FSharp.Compiler.Service (1.4.0.6)
+      FSharpVSPowerTools.Core (2.1.0)
+    FSharpVSPowerTools.Core (2.1.0)
+      FSharp.Compiler.Service (>= 1.4.0.6)
     LibGit2Sharp (0.21.0.176)
     Microsoft.AspNet.Razor (3.2.3) - framework: >= net45
     Mono.Cecil (0.9.6.1)
     NuGet.CommandLine (2.8.6)
-    RazorEngine (3.7.2)
+    RazorEngine (3.7.3)
       Microsoft.AspNet.Razor (>= 3.0.0) - framework: >= net45
       Microsoft.AspNet.Razor (2.0.30506.0) - framework: >= net40 < net45
     System.Collections (4.0.10)
@@ -185,3 +188,5 @@ NUGET
   remote: https://ci.appveyor.com/nuget/ctaggart-sourcelink
   specs:
     SourceLink.Fake (1.1.0-b279)
+      Microsoft.AspNet.Razor (2.0.30506.0) - framework: net40
+    SourceLink.Fake (1.1.0)

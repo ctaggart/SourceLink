@@ -11,3 +11,4 @@ nuget LibGit2Sharp
 nuget Mono.Cecil
 nuget UnionArgParser
 nuget System.Threading.Tasks.Dataflow
+nuget Argu
