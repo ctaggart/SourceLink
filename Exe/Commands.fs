@@ -1,9 +1,9 @@
 ﻿module SourceLink.Commands
 
-// UnionArgParser usage based on Paket
+// ArgU usage based on Paket
 // https://github.com/fsprojects/Paket/blob/master/src/Paket/Commands.fs
 
-open Nessos.UnionArgParser
+open Nessos.Argu
 
 type Command =
     | [<First>][<CustomCommandLine "index">] Index
@@ -109,7 +109,7 @@ with
             | File _ -> "source file to put in the index, supports multiple and globs"
             | Not_File _ -> "exclude this file, supports multiple and globs"
 
-let cmdLineSyntax (parser:UnionArgParser<_>) commandName = 
+let cmdLineSyntax (parser:ArgumentParser<_>) commandName = 
     "$ SourceLink " + commandName + " " + parser.PrintCommandLineSyntax()
 
 let cmdLineUsageMessage (command : Command) parser =

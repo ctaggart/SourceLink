@@ -18,7 +18,6 @@ NUGET
     RazorEngine (3.7.3)
       Microsoft.AspNet.Razor (>= 3.0.0)
     System.Threading.Tasks.Dataflow (4.5.25)
-    UnionArgParser (0.9.0)
   remote: https://ci.appveyor.com/nuget/ctaggart-sourcelink
   specs:
     SourceLink.Fake (1.1.0-b279)

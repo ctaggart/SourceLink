@@ -1,10 +1,10 @@
 ﻿module SourceLink.Program
 
-// UnionArgParser usage based on Paket
+// ArgU usage based on Paket
 // https://github.com/fsprojects/Paket/blob/master/src/Paket/Program.fs
 
 open System
-open Nessos.UnionArgParser
+open Nessos.Argu
 open System.Diagnostics
 open System.IO
 open SourceLink.Commands
@@ -16,7 +16,7 @@ tracefn "SourceLink %s" version
 
 let filterGlobalArgs args = 
     let globalResults = 
-        UnionArgParser.Create<GlobalArgs>()
+        ArgumentParser.Create<GlobalArgs>()
             .Parse(ignoreMissing = true, 
                    ignoreUnrecognized = true, 
                    raiseOnUsage = false)
@@ -31,7 +31,7 @@ let filterGlobalArgs args =
 
 let processWithValidation<'T when 'T :> IArgParserTemplate> validateF commandF command 
     args = 
-    let parser = UnionArgParser.Create<'T>()
+    let parser = ArgumentParser.Create<'T>()
     let results = 
         parser.Parse
             (inputs = args, raiseOnUsage = false, ignoreMissing = true, 
@@ -94,7 +94,7 @@ let processCommand<'T when 'T :> IArgParserTemplate> (commandF : ParseResults<'T
     processWithValidation validateHasArgs commandF 
 
 try
-    let parser = UnionArgParser.Create<Command>()
+    let parser = ArgumentParser.Create<Command>()
     let results = 
         parser.Parse(inputs = args,
                    ignoreMissing = true, 
