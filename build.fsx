@@ -113,6 +113,15 @@ let pTfs (p: NuGetParams) =
         AccessKey = nugetApiKey
     }
 
+let pBuild (p: NuGetParams) =
+    { p with
+        Project = "SourceLink.Build"
+        Version = buildVersion
+        WorkingDir = "Build/bin/Release"
+        OutputPath = bin
+        AccessKey = nugetApiKey
+    }
+
 let pFake (p: NuGetParams) =
     { p with
         Project = "SourceLink.Fake"
@@ -171,6 +180,7 @@ Target "NuGet" <| fun _ ->
     NuGet pSourceLink "SourceLink/SourceLink.nuspec"
     NuGet pTfs "Tfs/Tfs.nuspec"
     NuGet pFake "Fake/Fake.nuspec"
+    NuGet pBuild "Build/Build.nuspec"
     NuGet pGit "Git/Git.nuspec"
     NuGet pSymbolStore "SymbolStore/SymbolStore.nuspec"
     NuGet pExe "Exe/Exe.nuspec"
