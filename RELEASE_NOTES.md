@@ -1,3 +1,6 @@
+### 1.1.1 _ under construction
+  * [#106](https://github.com/ctaggart/SourceLink/issues/106) unable to resolve correct version of System.Threading.Tasks.Dataflow
+
 ### 1.1.0 _ 2015-08
   * [#102](https://github.com/ctaggart/SourceLink/issues/102) support Visual Studio 2015 C# pdb files
   * [#104](https://github.com/ctaggart/SourceLink/pull/104) add support for SHA-1 and SHA-256 checksums in pdb
