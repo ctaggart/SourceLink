@@ -129,15 +129,4 @@ xcopy /s /y /d "$(SolutionDir)packages\LibGit2Sharp\lib\net40\NativeBinaries\x86
     </When>
   </Choose>
   <Import Project="..\packages\LibGit2Sharp\build\$(__paket__LibGit2Sharp_props).props" Condition="Exists('..\packages\LibGit2Sharp\build\$(__paket__LibGit2Sharp_props).props')" Label="Paket" />
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.5'">
-      <ItemGroup>
-        <Reference Include="System.Threading.Tasks.Dataflow">
-          <HintPath>..\packages\System.Threading.Tasks.Dataflow\lib\portable-net45+win8+wpa81\System.Threading.Tasks.Dataflow.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
 </Project>
