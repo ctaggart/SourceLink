@@ -6,6 +6,7 @@
 //#r "../packages/LibGit2Sharp/lib/net40/LibGit2Sharp.dll" // in dev
 //#r "../SourceLink/bin/Debug/SourceLink.Core.dll" // in dev
 //#r "../Git/bin/Debug/SourceLink.Git.dll" // in dev
+#r "System.Threading.Tasks.Dataflow.dll"
 #r "Microsoft.Build.Framework.dll"
 #r "Microsoft.Build.dll"
 #r "LibGit2Sharp.dll"
