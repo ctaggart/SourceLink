@@ -4,7 +4,7 @@
 // https://github.com/fsprojects/Paket/blob/master/src/Paket/Program.fs
 
 open System
-open Nessos.Argu
+open Argu
 open System.Diagnostics
 open System.IO
 open SourceLink.Commands

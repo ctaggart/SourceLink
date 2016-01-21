@@ -3,7 +3,7 @@
 // ArgU usage based on Paket
 // https://github.com/fsprojects/Paket/blob/master/src/Paket/Commands.fs
 
-open Nessos.Argu
+open Argu
 
 type Command =
     | [<First>][<CustomCommandLine "index">] Index

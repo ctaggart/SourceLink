@@ -1,6 +1,6 @@
 source https://www.nuget.org/api/v2
 source https://ci.appveyor.com/nuget/ctaggart-sourcelink
-framework: net45
+framework: >= net45
 
 nuget FAKE
 nuget SourceLink.Fake 1.1.0-b279
