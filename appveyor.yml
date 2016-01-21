@@ -3,14 +3,12 @@ init:
   - git config --global user.email "AppVeyor"
   - git config --global user.name "AppVeyor"
   - git config --global push.default simple
-  - choco install Paket.PowerShell -y
-  - ps: "$env:PSModulePath = [Environment]::GetEnvironmentVariable('PSModulePath', 'Machine')"
-clone_depth: 1
+clone_depth: 10
 build_script:
   - ps: |
-      Paket-Restore
+      .\paket.bootstrapper.exe
+      .\paket.exe restore
       .\lib\Copy-Libraries.ps1
-      .\Tfs\lib\Copy-Libraries.ps1
       .\build.ps1
       if ($lastexitcode -ne 0){ exit $lastexitcode }
 test: off

@@ -57,7 +57,6 @@ Target "AssemblyInfo" <| fun _ ->
         Attribute.InformationalVersion iv.String ]
     common |> CreateFSharpAssemblyInfo "SourceLink/AssemblyInfo.fs"
     common |> CreateFSharpAssemblyInfo "Build/AssemblyInfo.fs"
-    common |> CreateFSharpAssemblyInfo "Tfs/AssemblyInfo.fs"
     common |> CreateFSharpAssemblyInfo "Git/AssemblyInfo.fs"
     common |> CreateFSharpAssemblyInfo "SymbolStore/AssemblyInfo.fs"
     common |> CreateCSharpAssemblyInfo "CorSym/Properties/AssemblyInfo.cs"
@@ -72,7 +71,6 @@ Target "SourceLink" <| fun _ ->
         let pdbToIndex = if Option.isSome pdb then pdb.Value else p.OutputFilePdb
         let url = "https://raw.githubusercontent.com/ctaggart/SourceLink/{0}/%var2%"
         SourceLink.Index p.Compiles pdbToIndex __SOURCE_DIRECTORY__ url
-    sourceIndex "Tfs/Tfs.fsproj" None
     sourceIndex "SourceLink/SourceLink.fsproj" None
     sourceIndex "Git/Git.fsproj" None
     sourceIndex "SymbolStore/SymbolStore.fsproj" None
@@ -98,18 +96,12 @@ let pSourceLink (p: NuGetParams) =
         AccessKey = nugetApiKey
     }
 
-let pTfs (p: NuGetParams) =
+let pBuild (p: NuGetParams) =
     { p with
-        Project = "SourceLink.Tfs"
+        Project = "SourceLink.Build"
         Version = buildVersion
-        WorkingDir = "Tfs/bin/Release"
+        WorkingDir = "Build/bin/Release"
         OutputPath = bin
-        DependenciesByFramework =
-            [{ 
-                FrameworkVersion = "net45"
-                Dependencies = [    "SourceLink.Core", sprintf "[%s]" buildVersion // exact version
-                                    "FSharp.Core", GetPackageVersion "./packages/" "FSharp.Core" ] 
-            }]
         AccessKey = nugetApiKey
     }
 
@@ -169,15 +161,14 @@ let pExeChocolatey (p: NuGetParams) =
 Target "NuGet" <| fun _ ->
     Directory.CreateDirectory bin |> ignore
     NuGet pSourceLink "SourceLink/SourceLink.nuspec"
-    NuGet pTfs "Tfs/Tfs.nuspec"
     NuGet pFake "Fake/Fake.nuspec"
+    NuGet pBuild "Build/Build.nuspec"
     NuGet pGit "Git/Git.nuspec"
     NuGet pSymbolStore "SymbolStore/SymbolStore.nuspec"
     NuGet pExe "Exe/Exe.nuspec"
 
 Target "Publish" <| fun _ ->
     NuGetPublish pSourceLink 
-    NuGetPublish pTfs
     NuGetPublish pFake
     NuGetPublish pGit
     NuGetPublish pSymbolStore

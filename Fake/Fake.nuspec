@@ -8,19 +8,16 @@
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <iconUrl>http://ctaggart.github.io/SourceLink/SourceLink128.jpg</iconUrl>
+    <tags>sourcelink pdb symbols git sourceindexing debugging sourceserver fake build</tags>
   </metadata>
   <files>
     <file src="*.fsx" target="tools" />
-    <file src="*.xaml" target="tools" />
     <file src="..\SourceLink\bin\Release\SourceLink.Core.dll" target="tools" />
     <file src="..\SourceLink\bin\Release\SourceLink.Core.pdb" target="tools" />
     <file src="..\SourceLink\bin\Release\SourceLink.Core.xml" target="tools" />
     <file src="..\Exe\bin\Release\LibGit2Sharp.dll" target="tools" />
     <file src="..\Exe\bin\Release\NativeBinaries\amd64\*.dll" target="tools\NativeBinaries\amd64" />
     <file src="..\Exe\bin\Release\NativeBinaries\x86\*.dll" target="tools\NativeBinaries\x86" />
-    <file src="..\Tfs\bin\Release\SourceLink.Tfs.dll" target="tools" />
-    <file src="..\Tfs\bin\Release\SourceLink.Tfs.pdb" target="tools" />
-    <file src="..\Tfs\bin\Release\SourceLink.Tfs.xml" target="tools" />
     <file src="..\Git\bin\Release\SourceLink.Git.dll" target="tools" />
     <file src="..\Git\bin\Release\SourceLink.Git.pdb" target="tools" />
     <file src="..\Git\bin\Release\SourceLink.Git.xml" target="tools" />

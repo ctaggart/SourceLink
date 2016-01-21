@@ -1,5 +1,6 @@
 source https://www.nuget.org/api/v2
 source https://ci.appveyor.com/nuget/ctaggart-sourcelink
+framework: >= net45
 
 nuget FAKE
 nuget SourceLink.Fake 1.1.0-b279
@@ -9,6 +10,5 @@ nuget RazorEngine
 nuget FSharp.Core
 nuget LibGit2Sharp
 nuget Mono.Cecil
-nuget UnionArgParser
 nuget System.Threading.Tasks.Dataflow
 nuget Argu

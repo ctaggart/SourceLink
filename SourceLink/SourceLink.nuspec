@@ -15,6 +15,7 @@
       <frameworkAssembly assemblyName="System.Xml" />
       <frameworkAssembly assemblyName="System.Configuration" />
     </frameworkAssemblies>
+    <tags>sourcelink pdb symbols git sourceindexing debugging sourceserver build</tags>
   </metadata>
   <files>
     <file src="SourceLink.Core.dll" target="lib\net45" />
