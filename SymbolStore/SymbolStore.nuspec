@@ -11,6 +11,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <iconUrl>http://ctaggart.github.io/SourceLink/SourceLink128.jpg</iconUrl>
     @dependencies@
+    <tags>sourcelink pdb symbols sourceindexing debugging sourceserver</tags>
   </metadata>
   <files>
     <file src="SourceLink.SymbolStore.CorSym.dll" target="lib\net45" />

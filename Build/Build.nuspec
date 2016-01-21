@@ -8,6 +8,7 @@
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <iconUrl>http://ctaggart.github.io/SourceLink/SourceLink128.jpg</iconUrl>
+    <tags>sourcelink pdb symbols git sourceindexing debugging sourceserver msbuild build</tags>
   </metadata>
   <files>
     <file src="*.dll" target="build" />

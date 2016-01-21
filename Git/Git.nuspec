@@ -11,6 +11,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <iconUrl>http://ctaggart.github.io/SourceLink/SourceLink128.jpg</iconUrl>
     @dependencies@
+    <tags>sourcelink git</tags>
   </metadata>
   <files>
     <file src="SourceLink.Git.dll" target="lib\net45" />
