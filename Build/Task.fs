@@ -1,4 +1,4 @@
-﻿namespace SourceLink.Build
+﻿namespace SourceLink
 
 open Microsoft.Build.Framework
 
@@ -14,7 +14,7 @@ type Task() =
     member x.Message importance format = Printf.ksprintf (fun message -> x.LogMessage importance message) format
     member x.MessageHigh format = x.Message MessageImportance.High format
     member x.MessageNormal format = x.Message MessageImportance.Normal format
-    member x.MessageLogLow format = x.Message MessageImportance.Low format
+    member x.MessageLow format = x.Message MessageImportance.Low format
     
     /// logs an error and potentially fails the build
     member x.Error format = Printf.ksprintf (fun message -> x.LogError message) format

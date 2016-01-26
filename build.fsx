@@ -91,7 +91,8 @@ let pSourceLink (p: NuGetParams) =
         DependenciesByFramework =
             [{ 
                 FrameworkVersion = "net45"
-                Dependencies = [    "FSharp.Core", GetPackageVersion "./packages/" "FSharp.Core" ] 
+                Dependencies = [    "Argu", GetPackageVersion "./packages/" "Argu" 
+                                    "FSharp.Core", GetPackageVersion "./packages/" "FSharp.Core" ]
             }]
         AccessKey = nugetApiKey
     }

@@ -14,19 +14,14 @@
     <file src="SourceLink.exe" target="tools" />
     <file src="SourceLink.exe.config" target="tools" />
     <file src="SourceLink.pdb" target="tools" />
-    <file src="SourceLink.xml" target="tools" />
     <file src="..\..\..\SourceLink\bin\Release\SourceLink.Core.dll" target="tools" />
     <file src="..\..\..\SourceLink\bin\Release\SourceLink.Core.pdb" target="tools" />
-    <file src="..\..\..\SourceLink\bin\Release\SourceLink.Core.xml" target="tools" />
     <file src="..\..\..\Git\bin\Release\SourceLink.Git.dll" target="tools" />
     <file src="..\..\..\Git\bin\Release\SourceLink.Git.pdb" target="tools" />
-    <file src="..\..\..\Git\bin\Release\SourceLink.Git.xml" target="tools" />
     <file src="..\..\..\CorSym\bin\Release\SourceLink.SymbolStore.CorSym.dll" target="tools" />
     <file src="..\..\..\CorSym\bin\Release\SourceLink.SymbolStore.CorSym.pdb" target="tools" />
-    <file src="..\..\..\CorSym\bin\Release\SourceLink.SymbolStore.CorSym.xml" target="tools" />
     <file src="..\..\..\SymbolStore\bin\Release\SourceLink.SymbolStore.dll" target="tools" />
     <file src="..\..\..\SymbolStore\bin\Release\SourceLink.SymbolStore.pdb" target="tools" />
-    <file src="..\..\..\SymbolStore\bin\Release\SourceLink.SymbolStore.xml" target="tools" />
     <file src="LibGit2Sharp.dll" target="tools" />
     <!--<file src="NativeBinaries\amd64\*.dll" target="tools\NativeBinaries\amd64" />-->
     <file src="NativeBinaries\x86\*.dll" target="tools\NativeBinaries\x86" />

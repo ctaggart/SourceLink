@@ -1,12 +1,14 @@
 FRAMEWORK: >= NET45
 NUGET
+  remote: https://ci.appveyor.com/nuget/ctaggart-argu
+  specs:
+    Argu (2.1)
   remote: https://www.nuget.org/api/v2
   specs:
-    Argu (2.0)
-    FAKE (4.16.1)
+    FAKE (4.17.0)
     FSharp.Compiler.Service (1.4.2.3)
     FSharp.Core (4.0.0.1)
-    FSharp.Formatting (2.13.4)
+    FSharp.Formatting (2.13.5)
       FSharp.Compiler.Service (>= 1.4.2 < 1.5.0)
       FSharpVSPowerTools.Core (>= 2.2.0 < 2.3.0)
     FSharpVSPowerTools.Core (2.2.0)
@@ -17,7 +19,5 @@ NUGET
     NuGet.CommandLine (3.3.0)
     RazorEngine (3.7.7)
       Microsoft.AspNet.Razor (>= 3.0.0)
+    SourceLink.Fake (1.1.0)
     System.Threading.Tasks.Dataflow (4.5.25)
-  remote: https://ci.appveyor.com/nuget/ctaggart-sourcelink
-  specs:
-    SourceLink.Fake (1.1.0-b279)

@@ -9,7 +9,8 @@ let run (proj:string option) (projProps:(string * string) list)
     (verifyGit:bool) (verifyPdb:bool) 
     (files:string list) (notFiles:string list)
     (repoDir:string) 
-    (paths:(string * string) list) =
+    (paths:(string * string) list)
+    (runPdbstr:bool) =
     
     // skip verify if paths are set
     let noPaths = paths.Length = 0
@@ -89,19 +90,21 @@ let run (proj:string option) (projProps:(string * string) list)
             pdb.PathSrcSrv
 
         File.WriteAllBytes(srcsrvPath, SrcSrv.create url commit paths)
-        let pdbstr = Path.combine (System.Reflection.Assembly.GetExecutingAssembly().Location |> Path.GetDirectoryName) "pdbstr.exe"
+
+        if runPdbstr then
+            let pdbstr = Path.combine (System.Reflection.Assembly.GetExecutingAssembly().Location |> Path.GetDirectoryName) "pdbstr.exe"
         
-        let p = Process()
-        p.FileName <- pdbstr
-        p.Arguments <- sprintf "-w -s:srcsrv -i:\"%s\" -p:\"%s\"" srcsrvPath pdbPath
-        p.WorkingDirectory <- cd
-        p.Stdout |> Observable.add traceVerbose
-        p.Stderr |> Observable.add traceError
-        try
-            verbosefn "%s>\"%s\" %s" p.WorkingDirectory p.FileName p.Arguments
-            let exit = p.Run()
-            if exit <> 0 then 
-                failwithf "process failed with exit code %d, run '%s', with '%s', in '%s'" exit p.FileName p.Arguments p.WorkingDirectory
-        with
-            | ex -> 
-                failwithf "process failed with exception, run '%s', with '%s', in '%s', %A" p.FileName p.Arguments p.WorkingDirectory ex
+            let p = Process()
+            p.FileName <- pdbstr
+            p.Arguments <- sprintf "-w -s:srcsrv -i:\"%s\" -p:\"%s\"" srcsrvPath pdbPath
+            p.WorkingDirectory <- cd
+            p.Stdout |> Observable.add traceVerbose
+            p.Stderr |> Observable.add traceError
+            try
+                verbosefn "%s> \"%s\" %s" p.WorkingDirectory p.FileName p.Arguments
+                let exit = p.Run()
+                if exit <> 0 then 
+                    failwithf "process failed with exit code %d, run '%s', with '%s', in '%s'" exit p.FileName p.Arguments p.WorkingDirectory
+            with
+                | ex -> 
+                    failwithf "process failed with exception, run '%s', with '%s', in '%s', %A" p.FileName p.Arguments p.WorkingDirectory ex

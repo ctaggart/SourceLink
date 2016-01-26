@@ -1,5 +1,5 @@
 ﻿<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
-  <metadata minClientVersion="2.7">
+  <metadata>
     <id>SourceLink.Build</id>
     <version>0.0.0</version>
     <authors>Cameron Taggart</authors>
@@ -11,9 +11,32 @@
     <tags>sourcelink pdb symbols git sourceindexing debugging sourceserver msbuild build</tags>
   </metadata>
   <files>
-    <file src="*.dll" target="build" />
-    <file src="NativeBinaries\amd64\*.dll" target="build\NativeBinaries\amd64" />
-    <file src="NativeBinaries\x86\*.dll" target="build\NativeBinaries\x86" />
     <file src="SourceLink.Build.targets" target="build" />
+    <file src="SourceLink.Build.dll" target="build" />
+    <file src="SourceLink.Build.pdb" target="build" />
+
+    <!-- same as Exe.nuspec -->
+    <file src="..\..\..\Exe\bin\Release\SourceLink.exe" target="build" />
+    <file src="..\..\..\Exe\bin\Release\SourceLink.exe.config" target="build" />
+    <file src="..\..\..\Exe\bin\Release\SourceLink.pdb" target="build" />
+    <file src="..\..\..\SourceLink\bin\Release\SourceLink.Core.dll" target="build" />
+    <file src="..\..\..\SourceLink\bin\Release\SourceLink.Core.pdb" target="build" />
+    <file src="..\..\..\Git\bin\Release\SourceLink.Git.dll" target="build" />
+    <file src="..\..\..\Git\bin\Release\SourceLink.Git.pdb" target="build" />
+    <file src="..\..\..\CorSym\bin\Release\SourceLink.SymbolStore.CorSym.dll" target="build" />
+    <file src="..\..\..\CorSym\bin\Release\SourceLink.SymbolStore.CorSym.pdb" target="build" />
+    <file src="..\..\..\SymbolStore\bin\Release\SourceLink.SymbolStore.dll" target="build" />
+    <file src="..\..\..\SymbolStore\bin\Release\SourceLink.SymbolStore.pdb" target="build" />
+    <file src="..\..\..\Exe\bin\Release\LibGit2Sharp.dll" target="build" />
+    <file src="..\..\..\Exe\bin\Release\NativeBinaries\amd64\*.dll" target="build\NativeBinaries\amd64" />
+    <file src="..\..\..\Exe\bin\Release\NativeBinaries\x86\*.dll" target="build\NativeBinaries\x86" />
+    <file src="..\..\..\Exe\bin\Release\FSharp.Core.dll" target="build" />
+    <file src="..\..\..\Exe\bin\Release\ArgU.dll" target="build" />
+    <file src="..\..\..\Exe\bin\Release\srcsrv.dll" target="build" />
+    <file src="..\..\..\Exe\bin\Release\pdbstr.exe" target="build" />
+    <file src="..\..\..\Exe\bin\Release\Microsoft.Build.dll" target="build" />
+    <file src="..\..\..\Exe\bin\Release\Microsoft.Build.Framework.dll" target="build" />
+    <file src="..\..\..\Exe\bin\Release\Microsoft.Build.Utilities.Core.dll" target="build" />
+    <file src="..\..\..\Exe\bin\Release\System.Threading.Tasks.Dataflow.dll" target="build" />
   </files>
 </package>
