@@ -45,7 +45,7 @@ type IndexArgs =
     | [<AltCommandLine "-nvp">] Not_Verify_Pdb
     | [<AltCommandLine "-r">] Repo of string
     | [<AltCommandLine "-m">] Map of string * string
-    | [<AltCommandLine "-np">] No_Pdbstr
+    | [<AltCommandLine "-np">] Not_Pdbstr
 with
     interface IArgParserTemplate with
         member x.Usage =
@@ -61,7 +61,7 @@ with
             | Not_Verify_Pdb _-> "do not verify the file checksums using the pdb file"
             | Repo _ -> "Git repository directory, defaults to current directory"
             | Map _ -> "manual mapping of file path to repo path, disables verify, supports multiple"
-            | No_Pdbstr _ -> "do not run pdbstr.exe, just create the pdb index file .pdb.srcsrv"
+            | Not_Pdbstr _ -> "do not run pdbstr.exe, just create the pdb index file .pdb.srcsrv"
 
 type ChecksumsArgs =
     | [<AltCommandLine "-p">] Pdb of string

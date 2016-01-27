@@ -29,7 +29,7 @@ type SourceLinkTask() =
         let args =
             [
                 yield IndexArgs.Not_Verify_Pdb
-                yield IndexArgs.No_Pdbstr
+                yield IndexArgs.Not_Pdbstr
                 yield IndexArgs.Pdb (Path.ChangeExtension(x.TargetPath, ".pdb"))
                 yield IndexArgs.Url x.Url
                 for source in x.Sources do
