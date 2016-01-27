@@ -23,8 +23,8 @@
     <DocumentationFile>
     </DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
-    <StartArguments>index -pr .\Tfs\Tfs.fsproj -p .\Tfs\bin\Debug\SourceLink.Tfs.dll -u 'http://blah/{0}'</StartArguments>
-    <StartWorkingDirectory>C:\Projects\SourceLink1</StartWorkingDirectory>
+    <StartArguments>index --not-verify-pdb --no-pdbstr --pdb C:\cs\SourceLinkTest1\bin\Debug\SourceLinkTest1.pdb --url "https://raw.githubusercontent.com/ctaggart/SourceLink/{0}/%var2%" --file Program.cs --file Properties\AssemblyInfo.cs</StartArguments>
+    <StartWorkingDirectory>C:\cs\SourceLinkTest1</StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -40,6 +40,7 @@
     </StartArguments>
     <StartWorkingDirectory>
     </StartWorkingDirectory>
+    <StartAction>Project</StartAction>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Build">

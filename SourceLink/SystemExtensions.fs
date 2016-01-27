@@ -114,6 +114,8 @@ type Path with
     static member absolute path = (Path.GetFullPath path).TrimEnd [|'\\'|]
     static member GetDirectoryNames file =
         seq {
+            if Directory.Exists file then
+                yield file
             let path = ref (Path.GetDirectoryName file)
             while false = String.IsNullOrEmpty !path do
                 yield !path

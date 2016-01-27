@@ -58,7 +58,7 @@ let index (results: ParseResults<_>) =
     let verifyPdb = results.Contains <@ IndexArgs.Not_Verify_Pdb @> = false
     let files = results.GetResults <@ IndexArgs.File @>
     let notFiles = results.GetResults <@ IndexArgs.Not_File @>
-    let repoDir = defaultArg (results.TryGetResult <@ IndexArgs.Repo @>) (Directory.GetCurrentDirectory())
+    let repoDir = results.TryGetResult <@ IndexArgs.Repo @>
     let paths = results.GetResults <@ IndexArgs.Map @>
     let runPdbstr = results.Contains <@ IndexArgs.No_Pdbstr @> = false
     Index.run proj projProps url commit pdbs verifyGit verifyPdb files notFiles repoDir paths runPdbstr

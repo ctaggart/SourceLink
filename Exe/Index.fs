@@ -8,7 +8,7 @@ let run (proj:string option) (projProps:(string * string) list)
     (pdbs:string list)
     (verifyGit:bool) (verifyPdb:bool) 
     (files:string list) (notFiles:string list)
-    (repoDir:string) 
+    (repoDir:string option) 
     (paths:(string * string) list)
     (runPdbstr:bool) =
     
@@ -43,16 +43,23 @@ let run (proj:string option) (projProps:(string * string) list)
     verbosefn "\nglobbed pdbs: %A" pdbs
     verbosefn "globbed projectFiles: %A" projectFiles
 
+    let repoDir =
+        lazy (
+            match repoDir with
+            | Some v -> GitRepo.Find v
+            | None -> GitRepo.Find (Directory.GetCurrentDirectory())
+        )
+
     let paths =
         if noPaths then
-            use repo = new GitRepo(repoDir)
+            use repo = new GitRepo(repoDir.Force())
             repo.Paths projectFiles
         else paths |> Seq.ofList
 
     let commit =
         if commit.IsSome then commit.Value
         else
-            use repo = new GitRepo(repoDir)
+            use repo = new GitRepo(repoDir.Force())
             repo.Commit
 
     for pdbPath in pdbs do
@@ -74,9 +81,8 @@ let run (proj:string option) (projProps:(string * string) list)
                 // verify checksums in git 2nd
                 if verifyGit then
                     let gitFiles = pc.MatchedFiles
-                    use repo = new GitRepo(repoDir)
+                    use repo = new GitRepo(repoDir.Force())
                     tracefn "verifying checksums for %d source files in Git repository" gitFiles.Length
-                    use repo = new GitRepo(repoDir)
                     let gc = repo.MatchChecksums gitFiles
                     if gc.Unmatched.Count > 0 then
                         let error = sprintf "%d files do not have matching checksums in Git" gc.Unmatched.Count

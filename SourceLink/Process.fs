@@ -4,9 +4,9 @@ open System
 
 type Process() =
     let si = Diagnostics.ProcessStartInfo()
-    do 
+    do
         si.UseShellExecute <- false
-        si.WindowStyle <- Diagnostics.ProcessWindowStyle.Hidden
+        si.CreateNoWindow <- true
         si.RedirectStandardOutput <- true
         si.RedirectStandardError <- true
     let stdout = Event<string>()
