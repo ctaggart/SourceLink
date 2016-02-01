@@ -6,7 +6,7 @@
     <CompileDependsOn>SourceLink;$(CompileDependsOn)</CompileDependsOn>
   </PropertyGroup>
   
-  <Target Name="SourceLink" Condition="$(SourceLinkUrl) != ''">
+  <Target Name="SourceLink" Condition="$(SourceLink) != ''">
     <SourceLink.SourceLinkTask Url="$(SourceLinkUrl)" ProjectDirectory="$(MSBuildProjectDirectory)" Sources="@(Compile)" TargetPath="$(TargetPath)" />
   </Target>
 

@@ -62,39 +62,53 @@ let run (proj:string option) (projProps:(string * string) list)
             use repo = new GitRepo(repoDir.Force())
             repo.Commit
 
+
     for pdbPath in pdbs do
-        tracefn "indexing %s" pdbPath
-
-        let srcsrvPath =
+       
+        // verify checksums in the pdb 1st
+        if verifyPdb then
             use pdb = new PdbFile(pdbPath)
+            let pc = pdb.MatchChecksums projectFiles
+            if pc.Unmatched.Count > 0 then
+                let error = sprintf "%d files do not have matching checksums in the pdb" pc.Unmatched.Count
+                traceError error
+                for um in pc.Unmatched do
+                    traceErrorfn "  pdb %s, file %s %s" um.ChecksumInPdb um.ChecksumOfFile um.File
+                failwith error
 
-            // verify checksums in the pdb 1st
-            if verifyPdb then
-                let pc = pdb.MatchChecksums projectFiles
-                if pc.Unmatched.Count > 0 then
-                    let error = sprintf "%d files do not have matching checksums in the pdb" pc.Unmatched.Count
+            // verify checksums in git 2nd
+            if verifyGit then
+                let gitFiles = pc.MatchedFiles
+                use repo = new GitRepo(repoDir.Force())
+                tracefn "verifying checksums for %d source files in Git repository" gitFiles.Length
+                let gc = repo.MatchChecksums gitFiles
+                if gc.Unmatched.Count > 0 then
+                    let error = sprintf "%d files do not have matching checksums in Git" gc.Unmatched.Count
                     traceError error
-                    for um in pc.Unmatched do
-                        traceErrorfn "  pdb %s, file %s %s" um.ChecksumInPdb um.ChecksumOfFile um.File
+                    traceErrorfn "make sure the source code is committed and line endings match"
+                    traceErrorfn "http://ctaggart.github.io/SourceLink/how-it-works.html"
+                    for um in gc.Unmatched do
+                        traceErrorfn "  git %s, file %s %s" um.ChecksumInGit um.ChecksumOfFile um.File
                     failwith error
-
-                // verify checksums in git 2nd
-                if verifyGit then
-                    let gitFiles = pc.MatchedFiles
-                    use repo = new GitRepo(repoDir.Force())
-                    tracefn "verifying checksums for %d source files in Git repository" gitFiles.Length
-                    let gc = repo.MatchChecksums gitFiles
-                    if gc.Unmatched.Count > 0 then
-                        let error = sprintf "%d files do not have matching checksums in Git" gc.Unmatched.Count
-                        traceError error
-                        traceErrorfn "make sure the source code is committed and line endings match"
-                        traceErrorfn "http://ctaggart.github.io/SourceLink/how-it-works.html"
-                        for um in gc.Unmatched do
-                            traceErrorfn "  git %s, file %s %s" um.ChecksumInGit um.ChecksumOfFile um.File
-                        failwith error
-
-            pdb.PathSrcSrv
-
+        
+        // do not verify the pdb
+        // this is the workflow for creating indexes for the portable pdb files
+        // simply emit warnings for files that do not match, not errors
+        else 
+            let gitFiles = projectFiles
+            use repo = new GitRepo(repoDir.Force())
+            tracefn "verifying checksums for %d source files in Git repository" gitFiles.Length
+            let gc = repo.MatchChecksums gitFiles
+            if gc.Unmatched.Count > 0 then
+                let error = sprintf "%d files do not have matching checksums in Git" gc.Unmatched.Count
+                traceWarn error
+                traceWarnfn "make sure the source code is committed and line endings match"
+                traceWarnfn "http://ctaggart.github.io/SourceLink/how-it-works.html"
+                for um in gc.Unmatched do
+                    traceWarnfn "  git %s, file %s %s" um.ChecksumInGit um.ChecksumOfFile um.File
+        
+        let srcsrvPath = pdbPath + ".srcsrv"
+        tracefn "create source index %s" srcsrvPath
         File.WriteAllBytes(srcsrvPath, SrcSrv.create url commit paths)
 
         if runPdbstr then

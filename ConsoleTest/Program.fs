@@ -56,8 +56,15 @@ let printTokens() =
 //        let mth = md.ResolveMember m.Token
 //        printfn "%d %s %s" m.Token mth.DeclaringType.FullName mth.Name
 
+let printGit() =
+    use repo = new GitRepo(@"..\..\..\")
+    for rmt in repo.Repo.Network.Remotes do
+        printfn "remote %s %s" rmt.Name rmt.Url
+
+
 [<EntryPoint>]
 let main argv =
-    printMethods()
-    printTokens()
+//    printMethods()
+//    printTokens()
+    printGit()
     0

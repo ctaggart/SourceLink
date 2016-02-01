@@ -1,4 +1,5 @@
-### 1.1.1 _ under construction
+### 2.0.0 _ under construction
+  * [#112](https://github.com/ctaggart/SourceLink/issues/112) repurpose SourceLink.Build for portable pdb files
   * [#106](https://github.com/ctaggart/SourceLink/issues/106) unable to resolve correct version of System.Threading.Tasks.Dataflow
 
 ### 1.1.0 _ 2015-08
