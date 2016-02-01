@@ -58,9 +58,10 @@ let index (results: ParseResults<_>) =
     let verifyPdb = results.Contains <@ IndexArgs.Not_Verify_Pdb @> = false
     let files = results.GetResults <@ IndexArgs.File @>
     let notFiles = results.GetResults <@ IndexArgs.Not_File @>
-    let repoDir = defaultArg (results.TryGetResult <@ IndexArgs.Repo @>) (Directory.GetCurrentDirectory())
+    let repoDir = results.TryGetResult <@ IndexArgs.Repo @>
     let paths = results.GetResults <@ IndexArgs.Map @>
-    Index.run proj projProps url commit pdbs verifyGit verifyPdb files notFiles repoDir paths
+    let runPdbstr = results.Contains <@ IndexArgs.Not_Pdbstr @> = false
+    Index.run proj projProps url commit pdbs verifyGit verifyPdb files notFiles repoDir paths runPdbstr
 
 let checksums (results: ParseResults<_>) =
     let pdb = results.GetResult <@ ChecksumsArgs.Pdb @>
@@ -113,13 +114,17 @@ try
 
         let args = args.[1..]
         handler command args
-    | [] -> 
+    | [] ->
+        trace "expected a command"
         parser.Usage("available commands:") |> trace
-    | _ -> failwith "expected only one command"
+        exit 1
+    | _ -> 
+        trace "expected a command"
+        parser.Usage("available commands:") |> trace
+        exit 1
 with
 | exn when not (exn :? System.NullReferenceException) -> 
-    Environment.ExitCode <- 1
     traceErrorfn "SourceLink failed with:%s  %s" Environment.NewLine exn.Message
-
     if verbose then
         traceErrorfn "StackTrace:%s  %s" Environment.NewLine exn.StackTrace
+    exit 1

@@ -1,14 +1,21 @@
+source https://ci.appveyor.com/nuget/ctaggart-argu
 source https://www.nuget.org/api/v2
-source https://ci.appveyor.com/nuget/ctaggart-sourcelink
+#source https://ci.appveyor.com/nuget/ctaggart-sourcelink
 framework: >= net45
 
-nuget FAKE
-nuget SourceLink.Fake 1.1.0-b279
-nuget FSharp.Formatting
-nuget NuGet.CommandLine
-nuget RazorEngine
+nuget Argu
 nuget FSharp.Core
 nuget LibGit2Sharp
 nuget Mono.Cecil
 nuget System.Threading.Tasks.Dataflow
-nuget Argu
+
+nuget FAKE
+nuget SourceLink.Fake 1.1.0
+nuget FSharp.Formatting
+nuget NuGet.CommandLine
+nuget RazorEngine
+
+nuget FsUnit.xUnit
+nuget xunit
+nuget xunit.runner.console
+nuget xunit.runner.visualstudio version_in_path: true

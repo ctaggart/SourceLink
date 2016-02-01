@@ -46,16 +46,11 @@
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" Condition="Exists('AssemblyInfo.fs')" />
-    <Compile Include="Proj.fs" />
     <Compile Include="Task.fs" />
-    <Compile Include="SourceCheck.fs" />
-    <Compile Include="SourceLink.fs" />
-    <None Include="App.config" />
+    <Compile Include="SourceLinkTask.fs" />
     <None Include="Build.nuspec">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -65,11 +60,6 @@
     <None Include="paket.references" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Git\Git.fsproj">
-      <Name>Git</Name>
-      <Project>{726a13b9-f319-40fa-aef6-fe629cfdaf6a}</Project>
-      <Private>True</Private>
-    </ProjectReference>
     <ProjectReference Include="..\SourceLink\SourceLink.fsproj">
       <Name>SourceLink</Name>
       <Project>{aaf1b8d7-791e-40f1-a278-9a16d9667866}</Project>
@@ -77,15 +67,17 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\FSharp\Microsoft.FSharp.Targets" />
-  <PropertyGroup>
-    <PostBuildEvent>
-if not exist "$(TargetDir)NativeBinaries" md "$(TargetDir)NativeBinaries"
-if not exist "$(TargetDir)NativeBinaries\x86" md "$(TargetDir)NativeBinaries\x86"
-xcopy /s /y /d "$(SolutionDir)packages\LibGit2Sharp\lib\net40\NativeBinaries\x86\*.*" "$(TargetDir)NativeBinaries\x86"
-if not exist "$(TargetDir)NativeBinaries\amd64" md "$(TargetDir)NativeBinaries\amd64"
-xcopy /s /y /d "$(SolutionDir)packages\LibGit2Sharp\lib\net40\NativeBinaries\amd64\*.*" "$(TargetDir)NativeBinaries\amd64"
-    </PostBuildEvent>
-  </PropertyGroup>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.1' Or $(TargetFrameworkVersion) == 'v4.5.2' Or $(TargetFrameworkVersion) == 'v4.5.3' Or $(TargetFrameworkVersion) == 'v4.6' Or $(TargetFrameworkVersion) == 'v4.6.1')">
+      <ItemGroup>
+        <Reference Include="Argu">
+          <HintPath>..\packages\Argu\lib\net40\Argu.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.1' Or $(TargetFrameworkVersion) == 'v4.5.2' Or $(TargetFrameworkVersion) == 'v4.5.3' Or $(TargetFrameworkVersion) == 'v4.6' Or $(TargetFrameworkVersion) == 'v4.6.1')">
       <ItemGroup>

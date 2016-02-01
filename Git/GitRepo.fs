@@ -84,9 +84,16 @@ type GitRepo(dir) =
         with
         | :? RepositoryNotFoundException -> false
 
-    static member Find file = Path.GetDirectoryNames file |> Seq.tryFind GitRepo.IsRepo
+    static member TryFind file =
+        Path.GetDirectoryNames file |> Seq.tryFind GitRepo.IsRepo
 
-    member x.Paths (files:seq<string>) = files |> Seq.map (fun f -> f, f.Substring(dir.Length+1).Replace('\\','/'))
+    static member Find file =
+        match GitRepo.TryFind file with
+        | Some repo -> repo
+        | None -> sprintf "git repository not found for %s" file |> RepositoryNotFoundException |> raise
+
+    member x.Paths (files:seq<string>) =
+        files |> Seq.map (fun f -> f, f.Substring(dir.Length+1).Replace('\\','/'))
 
     member x.Dispose() =
         use repo = repo

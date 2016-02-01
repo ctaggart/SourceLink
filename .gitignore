@@ -20,3 +20,4 @@ AssemblyInfo.cs
 Tfs/lib/*.dll
 lib/*.dll
 .vs/
+packages.config

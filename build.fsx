@@ -8,6 +8,7 @@ open Fake
 open Fake.AssemblyInfoFile
 open SourceLink
 open Fake.AppVeyor
+open Fake.Testing
 open System.Collections.Generic
 open Fake.Git
 
@@ -65,6 +66,16 @@ Target "AssemblyInfo" <| fun _ ->
 Target "Build" <| fun _ ->
     !! "SourceLink.sln" |> MSBuildRelease "" "Rebuild" |> ignore
 
+Target "UnitTest" <| fun _ ->
+    CreateDir "bin"
+    xUnit2 (fun p -> 
+        { p with
+//            IncludeTraits = ["Kind", "Unit"]
+            XmlOutputPath = Some @"bin\UnitTest.xml"
+            Parallel = ParallelMode.All
+        })
+        [   @"UnitTest\bin\Release\SourceLink.UnitTest.dll" ]
+
 Target "SourceLink" <| fun _ ->
     let sourceIndex proj pdb =
         let p = VsProj.LoadRelease proj
@@ -91,7 +102,8 @@ let pSourceLink (p: NuGetParams) =
         DependenciesByFramework =
             [{ 
                 FrameworkVersion = "net45"
-                Dependencies = [    "FSharp.Core", GetPackageVersion "./packages/" "FSharp.Core" ] 
+                Dependencies = [    "Argu", GetPackageVersion "./packages/" "Argu" 
+                                    "FSharp.Core", GetPackageVersion "./packages/" "FSharp.Core" ]
             }]
         AccessKey = nugetApiKey
     }
@@ -241,6 +253,7 @@ let (==>) a b = a =?> (b, isAppVeyorBuild)
 "BuildVersion"
 ==> "AssemblyInfo"
 ==> "Build"
+==> "UnitTest"
 ==> "SourceLink"
 ==> "NuGet"
 ==> "Publish"

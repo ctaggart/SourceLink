@@ -50,7 +50,6 @@ xcopy /s /y /d "$(SolutionDir)packages\LibGit2Sharp\lib\net40\NativeBinaries\x86
     <Compile Include="Checksums.fs" />
     <Compile Include="RootAndInfo.fs" />
     <Compile Include="Program.fs" />
-    <None Include="BuildInfo.fsx" />
     <None Include="paket.references" />
     <Content Include="App.config" />
   </ItemGroup>

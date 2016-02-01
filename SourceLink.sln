@@ -48,6 +48,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Exe", "Exe\Exe.fsproj", "{2
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Build", "Build\Build.fsproj", "{41AE9ACC-1164-4886-8C85-EEFBCB7EA5E0}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "UnitTest", "UnitTest\UnitTest.fsproj", "{912142A3-A53A-4855-84AD-E89684556CE0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -90,6 +92,10 @@ Global
 		{41AE9ACC-1164-4886-8C85-EEFBCB7EA5E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{41AE9ACC-1164-4886-8C85-EEFBCB7EA5E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{41AE9ACC-1164-4886-8C85-EEFBCB7EA5E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{912142A3-A53A-4855-84AD-E89684556CE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{912142A3-A53A-4855-84AD-E89684556CE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{912142A3-A53A-4855-84AD-E89684556CE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{912142A3-A53A-4855-84AD-E89684556CE0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
