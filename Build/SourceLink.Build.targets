@@ -3,11 +3,11 @@
   <UsingTask TaskName="SourceLink.SourceLinkTask" AssemblyFile="SourceLink.Build.dll" />
 
   <PropertyGroup>
-    <CompileDependsOn>SourceLink;$(CompileDependsOn)</CompileDependsOn>
+    <BuildDependsOn>$(BuildDependsOn);SourceLink</BuildDependsOn>
   </PropertyGroup>
-  
+
   <Target Name="SourceLink" Condition="$(SourceLink) != ''">
-    <SourceLink.SourceLinkTask Url="$(SourceLinkUrl)" ProjectDirectory="$(MSBuildProjectDirectory)" Sources="@(Compile)" TargetPath="$(TargetPath)" />
+    <SourceLink.SourceLinkTask Url="$(SourceLinkUrl)" ProjectDirectory="$(MSBuildProjectDirectory)" Sources="@(Compile)" TargetPath="$(TargetPath)" SkipPdbstr="$(SourceLinkSkipPdbstr)"/>
   </Target>
 
 </Project>
