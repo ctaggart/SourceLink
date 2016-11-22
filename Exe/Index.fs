@@ -86,7 +86,7 @@ let run (proj:string option) (projProps:(string * string) list)
                     let error = sprintf "%d files do not have matching checksums in Git" gc.Unmatched.Count
                     traceError error
                     traceErrorfn "make sure the source code is committed and line endings match"
-                    traceErrorfn "http://ctaggart.github.io/SourceLink/how-it-works.html"
+                    traceErrorfn "https://ctaggart.github.io/SourceLink/how-it-works.html"
                     for um in gc.Unmatched do
                         traceErrorfn "  git %s, file %s %s" um.ChecksumInGit um.ChecksumOfFile um.File
                     failwith error
@@ -103,7 +103,7 @@ let run (proj:string option) (projProps:(string * string) list)
                 let error = sprintf "%d files do not have matching checksums in Git" gc.Unmatched.Count
                 traceWarn error
                 traceWarnfn "make sure the source code is committed and line endings match"
-                traceWarnfn "http://ctaggart.github.io/SourceLink/how-it-works.html"
+                traceWarnfn "https://ctaggart.github.io/SourceLink/how-it-works.html"
                 for um in gc.Unmatched do
                     traceWarnfn "  git %s, file %s %s" um.ChecksumInGit um.ChecksumOfFile um.File
         

@@ -6,10 +6,10 @@
     <authors>Cameron Taggart</authors>
     <!--<summary></summary>-->
     <description>Git functionality wrapping LibGit2Sharp</description>
-    <projectUrl>http://ctaggart.github.io/SourceLink/</projectUrl>
+    <projectUrl>https://ctaggart.github.io/SourceLink/</projectUrl>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <iconUrl>http://ctaggart.github.io/SourceLink/SourceLink128.jpg</iconUrl>
+    <iconUrl>https://ctaggart.github.io/SourceLink/SourceLink128.jpg</iconUrl>
     @dependencies@
     <tags>sourcelink git</tags>
   </metadata>
