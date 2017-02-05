@@ -1,6 +1,5 @@
 ### 2.0.0 _ under construction
-  * [#112](https://github.com/ctaggart/SourceLink/issues/112) repurpose SourceLink.Build for portable pdb files
-  * [#106](https://github.com/ctaggart/SourceLink/issues/106) unable to resolve correct version of System.Threading.Tasks.Dataflow
+  * [#121](https://github.com/ctaggart/SourceLink/issues/121) support for .NET Core and Portable PDB files
 
 ### 1.1.0 _ 2015-08
   * [#102](https://github.com/ctaggart/SourceLink/issues/102) support Visual Studio 2015 C# pdb files
