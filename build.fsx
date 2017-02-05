@@ -46,22 +46,18 @@ Target "BuildVersion" <| fun _ ->
     if result <> 0 then failwithf "Error setting BuildVersion"
 
 Target "AssemblyInfo" <| fun _ ->
-    let iv = Text.StringBuilder() // json
-    iv.Appendf "{\\\"buildVersion\\\":\\\"%s\\\"" buildVersion
-    iv.Appendf ",\\\"buildDate\\\":\\\"%s\\\"" (buildDate.ToString "yyyy'-'MM'-'dd'T'HH':'mm':'sszzz")
-    if isAppVeyorBuild then
-        iv.Appendf ",\\\"gitCommit\\\":\\\"%s\\\"" AppVeyor.AppVeyorEnvironment.RepoCommit
-        iv.Appendf ",\\\"gitBranch\\\":\\\"%s\\\"" AppVeyor.AppVeyorEnvironment.RepoBranch
-    iv.Appendf "}"
-    let common = [ 
-        Attribute.Version versionAssembly 
-        Attribute.InformationalVersion iv.String ]
-    common |> CreateFSharpAssemblyInfo "SourceLink/AssemblyInfo.fs"
-    common |> CreateFSharpAssemblyInfo "Build/AssemblyInfo.fs"
-    common |> CreateFSharpAssemblyInfo "Git/AssemblyInfo.fs"
-    common |> CreateFSharpAssemblyInfo "SymbolStore/AssemblyInfo.fs"
-    common |> CreateCSharpAssemblyInfo "CorSym/Properties/AssemblyInfo.cs"
-    common |> CreateFSharpAssemblyInfo "Exe/AssemblyInfo.fs"
+    // let iv = Text.StringBuilder() // json
+    // iv.Appendf "{\\\"buildVersion\\\":\\\"%s\\\"" buildVersion
+    // iv.Appendf ",\\\"buildDate\\\":\\\"%s\\\"" (buildDate.ToString "yyyy'-'MM'-'dd'T'HH':'mm':'sszzz")
+    // if isAppVeyorBuild then
+    //     iv.Appendf ",\\\"gitCommit\\\":\\\"%s\\\"" AppVeyor.AppVeyorEnvironment.RepoCommit
+    //     iv.Appendf ",\\\"gitBranch\\\":\\\"%s\\\"" AppVeyor.AppVeyorEnvironment.RepoBranch
+    // iv.Appendf "}"
+    // let common = [ 
+    //     Attribute.Version versionAssembly 
+    //     Attribute.InformationalVersion iv.String ]
+    // common |> CreateFSharpAssemblyInfo "SourceLink/AssemblyInfo.fs"
+    () |> ignore
 
 Target "Build" <| fun _ ->
     !! "SourceLink.sln" |> MSBuildRelease "" "Rebuild" |> ignore
@@ -76,156 +72,28 @@ Target "UnitTest" <| fun _ ->
         })
         [   @"UnitTest\bin\Release\SourceLink.UnitTest.dll" ]
 
-Target "SourceLink" <| fun _ ->
-    let sourceIndex proj pdb =
-        let p = VsProj.LoadRelease proj
-        let pdbToIndex = if Option.isSome pdb then pdb.Value else p.OutputFilePdb
-        let url = "https://raw.githubusercontent.com/ctaggart/SourceLink/{0}/%var2%"
-        SourceLink.Index p.Compiles pdbToIndex __SOURCE_DIRECTORY__ url
-    sourceIndex "SourceLink/SourceLink.fsproj" None
-    sourceIndex "Git/Git.fsproj" None
-    sourceIndex "SymbolStore/SymbolStore.fsproj" None
-    sourceIndex "CorSym/CorSym.csproj" (Some "SymbolStore/bin/Release/SourceLink.SymbolStore.CorSym.pdb")
-    sourceIndex "Exe/Exe.fsproj" None
-
 let bin = "bin"
 let nugetApiKey = environVarOrDefault "NuGetApiKey" ""
 let chocolateyApiKey = environVarOrDefault "ChocolateyApiKey" ""
 let githubToken = environVarOrDefault "GitHubToken" ""
 
-let pSourceLink (p: NuGetParams) =
-    { p with
-        Project = "SourceLink.Core"
-        Version = buildVersion
-        WorkingDir = "SourceLink/bin/Release"
-        OutputPath = bin
-        DependenciesByFramework =
-            [{ 
-                FrameworkVersion = "net45"
-                Dependencies = [    "Argu", GetPackageVersion "./packages/" "Argu" 
-                                    "FSharp.Core", GetPackageVersion "./packages/" "FSharp.Core" ]
-            }]
-        AccessKey = nugetApiKey
-    }
-
-let pBuild (p: NuGetParams) =
-    { p with
-        Project = "SourceLink.Build"
-        Version = buildVersion
-        WorkingDir = "Build/bin/Release"
-        OutputPath = bin
-        AccessKey = nugetApiKey
-    }
-
-let pFake (p: NuGetParams) =
-    { p with
-        Project = "SourceLink.Fake"
-        Version = buildVersion
-        WorkingDir = "Fake"
-        OutputPath = bin
-        AccessKey = nugetApiKey
-    }
-
-let pGit (p: NuGetParams) =
-    { p with
-        Project = "SourceLink.Git"
-        Version = buildVersion
-        WorkingDir = "Git/bin/Release"
-        OutputPath = bin
-        DependenciesByFramework =
-            [{ 
-                FrameworkVersion = "net45"
-                Dependencies = [    "LibGit2Sharp", GetPackageVersion "./packages/" "LibGit2Sharp"
-                                    "FSharp.Core", GetPackageVersion "./packages/" "FSharp.Core" ]
-            }]
-        AccessKey = nugetApiKey
-    }
-
-let pSymbolStore (p: NuGetParams) =
-    { p with
-        Project = "SourceLink.SymbolStore"
-        Version = buildVersion
-        WorkingDir = "SymbolStore/bin/Release"
-        OutputPath = bin
-        DependenciesByFramework =
-            [{ 
-                FrameworkVersion = "net45"
-                Dependencies = [ "FSharp.Core", GetPackageVersion "./packages/" "FSharp.Core" ] 
-            }]
-        AccessKey = nugetApiKey
-    }
-
-let pExe (p: NuGetParams) =
-    { p with
-        Project = "SourceLink"
-        Version = buildVersion
-        WorkingDir = "Exe/bin/Release"
-        OutputPath = bin
-        AccessKey = nugetApiKey
-    }
-
-let pExeChocolatey (p: NuGetParams) =
-    { pExe p with
-        PublishUrl = "https://chocolatey.org/"
-        AccessKey = chocolateyApiKey
-    }
-
 Target "NuGet" <| fun _ ->
     Directory.CreateDirectory bin |> ignore
-    NuGet pSourceLink "SourceLink/SourceLink.nuspec"
-    NuGet pFake "Fake/Fake.nuspec"
-    NuGet pBuild "Build/Build.nuspec"
-    NuGet pGit "Git/Git.nuspec"
-    NuGet pSymbolStore "SymbolStore/SymbolStore.nuspec"
-    NuGet pExe "Exe/Exe.nuspec"
+    // NuGet pSourceLink "SourceLink/SourceLink.nuspec"
 
 Target "Publish" <| fun _ ->
-    NuGetPublish pSourceLink 
-    NuGetPublish pFake
-    NuGetPublish pGit
-    NuGetPublish pSymbolStore
-    NuGetPublish pExe
-    NuGetPublish pExeChocolatey
-
-//Target "GenerateReferenceDocs" <| fun _ ->
-//    if not <| executeFSIWithArgs "docs/tools" "generate.fsx" ["--define:RELEASE"; "--define:REFERENCE"] [] then
-//      failwith "generating reference documentation failed"
-
-let generateDocs fail =
-    if executeFSIWithArgs "docs/tools" "generate.fsx" ["--define:RELEASE"; "--define:HELP"] [] then
-        traceImportant "Help generated"
-    else
-        if fail then
-            failwith "generating help documentation failed"
-        else
-            traceImportant "generating help documentation failed"
+    // NuGetPublish pSourceLink 
+    () |> ignore
 
 Target "Docs" <| fun _ ->
     DeleteFile "docs/content/release-notes.md"    
     CopyFile "docs/content/" "RELEASE_NOTES.md"
     Rename "docs/content/release-notes.md" "docs/content/RELEASE_NOTES.md"
-
-//    DeleteFile "docs/content/license.md"
-//    CopyFile "docs/content/" "LICENSE.txt"
-//    Rename "docs/content/license.md" "docs/content/LICENSE.txt"
-
-    generateDocs true
+    if executeFSIWithArgs "docs/tools" "generate.fsx" ["--define:RELEASE"; "--define:HELP"] [] then
+        traceImportant "Help generated"
+    else
+        failwith "generating help documentation failed"
     CopyFile "docs/output" "SourceLink128.jpg" // icon used by all NuGet packages
-
-Target "WatchDocs" <| fun _ ->
-    use watcher = new FileSystemWatcher(DirectoryInfo("docs/content").FullName,"*.*")
-    watcher.EnableRaisingEvents <- true
-    watcher.Changed.Add(fun e -> generateDocs false)
-    watcher.Created.Add(fun e -> generateDocs false)
-    watcher.Renamed.Add(fun e -> generateDocs false)
-    watcher.Deleted.Add(fun e -> generateDocs false)
-
-    traceImportant "Waiting for help edits. Press any key to stop."
-
-    System.Console.ReadKey() |> ignore
-
-    watcher.EnableRaisingEvents <- false
-    watcher.Dispose()
 
 Target "PushDocs" <| fun _ ->
     CleanDir "gh-pages"
@@ -254,29 +122,7 @@ let (==>) a b = a =?> (b, isAppVeyorBuild)
 ==> "AssemblyInfo"
 ==> "Build"
 ==> "UnitTest"
-==> "SourceLink"
 ==> "NuGet"
 ==> "Publish"
 
-let runTargets() =
-    // when on AppVeyor, allow targets to be specified as #hashtags
-    if isAppVeyorBuild then
-        if hasRepoVersionTag then
-            run "Publish"
-        else
-            let targets =  HashSet(getAllTargetsNames(), StringComparer.OrdinalIgnoreCase)
-            let cm = AppVeyorEnvironment.RepoCommitMessage
-            let rx = Text.RegularExpressions.Regex @"\B#([a-zA-Z]\w+)"
-            let hashtags = seq {
-                for m in rx.Matches cm do
-                    yield m.Groups.[1].Value } |> List.ofSeq
-            if hashtags.Length = 0 then
-                RunTargetOrDefault "NuGet"
-            else
-                for ht in hashtags do
-                    if targets.Contains ht then
-                        run ht
-    else
-        RunTargetOrDefault "Help"
-
-runTargets()
+RunTargetOrDefault "Help"
