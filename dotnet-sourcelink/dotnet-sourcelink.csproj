@@ -21,7 +21,7 @@
   </ItemGroup>
   <!--runtimeconfig.json will be included by default after RC3-->
   <ItemGroup>
-    <Content Include="$(OutputPath)\*.runtimeconfig.json">
+    <Content Include="dotnet-sourcelink.runtimeconfig.json">
       <Pack>true</Pack>
       <PackagePath>lib\$(TargetFramework)</PackagePath>
     </Content>
