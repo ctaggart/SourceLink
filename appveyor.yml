@@ -4,6 +4,7 @@ build_script:
   - ps: |
       .\appveyor.ps1
       if ($lastexitcode -ne 0){ exit $lastexitcode }
+  - bash build-rename.sh
 test: off
 artifacts:
-  - path: bin\*.symbols.nupkg
+  - path: bin\*.nupkg
