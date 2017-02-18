@@ -13,7 +13,7 @@ if ($env:appveyor){
         $version = $env:appveyor_repo_tag_name
         $versionSuffix = ''
     }
-    Update-AppveyorBuild -Version $version
+    Update-AppveyorBuild -Version "$version$versionSuffix"
 }
 
 $pack = "pack", "-c", "release", "--include-symbols", "-o", "../bin", "/p:Version=$version$versionSuffix"
