@@ -8,7 +8,7 @@ function isVersionTag($tag){
 }
 
 if ($env:appveyor){
-    $versionSuffix = 'b' + [int]::Parse($env:appveyor_build_number).ToString('000')
+    $versionSuffix = '-b' + [int]::Parse($env:appveyor_build_number).ToString('000')
     if ($env:appveyor_repo_tag -eq 'true' -and (isVersionTag($env:appveyor_repo_tag_name))){
         $version = $env:appveyor_repo_tag_name
         $versionSuffix = ''
