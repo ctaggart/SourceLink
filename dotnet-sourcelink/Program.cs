@@ -1,9 +1,11 @@
 ﻿using Microsoft.Extensions.CommandLineUtils;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection.Metadata;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace SourceLink {
     class Program
@@ -79,6 +81,51 @@ namespace SourceLink {
                 });
             });
 
+            app.Command("print-urls", command =>
+            {
+                command.Description = "print the urls for each document too based on the source link json";
+                var pdbOption = command.Option("-p|--pdb <PDB>", "set path to Porable PDB", CommandOptionType.SingleValue);
+                command.HelpOption("-h|--help");
+
+                command.OnExecute(() =>
+                {
+                    if (!pdbOption.HasValue())
+                    {
+                        command.ShowHelp();
+                        return 2;
+                    }
+                    var path = pdbOption.Value();
+                    if (!File.Exists(path))
+                    {
+                        Console.WriteLine("PDB file does not exist");
+                        return 3;
+                    }
+
+                    var missing = new List<Document>();
+                    foreach (var doc in GetDocumentsWithUrls(path))
+                    {
+                        if(doc.Url != null)
+                        {
+                            Console.WriteLine("{0} {1} {2} {3}", toHex(doc.Hash), HashAlgorithmGuids.GetName(doc.HashAlgorithm), LanguageGuids.GetName(doc.Language), doc.Name);
+                            Console.WriteLine(doc.Url);
+                        } else {
+                            missing.Add(doc);
+                        }
+                    }
+                    if(missing.Count > 0)
+                    {
+                        Console.WriteLine("" + missing.Count + " Documents with URLs:");
+                        foreach(var doc in missing)
+                        {
+                            Console.WriteLine("{0} {1} {2} {3}", toHex(doc.Hash), HashAlgorithmGuids.GetName(doc.HashAlgorithm), LanguageGuids.GetName(doc.Language), doc.Name);
+                        }
+                        return 4;
+                    }
+
+                    return 0;
+                });
+            });
+
             if (args.Length == 0)
             {
                 app.ShowHelp();
@@ -125,13 +172,47 @@ namespace SourceLink {
                         Hash = mr.GetBlobBytes(d.Hash),
                     };
                 }
-
             }
         }
 
         static string toHex(byte[] bytes)
         {
             return BitConverter.ToString(bytes).Replace("-", "").ToLowerInvariant();
+        }
+
+        static IEnumerable<Document> GetDocumentsWithUrls(string pdb)
+        {
+            var bytes = GetSourceLinkBytes(pdb);
+            var text = Encoding.UTF8.GetString(bytes);
+            var json = JsonConvert.DeserializeObject<SourceLinkJson>(text);
+            foreach (var doc in GetDocuments(pdb))
+            {
+                doc.Url = GetUrl(doc.Name, json);
+                yield return doc;
+            }
+        }
+
+        static string GetUrl(string file, SourceLinkJson json)
+        {
+            foreach (var key in json.documents.Keys)
+            {
+                if (key.Contains("*"))
+                {
+                    var pattern = Regex.Escape(key).Replace(@"\*", "(.+)");
+                    var regex = new Regex(pattern);
+                    var m = regex.Match(file);
+                    if (!m.Success) continue;
+                    var url = json.documents[key];
+                    var path = m.Groups[1].Value.Replace(@"\", "/");
+                    return url.Replace("*", path);
+                }
+                else
+                {
+                    if (!key.Equals(file, StringComparison.Ordinal)) continue;
+                    return json.documents[key];
+                }
+            }
+            return null;
         }
 
     }
