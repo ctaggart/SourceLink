@@ -21,3 +21,4 @@ Tfs/lib/*.dll
 lib/*.dll
 .vs/
 packages.config
+.vscode/launch.json

@@ -3,20 +3,19 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp1.0</TargetFramework>
     <PackageType>DotnetCliTool</PackageType>
-
+    
     <Authors>Cameron Taggart</Authors>
     <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
     <PackageIconUrl>https://ctaggart.github.io/SourceLink/SourceLink128.jpg</PackageIconUrl>
     <PackageProjectUrl>https://ctaggart.github.io/SourceLink/</PackageProjectUrl>
     <PackageTags>sourcelink pdb symbols git sourceindexing debugging sourceserver build</PackageTags>
-    <Product></Product>
     <Description>
       SourceLink: Source Code On Demand
       Source Link your Portable PDB files to allow source code to be downloaded on demand from the source code repository host
     </Description>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="LibGit2Sharp" Version="0.24.7-g9fca61fdda" />
     <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.0" />
-    <PackageReference Include="System.Reflection.Metadata" Version="1.4.2" />
   </ItemGroup>
 </Project>

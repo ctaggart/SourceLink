@@ -12,7 +12,7 @@ class Program
         {
             Name = "dotnet sourcelink",
             FullName = "SourceLink: Source Code On Demand",
-            Description = "Source Link your Portable PDB files to allow source code to be downloaded on demand from the source code repository host."
+            Description = "Source Link your Portable PDB files to allow source code to be downloaded on demand from the source code repository host"
         };
         app.HelpOption("-h|--help");
 

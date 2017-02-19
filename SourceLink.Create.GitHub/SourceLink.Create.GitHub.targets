@@ -1,0 +1,22 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <UsingTask TaskName="SourceLink.Create.GitHub.CreateTask" AssemblyFile="SourceLink.Create.GitHub.dll" />
+
+  <PropertyGroup>
+    <!-- enable only in CI environments by default -->
+    <SourceLinkCreate Condition="'$(SourceLinkCreate)' == ''">$(CI)</SourceLinkCreate>
+    <CoreBuildDependsOn Condition="'$(SourceLinkCreate)' == 'true'">
+      SourceLinkCreate;$(CoreBuildDependsOn)</CoreBuildDependsOn>
+    <SourceLinkRepo Condition="'$(SourceLinkRepo)' == ''">$(MSBuildProjectDirectory)</SourceLinkRepo>
+    <SourceLinkFile Condition="'$(SourceLinkFile)' == ''">$(SourceLink)</SourceLinkFile>
+    <SourceLinkFile Condition="'$(SourceLinkFile)' == ''">$(BaseIntermediateOutputPath)sourcelink.json</SourceLinkFile>
+  </PropertyGroup>
+
+  <Target Name="SourceLinkCreate" BeforeTargets="CoreCompile">
+    <SourceLink.Create.GitHub.CreateTask Url="$(SourceLinkUrl)" Repo="$(SourceLinkRepo)" Sources="@(Compile)" File="$(SourceLinkFile)">
+      <Output TaskParameter="SourceLink" PropertyName="SourceLink" />
+    </SourceLink.Create.GitHub.CreateTask>
+    <Message Text="SourceLink = $(SourceLink)" Importance="high" />
+  </Target>
+
+</Project>
