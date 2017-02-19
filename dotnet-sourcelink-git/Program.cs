@@ -1,8 +1,5 @@
 ﻿using Microsoft.Extensions.CommandLineUtils;
 using System;
-using System.IO;
-using System.Reflection.Metadata;
-using System.Text;
 using LibGit2Sharp;
 
 class Program

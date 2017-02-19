@@ -9,6 +9,8 @@ namespace SourceLink
         public Guid HashAlgorithm { get; set; }
         public byte[] Hash { get; set; }
         public Guid Language { get; set; }
+
+        public string Url { get; set; }
     }
 
     public static class HashAlgorithmGuids
