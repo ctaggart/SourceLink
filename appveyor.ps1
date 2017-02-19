@@ -1,6 +1,6 @@
 # the version under development, update after a release
 $version = '2.0.0'
-$versionSuffix = '-a012' # manually incremented for local builds
+$versionSuffix = '-a027' # manually incremented for local builds
 
 function isVersionTag($tag){
     $v = New-Object Version
@@ -19,6 +19,11 @@ if ($env:appveyor){
 $pack = "pack", "-c", "release", "--include-symbols", "-o", "../bin", "/p:Version=$version$versionSuffix"
 
 Push-Location .\dotnet-sourcelink
+dotnet restore
+dotnet $pack
+Pop-Location
+
+Push-Location .\dotnet-sourcelink-git
 dotnet restore
 dotnet $pack
 Pop-Location

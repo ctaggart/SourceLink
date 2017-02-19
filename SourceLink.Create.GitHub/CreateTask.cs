@@ -1,7 +1,6 @@
-﻿using System;
-using LibGit2Sharp;
-using Microsoft.Build.Framework;
+﻿using Microsoft.Build.Framework;
 using MSBuildTask = Microsoft.Build.Utilities.Task;
+using System.Diagnostics;
 
 namespace SourceLink.Create.GitHub
 {
@@ -20,13 +19,29 @@ namespace SourceLink.Create.GitHub
         [Output]
         public string SourceLink { get; set; }
 
+        DataReceivedEventHandler LogMessageHander(MessageImportance importance)
+        {
+            return (s, e) => {
+                if (e.Data != null) // end
+                {
+                    Log.LogMessage(importance, e.Data);
+                }
+            };
+        }
+
         public override bool Execute()
         {
-            //Log.LogError
-            //Log.LogMessage
-            //Log.LogWarning
-            Log.LogWarning("File is " + File);
-            //File = "other file"
+
+            // TODO get the url from the repo if not set
+
+            bool captureOutput = true; // TODO can we get the verbosity level?
+            var exit = Process.Run("dotnet", "sourcelink-git repo",
+                outputHandler: captureOutput ? LogMessageHander(MessageImportance.Normal) : null,
+                errorHandler: captureOutput ? LogMessageHander(MessageImportance.Normal) : null
+            );
+            Log.LogMessage(MessageImportance.High, "ExitCode: " + exit);
+
+            // TODO tell dotnet sourcelink-git to create
 
             using (var sw = System.IO.File.CreateText(File))
             {

@@ -1,13 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   
   <PropertyGroup>
-    <TargetFramework>netstandard1.6</TargetFramework>
+    <TargetFramework>netstandard1.3</TargetFramework>
     <!-- https://github.com/NuGet/Home/wiki/Adding-nuget-pack-as-a-msbuild-target -->
     <IncludeBuildOutput>false</IncludeBuildOutput>
+
+    <Authors>Cameron Taggart</Authors>
+    <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
+    <PackageIconUrl>https://ctaggart.github.io/SourceLink/SourceLink128.jpg</PackageIconUrl>
+    <PackageProjectUrl>https://ctaggart.github.io/SourceLink/</PackageProjectUrl>
+    <PackageTags>sourcelink pdb symbols git sourceindexing debugging sourceserver build</PackageTags>
+    <Description>
+      SourceLink: Source Code On Demand
+      Source Link your Portable PDB files to allow source code to be downloaded on demand from the source code repository host
+    </Description>
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="LibGit2Sharp" Version="0.24.7-g9fca61fdda" />
     <PackageReference Include="Microsoft.Build.Utilities.Core" Version="14.3.0" />
   </ItemGroup>
   
