@@ -11,13 +11,15 @@ namespace SourceLink
         public Guid Language { get; set; }
 
         public string Url { get; set; }
+        public byte[] UrlHash { get; set; }
+        public string Error { get; set; }
     }
 
     public static class HashAlgorithmGuids
     {
-        static readonly Guid md5 = new Guid("406ea660-64cf-4c82-b6f0-42d48172a799");
-        static readonly Guid sha1 = new Guid("ff1816ec-aa5e-4d10-87f7-6f4963833460");
-        static readonly Guid sha256 = new Guid("8829d00f-11b8-4213-878b-770e8597ac16");
+        public static readonly Guid md5 = new Guid("406ea660-64cf-4c82-b6f0-42d48172a799");
+        public static readonly Guid sha1 = new Guid("ff1816ec-aa5e-4d10-87f7-6f4963833460");
+        public static readonly Guid sha256 = new Guid("8829d00f-11b8-4213-878b-770e8597ac16");
 
         public static string GetName(Guid guid)
         {
@@ -32,9 +34,9 @@ namespace SourceLink
 
     public static class LanguageGuids
     {
-        static readonly Guid csharp = new Guid("3f5162f8-07c6-11d3-9053-00c04fa302a1");
-        static readonly Guid fsharp = new Guid("ab4f38c9-b6e6-43ba-be3b-58080b2ccce3");
-        static readonly Guid basic = new Guid("3a12d0b8-c26c-11d0-b442-00a0244a1dd2");
+        public static readonly Guid csharp = new Guid("3f5162f8-07c6-11d3-9053-00c04fa302a1");
+        public static readonly Guid fsharp = new Guid("ab4f38c9-b6e6-43ba-be3b-58080b2ccce3");
+        public static readonly Guid basic = new Guid("3a12d0b8-c26c-11d0-b442-00a0244a1dd2");
 
         public static string GetName(Guid guid)
         {
