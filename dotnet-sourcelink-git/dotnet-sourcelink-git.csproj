@@ -15,7 +15,7 @@
     </Description>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="LibGit2Sharp" Version="0.24.7-g9fca61fdda" />
+    <PackageReference Include="LibGit2Sharp.Portable" Version="0.24.10" />
     <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.0" />
   </ItemGroup>
 </Project>
