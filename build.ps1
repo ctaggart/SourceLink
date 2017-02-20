@@ -35,6 +35,7 @@ Pop-Location
 
 # testing on local nuget feed
 if (-not $env:appveyor){
+    echo "not appveyor"
     bash .\build-rename.sh
     copy .\bin\*$version$versionSuffix.nupkg C:\dotnet\nupkg\
 }
