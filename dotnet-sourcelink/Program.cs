@@ -101,7 +101,7 @@ namespace SourceLink {
 
         static void PrintUrls(CommandLineApplication command)
         {
-            command.Description = "print the urls for each document too based on the source link json";
+            command.Description = "print the URLs for each document based on the Source Link JSON";
             var pdbOption = command.Option("-p|--pdb <PDB>", "set path to Porable PDB", CommandOptionType.SingleValue);
             command.HelpOption("-h|--help");
 
@@ -146,7 +146,7 @@ namespace SourceLink {
 
         static void TestUrls(CommandLineApplication command)
         {
-            command.Description = "print the urls for each document too based on the source link json";
+            command.Description = "test each URL and verify that the checksums from the Portable PDB match";
             var pdbOption = command.Option("-p|--pdb <PDB>", "set path to Porable PDB", CommandOptionType.SingleValue);
             command.HelpOption("-h|--help");
 
