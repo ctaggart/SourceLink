@@ -2,7 +2,7 @@
 
 namespace SourceLink
 {
-    class SourceLinkJson
+    public class SourceLinkJson
     {
         public IDictionary<string, string> documents { get; set; }
     }

@@ -12,9 +12,9 @@ using System.Net.Http.Headers;
 using System.Security.Cryptography;
 
 namespace SourceLink {
-    class Program
+    public class Program
     {
-        static int Main(string[] args)
+        public static int Main(string[] args)
         {
             var app = new CommandLineApplication()
             {
@@ -38,7 +38,7 @@ namespace SourceLink {
             return 0;
         }
 
-        static void PrintJson(CommandLineApplication command)
+        public static void PrintJson(CommandLineApplication command)
         {
             command.Description = "print the Source Link JSON stored in the Portable PDB file";
             var pdbOption = command.Option("-p|--pdb <PDB>", "set path to Porable PDB", CommandOptionType.SingleValue);
@@ -70,7 +70,7 @@ namespace SourceLink {
             });
         }
 
-        static void PrintDocuments(CommandLineApplication command)
+        public static void PrintDocuments(CommandLineApplication command)
         {
             command.Description = "print the documents stored in the Portable PDB file";
             var pdbOption = command.Option("-p|--pdb <PDB>", "set path to Porable PDB", CommandOptionType.SingleValue);
@@ -99,7 +99,7 @@ namespace SourceLink {
             });
         }
 
-        static void PrintUrls(CommandLineApplication command)
+        public static void PrintUrls(CommandLineApplication command)
         {
             command.Description = "print the URLs for each document based on the Source Link JSON";
             var pdbOption = command.Option("-p|--pdb <PDB>", "set path to Porable PDB", CommandOptionType.SingleValue);
@@ -144,7 +144,7 @@ namespace SourceLink {
             });
         }
 
-        static void TestUrls(CommandLineApplication command)
+        public static void TestUrls(CommandLineApplication command)
         {
             command.Description = "test each URL and verify that the checksums from the Portable PDB match";
             var pdbOption = command.Option("-p|--pdb <PDB>", "set path to Porable PDB", CommandOptionType.SingleValue);
@@ -206,9 +206,9 @@ namespace SourceLink {
             });
         }
 
-        static readonly Guid SourceLinkId = new Guid("CC110556-A091-4D38-9FEC-25AB9A351A6A");
+        public static readonly Guid SourceLinkId = new Guid("CC110556-A091-4D38-9FEC-25AB9A351A6A");
 
-        static byte[] GetSourceLinkBytes(string pdb)
+        public static byte[] GetSourceLinkBytes(string pdb)
         {
             using (var mrp = MetadataReaderProvider.FromPortablePdbStream(File.OpenRead(pdb)))
             {
@@ -227,7 +227,7 @@ namespace SourceLink {
             }
         }
 
-        static IEnumerable<Document> GetDocuments(string pdb)
+        public static IEnumerable<Document> GetDocuments(string pdb)
         {
             using (var mrp = MetadataReaderProvider.FromPortablePdbStream(File.OpenRead(pdb)))
             {
@@ -246,12 +246,12 @@ namespace SourceLink {
             }
         }
 
-        static string toHex(byte[] bytes)
+        public static string toHex(byte[] bytes)
         {
             return BitConverter.ToString(bytes).Replace("-", "").ToLowerInvariant();
         }
 
-        static IEnumerable<Document> GetDocumentsWithUrls(string pdb)
+        public static IEnumerable<Document> GetDocumentsWithUrls(string pdb)
         {
             var bytes = GetSourceLinkBytes(pdb);
             var text = Encoding.UTF8.GetString(bytes);
@@ -263,7 +263,7 @@ namespace SourceLink {
             }
         }
 
-        static string GetUrl(string file, SourceLinkJson json)
+        public static string GetUrl(string file, SourceLinkJson json)
         {
             foreach (var key in json.documents.Keys)
             {

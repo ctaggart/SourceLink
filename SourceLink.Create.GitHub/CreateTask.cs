@@ -1,6 +1,8 @@
 ﻿using Microsoft.Build.Framework;
 using MSBuildTask = Microsoft.Build.Utilities.Task;
 using System.Diagnostics;
+using System;
+using System.Text;
 
 namespace SourceLink.Create.GitHub
 {
@@ -31,25 +33,40 @@ namespace SourceLink.Create.GitHub
 
         public override bool Execute()
         {
-
-            // TODO get the url from the repo if not set
-
-            bool captureOutput = true; // TODO can we get the verbosity level?
-            var exit = Process.Run("dotnet", "sourcelink-git repo",
-                outputHandler: captureOutput ? LogMessageHander(MessageImportance.Normal) : null,
-                errorHandler: captureOutput ? LogMessageHander(MessageImportance.Normal) : null
-            );
-            Log.LogMessage(MessageImportance.High, "ExitCode: " + exit);
-
-            // TODO tell dotnet sourcelink-git to create
-
-            using (var sw = System.IO.File.CreateText(File))
+            var repo = Repo;
+            if (String.IsNullOrEmpty(repo))
             {
-                sw.WriteLine("{\"documents\": { \"C:\\\\Users\\\\camer\\\\cs\\\\sourcelink-test\\\\*\" : \"https://raw.githubusercontent.com/ctaggart/sourcelink-test/b5012a98bed12f6704cb942e92ba34ccdbd920d8/*\" }}");
+                var originCmd = Process.RunAndGetOutput("dotnet", "sourcelink-git origin");
+                if (originCmd.ExitCode != 0 || originCmd.OutputLines.Count != 1)
+                {
+                    Log.LogMessage(MessageImportance.High, "unable to get repository origin");
+                    return false;
+                }
+                repo = originCmd.OutputLines[0];
             }
 
+            var args = new StringBuilder();
+            args.Append("sourcelink-git create");
+
+            var exit = Process.Run("dotnet", args.ToString(),
+                outputHandler: LogMessageHander(MessageImportance.Normal),
+                errorHandler: LogMessageHander(MessageImportance.Normal)
+            );
+
             SourceLink = File;
-            return true;
+            return exit == 0;
+        }
+
+        public static string GetRepoUrl(string origin)
+        {
+            if (origin.StartsWith("git@"))
+            {
+                origin = origin.Replace(':', '/');
+                origin = origin.Replace("git@", "https://");
+            }
+            origin = origin.Replace(".git", "");
+            var uri = new Uri(origin);
+            return "https://raw.githubusercontent.com" + uri.LocalPath + "/{0}/*";
         }
 
     }

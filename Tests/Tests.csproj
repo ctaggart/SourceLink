@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>    
+    <TargetFramework>netcoreapp1.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.1.0-preview-000545-01" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0-preview-20170217-05" />
+    <PackageReference Include="xunit" Version="2.2.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\dotnet-sourcelink-git\dotnet-sourcelink-git.csproj" />
+    <ProjectReference Include="..\dotnet-sourcelink\dotnet-sourcelink.csproj" />
+    <ProjectReference Include="..\SourceLink.Create.GitHub\SourceLink.Create.GitHub.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- tagged by Test Explorer http://stackoverflow.com/a/22917902/23059 -->
+    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+  </ItemGroup>
+
+</Project>
