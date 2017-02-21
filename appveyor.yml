@@ -4,7 +4,6 @@ build_script:
   - ps: |
       .\build.ps1
       if ($lastexitcode -ne 0){ exit $lastexitcode }
-  - bash build-rename.sh
 test: off
 artifacts:
   - path: bin\*.nupkg

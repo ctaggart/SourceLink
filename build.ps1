@@ -1,6 +1,5 @@
-# the version under development, update after a release
-$version = '2.0.0'
-$versionSuffix = '-a040' # manually incremented for local builds
+$version = '2.0.0' # the version under development, update after a release
+$versionSuffix = '-a044' # manually incremented for local builds
 
 function isVersionTag($tag){
     $v = New-Object Version
@@ -33,8 +32,9 @@ dotnet restore
 dotnet $pack
 Pop-Location
 
+bash .\build-rename.sh
+
 # testing on local nuget feed
 if (-not $env:appveyor){
-    bash .\build-rename.sh
     copy .\bin\*$version$versionSuffix.nupkg C:\dotnet\nupkg\
 }
