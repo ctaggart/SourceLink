@@ -3,6 +3,7 @@ using System;
 using LibGit2Sharp;
 using System.Collections.Generic;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace SourceLink.Git {
     public class Program
@@ -24,8 +25,16 @@ namespace SourceLink.Git {
                 app.ShowHelp();
                 return 0;
             }
-            app.Execute(args);
-            return 0;
+
+            try
+            {
+                return app.Execute(args);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return -1;
+            }
         }
 
         public static void PrintRepo(CommandLineApplication command)
@@ -85,21 +94,73 @@ namespace SourceLink.Git {
         public static void Create(CommandLineApplication command)
         {
             command.Description = "creates the Source Link JSON file";
-            var dirOption = command.Option("-d|--dir <directory>", "the directory to look for the repository", CommandOptionType.SingleValue);
-            var fileOption = command.Option("-f|--file <file>", "file to write", CommandOptionType.SingleValue);
+            var dirOption = command.Option("-d|--dir <directory>", "the directory to look for the git repository", CommandOptionType.SingleValue);
+            var fileOption = command.Option("-f|--file <file>", "the sourcelink.json file to write", CommandOptionType.SingleValue);
+            var embedOption = command.Option("-e|--embed <file>", "the sourcelink.embed file to write", CommandOptionType.SingleValue);
             var urlOption = command.Option("-u|--url <url>", "URL for downloading the source files, use {0} for commit and * for path", CommandOptionType.SingleValue);
+            var sourceOption = command.Option("-s|--source <url>", "source file to verify checksum in git repository", CommandOptionType.MultipleValue);
+            
             command.HelpOption("-h|--help");
 
             command.OnExecute(() =>
             {
+                var dir = "./";
+                if (dirOption.HasValue())
+                    dir = dirOption.Value();
 
-                // get commit
-
-                // TODO write actual json
-                using (var sw = System.IO.File.CreateText(fileOption.Value()))
+                var repoPath = FindGitRepo(dir);
+                if (repoPath == null)
                 {
-                    sw.WriteLine("{\"documents\": { \"C:\\\\Users\\\\camer\\\\cs\\\\sourcelink-test\\\\*\" : \"https://raw.githubusercontent.com/ctaggart/sourcelink-test/b5012a98bed12f6704cb942e92ba34ccdbd920d8/*\" }}");
+                    Console.Error.WriteLine("repository not found at or above " + dir);
+                    return 1;
                 }
+
+                if (!fileOption.HasValue())
+                {
+                    Console.Error.WriteLine("--file option required");
+                    return 2;
+                }
+                var file = fileOption.Value();
+
+                if (!urlOption.HasValue())
+                {
+                    Console.Error.WriteLine("--url option required");
+                    return 3;
+                }
+                var url = urlOption.Value();
+                var commit = GetCommit(repoPath);
+                url = url.Replace("{commit}", commit);
+
+                // TODO test checksums
+                //if (sourceOption.HasValue())
+                //{
+                //    var n = sourceOption.Values.Count;
+
+                //    if (embedOption.HasValue())
+                //    {
+                //        var embed = embedOption.Value();
+
+                //        using (var sw = new StreamWriter(File.OpenWrite(file)))
+                //        {
+                //            sw.Write("a.cs;b.cs;");
+                //        }
+                //    }
+                //}
+
+                var json = new SourceLinkJson
+                {
+                    documents = new Dictionary<string, string>
+                    {
+                        { string.Format("{0}{1}{2}", repoPath, Path.DirectorySeparatorChar, '*'), url },
+                    }
+                };
+
+                using (var sw = new StreamWriter(File.OpenWrite(file)))
+                {
+                    var js = new JsonSerializer();
+                    js.Serialize(sw, json);
+                }
+
                 return 0;
             });
         }
@@ -144,6 +205,14 @@ namespace SourceLink.Git {
                 }
             }
             return null;
+        }
+
+        public static string GetCommit(string repoPath)
+        {
+            using (var repo = new Repository(repoPath))
+            {
+                return repo.Head.Tip.Sha;
+            }
         }
 
     }

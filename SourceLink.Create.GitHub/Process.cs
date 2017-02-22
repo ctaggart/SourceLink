@@ -38,7 +38,9 @@ namespace SourceLink
                     p.WaitForExit();
                     return p.ExitCode;
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 return e.HResult;
             }
         }
