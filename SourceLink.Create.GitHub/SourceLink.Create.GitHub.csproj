@@ -8,11 +8,11 @@
     <Authors>Cameron Taggart</Authors>
     <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
     <PackageIconUrl>https://ctaggart.github.io/SourceLink/SourceLink128.jpg</PackageIconUrl>
-    <PackageProjectUrl>https://ctaggart.github.io/SourceLink/</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/ctaggart/SourceLink</PackageProjectUrl>
     <PackageTags>sourcelink pdb symbols git sourceindexing debugging sourceserver build</PackageTags>
     <Description>
       SourceLink: Source Code On Demand
-      Source Link your Portable PDB files to allow source code to be downloaded on demand from the source code repository host
+      Source Link your Portable PDB files to allow source code to be downloaded on demand
     </Description>
   </PropertyGroup>
   

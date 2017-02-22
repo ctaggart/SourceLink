@@ -7,27 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
 		appveyor.yml = appveyor.yml
-		build.fsx = build.fsx
 		build.ps1 = build.ps1
-		docs\tools\generate.fsx = docs\tools\generate.fsx
-		paket.dependencies = paket.dependencies
-		paket.lock = paket.lock
 		README.md = README.md
-		RELEASE_NOTES.md = RELEASE_NOTES.md
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{D3E73D0A-292F-463C-B834-F8FCD9AA36BD}"
-	ProjectSection(SolutionItems) = preProject
-		docs\content\exe.md = docs\content\exe.md
-		docs\content\fake.md = docs\content\fake.md
-		docs\tools\generate.fsx = docs\tools\generate.fsx
-		docs\content\github.md = docs\content\github.md
-		docs\content\how-it-works.md = docs\content\how-it-works.md
-		docs\content\index.md = docs\content\index.md
-		docs\tools\templates\template.cshtml = docs\tools\templates\template.cshtml
-		docs\content\tfs.md = docs\content\tfs.md
-		docs\content\users.md = docs\content\users.md
-		docs\content\visualstudio.md = docs\content\visualstudio.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotnet-sourcelink", "dotnet-sourcelink\dotnet-sourcelink.csproj", "{68D40DAC-77EF-426A-979D-1CC4723CB2A1}"

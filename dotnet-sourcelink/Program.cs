@@ -34,8 +34,16 @@ namespace SourceLink {
                 app.ShowHelp();
                 return 0;
             }
-            app.Execute(args);
-            return 0;
+
+            try
+            {
+                return app.Execute(args);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return -1;
+            }
         }
 
         public static void PrintJson(CommandLineApplication command)
@@ -126,7 +134,9 @@ namespace SourceLink {
                     {
                         Console.WriteLine("{0} {1} {2} {3}", toHex(doc.Hash), HashAlgorithmGuids.GetName(doc.HashAlgorithm), LanguageGuids.GetName(doc.Language), doc.Name);
                         Console.WriteLine(doc.Url);
-                    } else {
+                    }
+                    else
+                    {
                         missingDocs.Add(doc);
                     }
                 }
@@ -174,10 +184,14 @@ namespace SourceLink {
                         {
                             Console.WriteLine("{0} {1} {2} {3}", toHex(doc.Hash), HashAlgorithmGuids.GetName(doc.HashAlgorithm), LanguageGuids.GetName(doc.Language), doc.Name);
                             Console.WriteLine(doc.Url);
-                        } else {
+                        }
+                        else
+                        {
                             erroredDocs.Add(doc);
                         }
-                    } else {
+                    }
+                    else
+                    {
                         missingDocs.Add(doc);
                     }
                 }
@@ -276,7 +290,9 @@ namespace SourceLink {
                     var url = json.documents[key];
                     var path = m.Groups[1].Value.Replace(@"\", "/");
                     return url.Replace("*", path);
-                } else {
+                }
+                else
+                {
                     if (!key.Equals(file, StringComparison.Ordinal)) continue;
                     return json.documents[key];
                 }
@@ -332,7 +348,9 @@ namespace SourceLink {
                                 doc.UrlHash = ha.ComputeHash(stream);
                             }
                         }
-                    } else {
+                    }
+                    else
+                    {
                         doc.Error = "url failed " + rsp.StatusCode + ": " + rsp.ReasonPhrase;
                     }
                 }

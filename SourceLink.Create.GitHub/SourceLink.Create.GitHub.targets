@@ -12,11 +12,14 @@
     <SourceLinkFile Condition="'$(SourceLinkFile)' == ''">$(BaseIntermediateOutputPath)sourcelink.json</SourceLinkFile>
   </PropertyGroup>
 
-  <Target Name="SourceLinkCreate" BeforeTargets="CoreCompile">
-    <SourceLink.Create.GitHub.CreateTask Url="$(SourceLinkUrl)" Repo="$(SourceLinkRepo)" Sources="@(Compile)" File="$(SourceLinkFile)">
+  <ItemGroup>
+    <SourceLinkSources Condition="'@(SourceLinkSources)' == ''" Include="@(Compile)" Exclude="@(EmbeddedFiles)" />
+  </ItemGroup>
+
+  <Target Name="SourceLinkCreate">
+    <SourceLink.Create.GitHub.CreateTask GitDirectory="$(SourceLinkGitDirectory)" Url="$(SourceLinkUrl)" File="$(SourceLinkFile)" Sources="@(SourceLinkSources)">
       <Output TaskParameter="SourceLink" PropertyName="SourceLink" />
     </SourceLink.Create.GitHub.CreateTask>
-    <Message Text="SourceLink = $(SourceLink)" Importance="high" />
   </Target>
 
 </Project>
