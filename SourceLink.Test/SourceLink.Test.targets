@@ -1,0 +1,16 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <UsingTask TaskName="SourceLink.Test.TestTask" AssemblyFile="SourceLink.Test.dll" />
+
+  <PropertyGroup>
+    <!-- enable only in CI environments by default -->
+    <SourceLinkTest Condition="'$(SourceLinkTest)' == ''">$(CI)</SourceLinkTest>
+    <CompileDependsOn Condition="'$(SourceLinkTest)' == 'true'">$(CompileDependsOn);SourceLinkTest</CompileDependsOn>
+    <SourceLinkPdb Condition="'$(SourceLinkPdb)' == ''">$(PdbFile)</SourceLinkPdb>
+    <SourceLinkPdb Condition="'$(SourceLinkPdb)' == ''">$(IntermediateOutputPath)$(TargetName).pdb</SourceLinkPdb>
+  </PropertyGroup>
+
+  <Target Name="SourceLinkTest">
+    <SourceLink.Test.TestTask Pdb="$(SourceLinkPdb)" />
+  </Target>
+</Project>

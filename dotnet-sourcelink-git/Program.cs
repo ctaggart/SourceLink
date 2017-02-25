@@ -13,10 +13,8 @@ namespace SourceLink.Git {
     {
         public static int Main(string[] args)
         {
-            var app = new CommandLineApplication()
-            {
-                Name = "dotnet sourcelink-git",
-            };
+            var app = new CommandLineApplication();
+            app.FullName = "Source Code On Demand";
             app.HelpOption("-h|--help");
 
             app.Command("repo", PrintRepo);
@@ -25,6 +23,7 @@ namespace SourceLink.Git {
 
             if (args.Length == 0)
             {
+                Console.WriteLine("SourceLink Git " + Version.GetAssemblyInformationalVersion());
                 app.ShowHelp();
                 return 0;
             }
@@ -258,12 +257,12 @@ namespace SourceLink.Git {
                     js.Serialize(sw, json);
                 }
 
+                //var embedFile = embedOption.Value();
+                //if (String.IsNullOrEmpty(embedFile))
+                var embedFile = Path.ChangeExtension(file, ".embed");
                 if (embedFiles.Count > 0)
                 {
                     Console.WriteLine("embedding " + embedFiles.Count + " source files");
-                    //var embedFile = embedOption.Value();
-                    //if (String.IsNullOrEmpty(embedFile))
-                    var embedFile = Path.ChangeExtension(file, ".embed");
                     using (var sw = new StreamWriter(File.OpenWrite(embedFile)))
                     {
                         foreach (var sf in embedFiles)
@@ -271,6 +270,11 @@ namespace SourceLink.Git {
                             sw.WriteLine(sf.FilePath);
                         }
                     }
+                }
+                else
+                {
+                    if (File.Exists(embedFile))
+                        File.Delete(embedFile);
                 }
 
                 return errors == 0 ? 0 : 1;

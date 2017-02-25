@@ -1,6 +1,5 @@
 ﻿using Microsoft.Build.Framework;
 using MSBuildTask = Microsoft.Build.Utilities.Task;
-using System.Diagnostics;
 using System.Text;
 using System;
 using IO = System.IO;
@@ -32,16 +31,6 @@ namespace SourceLink.Create.GitHub
 
         [Output]
         public string[] EmbeddedFiles { get; set; }
-
-        DataReceivedEventHandler LogMessageHander(MessageImportance importance)
-        {
-            return (s, e) => {
-                if (e.Data != null) // end
-                {
-                    Log.LogMessage(importance, e.Data);
-                }
-            };
-        }
 
         public override bool Execute()
         {

@@ -16,12 +16,8 @@ namespace SourceLink {
     {
         public static int Main(string[] args)
         {
-            var app = new CommandLineApplication()
-            {
-                Name = "dotnet sourcelink",
-                FullName = "SourceLink: Source Code On Demand",
-                Description = "Source Link your Portable PDB files to allow source code to be downloaded on demand from the source code repository host"
-            };
+            var app = new CommandLineApplication();
+            app.FullName = "Source Code On Demand";
             app.HelpOption("-h|--help");
 
             app.Command("print-json", PrintJson);
@@ -31,6 +27,7 @@ namespace SourceLink {
 
             if (args.Length == 0)
             {
+                Console.WriteLine("SourceLink " + Version.GetAssemblyInformationalVersion());
                 app.ShowHelp();
                 return 0;
             }
@@ -301,6 +298,7 @@ namespace SourceLink {
 
         public static string GetUrl(string file, SourceLinkJson json)
         {
+            if (json == null) return null;
             foreach (var key in json.documents.Keys)
             {
                 if (key.Contains("*"))

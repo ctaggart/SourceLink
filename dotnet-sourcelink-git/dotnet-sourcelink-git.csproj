@@ -17,6 +17,7 @@
   <ItemGroup>
     <Compile Include="..\dotnet-sourcelink\SourceLinkJson.cs" Link="SourceLinkJson.cs" />
     <Compile Include="..\dotnet-sourcelink\System.cs" Link="System.cs" />
+    <Compile Include="..\dotnet-sourcelink\Version.cs" Link="Version.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="LibGit2Sharp.Portable" Version="0.24.10" />

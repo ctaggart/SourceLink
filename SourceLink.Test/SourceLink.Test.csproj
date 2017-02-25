@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  
+
   <PropertyGroup>
     <TargetFramework>netstandard1.6</TargetFramework>
     <!-- https://github.com/NuGet/Home/wiki/Adding-nuget-pack-as-a-msbuild-target -->
@@ -15,29 +15,32 @@
       Source Link your Portable PDB files to allow source code to be downloaded on demand
     </Description>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <PackageReference Include="Microsoft.Build.Utilities.Core" Version="14.3.0" />
   </ItemGroup>
-  
+
   <!-- https://docs.microsoft.com/en-us/dotnet/articles/core/preview3/tools/extensibility -->
   <ItemGroup Label="dotnet pack instructions">
-    <Content Include="SourceLink.Create.GitHub.targets">
+    <Content Include="SourceLink.Test.targets">
       <Pack>true</Pack>
       <PackagePath>build</PackagePath>
     </Content>
-    <Content Include="$(OutputPath)SourceLink.Create.GitHub.dll">
+    <Content Include="$(OutputPath)SourceLink.Test.dll">
       <Pack>true</Pack>
       <PackagePath>build</PackagePath>
     </Content>
-    <Content Include="$(OutputPath)SourceLink.Create.GitHub.deps.json">
+    <Content Include="$(OutputPath)SourceLink.Test.deps.json">
       <Pack>true</Pack>
       <PackagePath>build</PackagePath>
     </Content>
-    <Content Include="$(OutputPath)SourceLink.Create.GitHub.pdb">
+    <Content Include="$(OutputPath)SourceLink.Test.pdb">
       <Pack>true</Pack>
       <PackagePath>build</PackagePath>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\SourceLink.Create.GitHub\Process.cs" Link="Process.cs" />
   </ItemGroup>
 
 </Project>
