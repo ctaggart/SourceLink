@@ -1,5 +1,5 @@
 $version = '2.0.0' # the version under development, update after a release
-$versionSuffix = '-a057' # manually incremented for local builds
+$versionSuffix = '-a076' # manually incremented for local builds
 
 function isVersionTag($tag){
     $v = New-Object Version
@@ -28,6 +28,11 @@ dotnet $pack
 Pop-Location
 
 Push-Location .\SourceLink.Create.GitHub
+dotnet restore
+dotnet $pack
+Pop-Location
+
+Push-Location .\SourceLink.Test
 dotnet restore
 dotnet $pack
 Pop-Location

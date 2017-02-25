@@ -258,12 +258,12 @@ namespace SourceLink.Git {
                     js.Serialize(sw, json);
                 }
 
+                //var embedFile = embedOption.Value();
+                //if (String.IsNullOrEmpty(embedFile))
+                var embedFile = Path.ChangeExtension(file, ".embed");
                 if (embedFiles.Count > 0)
                 {
                     Console.WriteLine("embedding " + embedFiles.Count + " source files");
-                    //var embedFile = embedOption.Value();
-                    //if (String.IsNullOrEmpty(embedFile))
-                    var embedFile = Path.ChangeExtension(file, ".embed");
                     using (var sw = new StreamWriter(File.OpenWrite(embedFile)))
                     {
                         foreach (var sf in embedFiles)
@@ -271,6 +271,11 @@ namespace SourceLink.Git {
                             sw.WriteLine(sf.FilePath);
                         }
                     }
+                }
+                else
+                {
+                    if (File.Exists(embedFile))
+                        File.Delete(embedFile);
                 }
 
                 return errors == 0 ? 0 : 1;

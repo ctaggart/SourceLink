@@ -301,6 +301,7 @@ namespace SourceLink {
 
         public static string GetUrl(string file, SourceLinkJson json)
         {
+            if (json == null) return null;
             foreach (var key in json.documents.Keys)
             {
                 if (key.Contains("*"))
