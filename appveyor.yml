@@ -3,7 +3,6 @@ clone_depth: 10
 build_script:
   - ps: |
       dotnet --version
-      echo $PSVersionTable.PSVersion
       .\build.ps1
       if ($lastexitcode -ne 0){ exit $lastexitcode }
 test: off

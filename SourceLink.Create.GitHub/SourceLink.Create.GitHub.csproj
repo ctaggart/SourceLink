@@ -22,16 +22,14 @@
   
   <!-- https://docs.microsoft.com/en-us/dotnet/articles/core/preview3/tools/extensibility -->
   <ItemGroup Label="dotnet pack instructions">
-    <Content Include="*.targets;$(OutputPath)*.*">
+    <Content Include="*.targets">
+      <Pack>true</Pack>
+      <PackagePath>build</PackagePath>
+    </Content>
+    <Content Include="$(OutputPath)*.*">
       <Pack>true</Pack>
       <PackagePath>build</PackagePath>
     </Content>
   </ItemGroup>
-
-  <Target Name="Paths">
-    <Message Importance="high" Text="OutputPath = $(OutputPath)" />
-    <Message Importance="high" Text="OutDir = $(OutDir)" />
-    <Message Importance="high" Text="IntermediateOutputPath = $(IntermediateOutputPath)" />
-  </Target>
 
 </Project>

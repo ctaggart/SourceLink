@@ -1,5 +1,5 @@
 $version = '2.0.0' # the version under development, update after a release
-$versionSuffix = '-a081' # manually incremented for local builds
+$versionSuffix = '-a082' # manually incremented for local builds
 
 function isVersionTag($tag){
     $v = New-Object Version
@@ -35,7 +35,7 @@ dotnet restore
 dotnet $pack
 
 Set-Location $psscriptroot
-# bash .\build-rename.sh
+bash .\build-rename.sh
 
 # testing on local nuget feed
 if (-not $env:appveyor){
