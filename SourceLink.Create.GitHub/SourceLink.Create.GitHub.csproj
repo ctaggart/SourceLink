@@ -22,7 +22,7 @@
   
   <!-- https://docs.microsoft.com/en-us/dotnet/articles/core/preview3/tools/extensibility -->
   <ItemGroup Label="dotnet pack instructions">
-    <Content Include="*.targets;$(OutputPath)\*.*">
+    <Content Include="*.targets;$(OutputPath)*.*">
       <Pack>true</Pack>
       <PackagePath>build</PackagePath>
     </Content>
