@@ -26,7 +26,7 @@
       <Pack>true</Pack>
       <PackagePath>build</PackagePath>
     </Content>
-    <Content Include="(OutputPath)SourceLink.Test.dll">
+    <Content Include="$(OutputPath)SourceLink.Test.dll">
       <Pack>true</Pack>
       <PackagePath>build</PackagePath>
     </Content>
