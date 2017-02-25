@@ -22,11 +22,19 @@
 
   <!-- https://docs.microsoft.com/en-us/dotnet/articles/core/preview3/tools/extensibility -->
   <ItemGroup Label="dotnet pack instructions">
-    <Content Include="*.targets">
+    <Content Include="SourceLink.Test.targets">
       <Pack>true</Pack>
       <PackagePath>build</PackagePath>
     </Content>
-    <Content Include="$(OutputPath)*.*">
+    <Content Include="$(OutputPath)SourceLink.Test.dll">
+      <Pack>true</Pack>
+      <PackagePath>build</PackagePath>
+    </Content>
+    <Content Include="$(OutputPath)SourceLink.Test.deps.json">
+      <Pack>true</Pack>
+      <PackagePath>build</PackagePath>
+    </Content>
+    <Content Include="$(OutputPath)SourceLink.Test.pdb">
       <Pack>true</Pack>
       <PackagePath>build</PackagePath>
     </Content>

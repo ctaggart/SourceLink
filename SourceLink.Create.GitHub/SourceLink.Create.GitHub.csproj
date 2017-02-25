@@ -22,11 +22,19 @@
   
   <!-- https://docs.microsoft.com/en-us/dotnet/articles/core/preview3/tools/extensibility -->
   <ItemGroup Label="dotnet pack instructions">
-    <Content Include="*.targets">
+    <Content Include="SourceLink.Create.GitHub.targets">
       <Pack>true</Pack>
       <PackagePath>build</PackagePath>
     </Content>
-    <Content Include="$(OutputPath)*.dll">
+    <Content Include="$(OutputPath)SourceLink.Create.GitHub.dll">
+      <Pack>true</Pack>
+      <PackagePath>build</PackagePath>
+    </Content>
+    <Content Include="$(OutputPath)SourceLink.Create.GitHub.deps.json">
+      <Pack>true</Pack>
+      <PackagePath>build</PackagePath>
+    </Content>
+    <Content Include="$(OutputPath)SourceLink.Create.GitHub.pdb">
       <Pack>true</Pack>
       <PackagePath>build</PackagePath>
     </Content>
