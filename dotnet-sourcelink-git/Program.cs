@@ -13,10 +13,8 @@ namespace SourceLink.Git {
     {
         public static int Main(string[] args)
         {
-            var app = new CommandLineApplication()
-            {
-                Name = "dotnet sourcelink-git",
-            };
+            var app = new CommandLineApplication();
+            app.FullName = "Source Code On Demand";
             app.HelpOption("-h|--help");
 
             app.Command("repo", PrintRepo);

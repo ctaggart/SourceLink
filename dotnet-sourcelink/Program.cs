@@ -16,12 +16,8 @@ namespace SourceLink {
     {
         public static int Main(string[] args)
         {
-            var app = new CommandLineApplication()
-            {
-                Name = "dotnet sourcelink",
-                FullName = "SourceLink: Source Code On Demand",
-                Description = "Source Link your Portable PDB files to allow source code to be downloaded on demand from the source code repository host"
-            };
+            var app = new CommandLineApplication();
+            app.FullName = "Source Code On Demand";
             app.HelpOption("-h|--help");
 
             app.Command("print-json", PrintJson);
