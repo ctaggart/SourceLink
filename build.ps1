@@ -1,5 +1,5 @@
 $version = '2.0.0' # the version under development, update after a release
-$versionSuffix = '-a078' # manually incremented for local builds
+$versionSuffix = '-a079' # manually incremented for local builds
 
 function isVersionTag($tag){
     $v = New-Object Version
@@ -17,26 +17,22 @@ if ($env:appveyor){
 
 $pack = "pack", "-c", "release", "--include-symbols", "-o", "../bin", "/p:Version=$version$versionSuffix"
 
-# Push-Location .\dotnet-sourcelink
-# dotnet restore
-# dotnet $pack
-# Pop-Location
+Set-Location $psscriptroot\dotnet-sourcelink
+dotnet restore
+dotnet $pack
 
-# Push-Location .\dotnet-sourcelink-git
-# dotnet restore
-# dotnet $pack
-# Pop-Location
+Set-Location $psscriptroot\dotnet-sourcelink-git
+dotnet restore
+dotnet $pack
 
-Push-Location .\SourceLink.Create.GitHub
+Set-Location $psscriptroot\SourceLink.Create.GitHub
 dotnet msbuild /t:Paths
 dotnet restore
 dotnet $pack
-Pop-Location
 
-# Push-Location .\SourceLink.Test
-# dotnet restore
-# dotnet $pack
-# Pop-Location
+Set-Location $psscriptroot\SourceLink.Test
+dotnet restore
+dotnet $pack
 
 bash .\build-rename.sh
 
