@@ -34,6 +34,7 @@ Set-Location $psscriptroot\SourceLink.Test
 dotnet restore
 dotnet $pack
 
+Set-Location $psscriptroot
 bash .\build-rename.sh
 
 # testing on local nuget feed
