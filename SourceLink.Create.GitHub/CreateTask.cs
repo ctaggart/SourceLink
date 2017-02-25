@@ -1,8 +1,10 @@
 ﻿using Microsoft.Build.Framework;
 using MSBuildTask = Microsoft.Build.Utilities.Task;
 using System.Diagnostics;
-using System;
 using System.Text;
+using System;
+using IO = System.IO;
+using System.Collections.Generic;
 
 namespace SourceLink.Create.GitHub
 {
@@ -17,8 +19,19 @@ namespace SourceLink.Create.GitHub
         [Required]
         public string File { get; set; }
 
+        public string NotInGit { get; set; }
+
+        public string HashMismatch { get; set; }
+
+        public string NoAutoLF { get; set; }
+
         [Output]
         public string SourceLink { get; set; }
+
+        public string[] EmbeddedFilesIn { get; set; }
+
+        [Output]
+        public string[] EmbeddedFiles { get; set; }
 
         DataReceivedEventHandler LogMessageHander(MessageImportance importance)
         {
@@ -33,9 +46,9 @@ namespace SourceLink.Create.GitHub
         public override bool Execute()
         {
             var url = Url;
-            var gitOption = String.IsNullOrEmpty(GitDirectory) ? "" : " -d \"" + GitDirectory + "\"";
+            var gitOption = string.IsNullOrEmpty(GitDirectory) ? "" : " -d \"" + GitDirectory + "\"";
 
-            if (String.IsNullOrEmpty(url))
+            if (string.IsNullOrEmpty(url))
             {
                 var originCmd = Process.RunAndGetOutput("dotnet", "sourcelink-git origin" + gitOption);
                 if (originCmd.ExitCode != 0 || originCmd.OutputLines.Count != 1)
@@ -49,11 +62,23 @@ namespace SourceLink.Create.GitHub
 
             var sbArgs = new StringBuilder();
             sbArgs.Append("sourcelink-git create" + gitOption);
-            sbArgs.Append(" -u " + url);
+            sbArgs.Append(" -u \"" + url + "\"");
             sbArgs.Append(" -f \"" + File + "\"");
             if (Sources != null) {
                 foreach (var source in Sources)
                     sbArgs.Append(" -s \"" + source + "\"");
+            }
+            if (!string.IsNullOrEmpty(NotInGit))
+            {
+                sbArgs.Append(" --notingit \"" + NotInGit + "\"");
+            }
+            if (!string.IsNullOrEmpty(HashMismatch))
+            {
+                sbArgs.Append(" --hashmismatch \"" + HashMismatch + "\"");
+            }
+            if ("true".Equals(NoAutoLF))
+            {
+                sbArgs.Append(" --noautolf");
             }
             var args = sbArgs.ToString();
 
@@ -74,6 +99,15 @@ namespace SourceLink.Create.GitHub
 
             if (Log.HasLoggedErrors)
                 return false;
+
+            var embeddedFiles = EmbeddedFilesIn == null ? new List<string>() : new List<string>(EmbeddedFilesIn);
+            var embedFile = IO.Path.ChangeExtension(File, ".embed");
+            if (IO.File.Exists(embedFile))
+            {
+                var additionalFiles = IO.File.ReadAllLines(embedFile);
+                embeddedFiles.AddRange(additionalFiles);
+            }
+            EmbeddedFiles = embeddedFiles.ToArray();
 
             SourceLink = File;
             return true;

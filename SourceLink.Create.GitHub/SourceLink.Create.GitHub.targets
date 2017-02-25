@@ -5,11 +5,12 @@
   <PropertyGroup>
     <!-- enable only in CI environments by default -->
     <SourceLinkCreate Condition="'$(SourceLinkCreate)' == ''">$(CI)</SourceLinkCreate>
-    <CoreBuildDependsOn Condition="'$(SourceLinkCreate)' == 'true'">
-      SourceLinkCreate;$(CoreBuildDependsOn)</CoreBuildDependsOn>
+    <CompileDependsOn Condition="'$(SourceLinkCreate)' == 'true'">SourceLinkCreate;$(CompileDependsOn)</CompileDependsOn>
     <SourceLinkRepo Condition="'$(SourceLinkRepo)' == ''">$(MSBuildProjectDirectory)</SourceLinkRepo>
     <SourceLinkFile Condition="'$(SourceLinkFile)' == ''">$(SourceLink)</SourceLinkFile>
     <SourceLinkFile Condition="'$(SourceLinkFile)' == ''">$(BaseIntermediateOutputPath)sourcelink.json</SourceLinkFile>
+    <SourceLinkNotInGit Condition="'$(SourceLinkNotInGit)' == ''">embed</SourceLinkNotInGit>
+    <SourceLinkHashMismatch Condition="'$(SourceLinkHashMismatch)' == ''">embed</SourceLinkHashMismatch>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,8 +18,15 @@
   </ItemGroup>
 
   <Target Name="SourceLinkCreate">
-    <SourceLink.Create.GitHub.CreateTask GitDirectory="$(SourceLinkGitDirectory)" Url="$(SourceLinkUrl)" File="$(SourceLinkFile)" Sources="@(SourceLinkSources)">
-      <Output TaskParameter="SourceLink" PropertyName="SourceLink" />
+    <SourceLink.Create.GitHub.CreateTask
+        GitDirectory="$(SourceLinkGitDirectory)"
+        Url="$(SourceLinkUrl)"
+        File="$(SourceLinkFile)"
+        Sources="@(SourceLinkSources)"
+        NoAutoLF="$(SourceLinkNoAutoLF)"
+        EmbeddedFilesIn="@(EmbeddedFiles)">
+      <Output PropertyName="SourceLink" TaskParameter="SourceLink" />
+      <Output ItemName="EmbeddedFiles" TaskParameter="EmbeddedFiles" />
     </SourceLink.Create.GitHub.CreateTask>
   </Target>
 

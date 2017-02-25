@@ -11,7 +11,7 @@ using System.Linq;
 namespace SourceLink.Git {
     public class Program
     {
-        static int Main(string[] args)
+        public static int Main(string[] args)
         {
             var app = new CommandLineApplication()
             {
@@ -99,7 +99,7 @@ namespace SourceLink.Git {
             command.Description = "creates the Source Link JSON file";
             var dirOption = command.Option("-d|--dir <directory>", "the directory to look for the git repository", CommandOptionType.SingleValue);
             var fileOption = command.Option("-f|--file <file>", "the sourcelink.json file to write", CommandOptionType.SingleValue);
-            var embedOption = command.Option("-e|--embed <file>", "the sourcelink.embed file to write", CommandOptionType.SingleValue);
+            //var embedOption = command.Option("-e|--embed <file>", "the sourcelink.embed file to write", CommandOptionType.SingleValue);
             var urlOption = command.Option("-u|--url <url>", "URL for downloading the source files, use {0} for commit and * for path", CommandOptionType.SingleValue);
             var sourceOption = command.Option("-s|--source <url>", "source file to verify checksum in git repository", CommandOptionType.MultipleValue);
             var notInGitOption = command.Option("--notingit <option>", "embed, warn, or error when a source file is not in git. embed is default", CommandOptionType.SingleValue);
@@ -212,14 +212,14 @@ namespace SourceLink.Git {
                         switch (notInGitOpt)
                         {
                             case "error":
-                                Console.WriteLine("error: file not in git " + sf.FilePath);
+                                Console.WriteLine("error: file not in git: " + sf.FilePath);
                                 errors++;
                                 break;
                             case "warn":
-                                Console.WriteLine("warning: file not in git " + sf.FilePath);
+                                Console.WriteLine("warning: file not in git: " + sf.FilePath);
                                 break;
                             default:
-                                Console.WriteLine("embedding file not in git " + sf.FilePath);
+                                Console.WriteLine("embedding file not in git: " + sf.FilePath);
                                 embedFiles.Add(sf);
                                 break;
                         }
@@ -230,14 +230,14 @@ namespace SourceLink.Git {
                         switch (hashMismatchOpt)
                         {
                             case "error":
-                                Console.WriteLine("error: hash mismatch for " + sf.FilePath);
+                                Console.WriteLine("error: hash mismatch for: " + sf.FilePath);
                                 errors++;
                                 break;
                             case "warn":
-                                Console.WriteLine("warning: hash mismatch for " + sf.FilePath);
+                                Console.WriteLine("warning: hash mismatch for: " + sf.FilePath);
                                 break;
                             default:
-                                Console.WriteLine("embedding file due to hash mismatch for " + sf.FilePath);
+                                Console.WriteLine("embedding file due to hash mismatch: " + sf.FilePath);
                                 embedFiles.Add(sf);
                                 break;
                         }
@@ -260,10 +260,10 @@ namespace SourceLink.Git {
 
                 if (embedFiles.Count > 0)
                 {
-                    Console.WriteLine("embedding " + embedFiles.Count + " files");
-                    var embedFile = embedOption.Value();
-                    if (String.IsNullOrEmpty(embedFile))
-                        embedFile = Path.ChangeExtension(file, ".embed");
+                    Console.WriteLine("embedding " + embedFiles.Count + " source files");
+                    //var embedFile = embedOption.Value();
+                    //if (String.IsNullOrEmpty(embedFile))
+                    var embedFile = Path.ChangeExtension(file, ".embed");
                     using (var sw = new StreamWriter(File.OpenWrite(embedFile)))
                     {
                         foreach (var sf in embedFiles)
@@ -277,7 +277,7 @@ namespace SourceLink.Git {
             });
         }
 
-        private static bool TryFixLineEndings(SHA1 sha1, SourceFile sf)
+        public static bool TryFixLineEndings(SHA1 sha1, SourceFile sf)
         {
             var fileBytes = new byte[] { };
             var hashesMatch = false;
