@@ -27,7 +27,7 @@ namespace SourceLink {
             app.Command("print-json", PrintJson);
             app.Command("print-documents", PrintDocuments);
             app.Command("print-urls", PrintUrls);
-            app.Command("test-urls", TestUrls);
+            app.Command("test", Test);
 
             if (args.Length == 0)
             {
@@ -49,17 +49,17 @@ namespace SourceLink {
         public static void PrintJson(CommandLineApplication command)
         {
             command.Description = "print the Source Link JSON stored in the Portable PDB file";
-            var pdbOption = command.Option("-p|--pdb <PDB>", "set path to Porable PDB", CommandOptionType.SingleValue);
+            var pdbArgument = command.Argument("pdb", "set path to Porable PDB", false);
             command.HelpOption("-h|--help");
 
             command.OnExecute(() =>
             {
-                if (!pdbOption.HasValue())
+                var path = pdbArgument.Value;
+                if (path == null)
                 {
                     command.ShowHelp();
                     return 2;
                 }
-                var path = pdbOption.Value();
                 if (!File.Exists(path))
                 {
                     Console.WriteLine("PDB file does not exist");
@@ -81,17 +81,17 @@ namespace SourceLink {
         public static void PrintDocuments(CommandLineApplication command)
         {
             command.Description = "print the documents stored in the Portable PDB file";
-            var pdbOption = command.Option("-p|--pdb <PDB>", "set path to Porable PDB", CommandOptionType.SingleValue);
+            var pdbArgument = command.Argument("pdb", "set path to Porable PDB", false);
             command.HelpOption("-h|--help");
 
             command.OnExecute(() =>
             {
-                if (!pdbOption.HasValue())
+                var path = pdbArgument.Value;
+                if (path == null)
                 {
                     command.ShowHelp();
                     return 2;
                 }
-                var path = pdbOption.Value();
                 if (!File.Exists(path))
                 {
                     Console.WriteLine("PDB file does not exist");
@@ -110,17 +110,17 @@ namespace SourceLink {
         public static void PrintUrls(CommandLineApplication command)
         {
             command.Description = "print the URLs for each document based on the Source Link JSON";
-            var pdbOption = command.Option("-p|--pdb <PDB>", "set path to Porable PDB", CommandOptionType.SingleValue);
+            var pdbArgument = command.Argument("pdb", "set path to Porable PDB", false);
             command.HelpOption("-h|--help");
 
             command.OnExecute(() =>
             {
-                if (!pdbOption.HasValue())
+                var path = pdbArgument.Value;
+                if (path == null)
                 {
                     command.ShowHelp();
                     return 2;
                 }
-                var path = pdbOption.Value();
                 if (!File.Exists(path))
                 {
                     Console.WriteLine("PDB file does not exist");
@@ -130,7 +130,12 @@ namespace SourceLink {
                 var missingDocs = new List<Document>();
                 foreach (var doc in GetDocumentsWithUrls(path))
                 {
-                    if (doc.Url != null)
+                    if (doc.IsEmbedded)
+                    {
+                        Console.WriteLine("{0} {1} {2} {3}", doc.Hash.ToHex(), HashAlgorithmGuids.GetName(doc.HashAlgorithm), LanguageGuids.GetName(doc.Language), doc.Name);
+                        Console.WriteLine("embedded");
+                    }
+                    else if (doc.Url != null)
                     {
                         Console.WriteLine("{0} {1} {2} {3}", doc.Hash.ToHex(), HashAlgorithmGuids.GetName(doc.HashAlgorithm), LanguageGuids.GetName(doc.Language), doc.Name);
                         Console.WriteLine(doc.Url);
@@ -154,20 +159,20 @@ namespace SourceLink {
             });
         }
 
-        public static void TestUrls(CommandLineApplication command)
+        public static void Test(CommandLineApplication command)
         {
             command.Description = "test each URL and verify that the checksums from the Portable PDB match";
-            var pdbOption = command.Option("-p|--pdb <PDB>", "set path to Porable PDB", CommandOptionType.SingleValue);
+            var pdbArgument = command.Argument("pdb", "set path to Porable PDB", false);
             command.HelpOption("-h|--help");
 
             command.OnExecute(() =>
             {
-                if (!pdbOption.HasValue())
+                var path = pdbArgument.Value;
+                if (path == null)
                 {
                     command.ShowHelp();
                     return 2;
                 }
-                var path = pdbOption.Value();
                 if (!File.Exists(path))
                 {
                     Console.WriteLine("PDB file does not exist");
@@ -178,12 +183,17 @@ namespace SourceLink {
                 var erroredDocs = new List<Document>();
                 foreach (var doc in GetDocumentsWithUrlHashes(path))
                 {
-                    if (doc.Url != null)
+                    if (doc.IsEmbedded)
+                    {
+                        //Console.WriteLine("{0} {1} {2} {3}", doc.Hash.ToHex(), HashAlgorithmGuids.GetName(doc.HashAlgorithm), LanguageGuids.GetName(doc.Language), doc.Name);
+                        //Console.WriteLine("embedded");
+                    }
+                    else if (doc.Url != null)
                     {
                         if(doc.Error == null)
                         {
-                            Console.WriteLine("{0} {1} {2} {3}", doc.Hash.ToHex(), HashAlgorithmGuids.GetName(doc.HashAlgorithm), LanguageGuids.GetName(doc.Language), doc.Name);
-                            Console.WriteLine(doc.Url);
+                            //Console.WriteLine("{0} {1} {2} {3}", doc.Hash.ToHex(), HashAlgorithmGuids.GetName(doc.HashAlgorithm), LanguageGuids.GetName(doc.Language), doc.Name);
+                            //Console.WriteLine(doc.Url);
                         }
                         else
                         {
@@ -214,8 +224,12 @@ namespace SourceLink {
                     }
                 }
                 if (missingDocs.Count > 0 || erroredDocs.Count > 0)
+                {
+                    Console.WriteLine("sourcelink test failed");
                     return 4;
+                }
 
+                Console.WriteLine("sourcelink test passed");
                 return 0;
             });
         }
@@ -232,13 +246,24 @@ namespace SourceLink {
                 {
                     var cdi = mr.GetCustomDebugInformation(cdih);
                     if (mr.GetGuid(cdi.Kind) == SourceLinkId)
-                    {
                         blobh = cdi.Value;
-                    }
                 }
                 if (blobh.IsNil) return Array.Empty<byte>();
                 return mr.GetBlobBytes(blobh);
             }
+        }
+
+        public static readonly Guid EmbeddedSourceId = new Guid("0E8A571B-6926-466E-B4AD-8AB04611F5FE");
+
+        public static bool IsEmbedded(MetadataReader mr, DocumentHandle dh)
+        {
+            foreach(var cdih in mr.GetCustomDebugInformation(dh))
+            {
+                var cdi = mr.GetCustomDebugInformation(cdih);
+                if (mr.GetGuid(cdi.Kind) == EmbeddedSourceId)
+                    return true;
+            }
+            return false;
         }
 
         public static IEnumerable<Document> GetDocuments(string pdb)
@@ -255,6 +280,7 @@ namespace SourceLink {
                         Language = mr.GetGuid(d.Language),
                         HashAlgorithm = mr.GetGuid(d.HashAlgorithm),
                         Hash = mr.GetBlobBytes(d.Hash),
+                        IsEmbedded = IsEmbedded(mr, dh)
                     };
                 }
             }
@@ -267,7 +293,8 @@ namespace SourceLink {
             var json = JsonConvert.DeserializeObject<SourceLinkJson>(text);
             foreach (var doc in GetDocuments(pdb))
             {
-                doc.Url = GetUrl(doc.Name, json);
+                if(!doc.IsEmbedded)
+                    doc.Url = GetUrl(doc.Name, json);
                 yield return doc;
             }
         }

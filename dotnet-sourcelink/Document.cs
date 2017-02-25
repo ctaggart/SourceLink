@@ -9,6 +9,7 @@ namespace SourceLink
         public Guid HashAlgorithm { get; set; }
         public byte[] Hash { get; set; }
         public Guid Language { get; set; }
+        public bool IsEmbedded { get; set; }
 
         public string Url { get; set; }
         public byte[] UrlHash { get; set; }
