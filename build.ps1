@@ -1,5 +1,5 @@
 $version = '2.0.0' # the version under development, update after a release
-$versionSuffix = '-a080' # manually incremented for local builds
+$versionSuffix = '-a081' # manually incremented for local builds
 
 function isVersionTag($tag){
     $v = New-Object Version

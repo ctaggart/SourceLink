@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard1.6</TargetFramework>
     <!-- https://github.com/NuGet/Home/wiki/Adding-nuget-pack-as-a-msbuild-target -->
-    <!--<IncludeBuildOutput>false</IncludeBuildOutput>-->
+    <IncludeBuildOutput>false</IncludeBuildOutput>
 
     <Authors>Cameron Taggart</Authors>
     <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
@@ -26,7 +26,7 @@
       <Pack>true</Pack>
       <PackagePath>build</PackagePath>
     </Content>
-    <Content Include="(OutputPath)*.*">
+    <Content Include="(OutputPath)SourceLink.Test.dll">
       <Pack>true</Pack>
       <PackagePath>build</PackagePath>
     </Content>
