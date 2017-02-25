@@ -72,8 +72,11 @@ namespace SourceLink.Create.GitHub
                     Log.LogMessage(MessageImportance.Normal, line);
             }
 
+            if (Log.HasLoggedErrors)
+                return false;
+
             SourceLink = File;
-            return !Log.HasLoggedErrors;
+            return true;
         }
 
         public static string GetRepoUrl(string origin)

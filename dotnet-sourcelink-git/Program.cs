@@ -4,6 +4,9 @@ using LibGit2Sharp;
 using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
+using System.Security.Cryptography;
+using System.Text;
+using System.Linq;
 
 namespace SourceLink.Git {
     public class Program
@@ -99,11 +102,30 @@ namespace SourceLink.Git {
             var embedOption = command.Option("-e|--embed <file>", "the sourcelink.embed file to write", CommandOptionType.SingleValue);
             var urlOption = command.Option("-u|--url <url>", "URL for downloading the source files, use {0} for commit and * for path", CommandOptionType.SingleValue);
             var sourceOption = command.Option("-s|--source <url>", "source file to verify checksum in git repository", CommandOptionType.MultipleValue);
-            
+            var notInGitOption = command.Option("--notingit <option>", "embed, warn, or error when a source file is not in git. embed is default", CommandOptionType.SingleValue);
+            var hashMismatchOption = command.Option("--hashmismatch <option>", "embed, warn, or error when a source file hash does not match git. embed is default", CommandOptionType.SingleValue);
+            var noAutoLfOption = command.Option("--noautolf", "disable changing the line endings to match the git repository", CommandOptionType.NoValue);
+
             command.HelpOption("-h|--help");
 
             command.OnExecute(() =>
             {
+                var notInGitOpt = "embed";
+                if (notInGitOption.HasValue())
+                    notInGitOpt = notInGitOption.Value();
+
+                var hashMismatchOpt = "embed";
+                if (hashMismatchOption.HasValue())
+                    hashMismatchOpt = hashMismatchOption.Value();
+
+                var noAutoLfOpt = noAutoLfOption.HasValue();
+
+                var filesNotInGit = new List<SourceFile>();
+                var filesFixedLineEndings = new List<SourceFile>();
+                var filesHashMismatch = new List<SourceFile>();
+                var embedFiles = new List<SourceFile>();
+                var errors = 0;
+
                 var dir = "./";
                 if (dirOption.HasValue())
                     dir = dirOption.Value();
@@ -131,21 +153,96 @@ namespace SourceLink.Git {
                 var commit = GetCommit(repoPath);
                 url = url.Replace("{commit}", commit);
 
-                // TODO test checksums
-                //if (sourceOption.HasValue())
-                //{
-                //    var n = sourceOption.Values.Count;
+                if (sourceOption.HasValue())
+                {
+                    var files = sourceOption.Values.Select(source => new SourceFile { FilePath = source });
 
-                //    if (embedOption.HasValue())
-                //    {
-                //        var embed = embedOption.Value();
+                    using (var repo = new Repository(repoPath))
+                    using (var sha1 = SHA1.Create())
+                    {
+                        foreach (var sf in files)
+                        {
+                            sf.GitPath = GetGitPath(repoPath, sf.FilePath);
+                            if (sf.GitPath == null)
+                            {
+                                filesNotInGit.Add(sf);
+                            }
+                            else
+                            {
+                                var index = repo.Index[sf.GitPath];
+                                if (index == null)
+                                {
+                                    filesNotInGit.Add(sf);
+                                }
+                                else
+                                {
+                                    sf.GitHash = index.Id.Sha;
+                                    sf.FileHash = ComputeGitHash(sha1, File.ReadAllBytes(sf.FilePath)).ToHex();
+                                    if (!HashesMatch(sf.FileHash, sf.GitHash))
+                                    {
+                                        if (!noAutoLfOpt)
+                                        {
+                                            if (TryFixLineEndings(sha1, sf))
+                                            {
+                                                filesFixedLineEndings.Add(sf);
+                                            }
+                                            else
+                                            {
+                                                filesHashMismatch.Add(sf);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            filesHashMismatch.Add(sf);
+                                        }
+                                    }
 
-                //        using (var sw = new StreamWriter(File.OpenWrite(file)))
-                //        {
-                //            sw.Write("a.cs;b.cs;");
-                //        }
-                //    }
-                //}
+                                }
+                            }
+                        }
+                    }
+
+                    foreach (var sf in filesFixedLineEndings)
+                    {
+                        Console.WriteLine("fixed line endings for " + sf.FilePath);
+                    }
+
+                    foreach (var sf in filesNotInGit)
+                    {
+                        switch (notInGitOpt)
+                        {
+                            case "error":
+                                Console.WriteLine("error: file not in git " + sf.FilePath);
+                                errors++;
+                                break;
+                            case "warn":
+                                Console.WriteLine("warning: file not in git " + sf.FilePath);
+                                break;
+                            default:
+                                Console.WriteLine("embedding file not in git " + sf.FilePath);
+                                embedFiles.Add(sf);
+                                break;
+                        }
+                    }
+
+                    foreach(var sf in filesHashMismatch)
+                    {
+                        switch (hashMismatchOpt)
+                        {
+                            case "error":
+                                Console.WriteLine("error: hash mismatch for " + sf.FilePath);
+                                errors++;
+                                break;
+                            case "warn":
+                                Console.WriteLine("warning: hash mismatch for " + sf.FilePath);
+                                break;
+                            default:
+                                Console.WriteLine("embedding file due to hash mismatch for " + sf.FilePath);
+                                embedFiles.Add(sf);
+                                break;
+                        }
+                    }
+                }
 
                 var json = new SourceLinkJson
                 {
@@ -161,8 +258,79 @@ namespace SourceLink.Git {
                     js.Serialize(sw, json);
                 }
 
-                return 0;
+                if (embedFiles.Count > 0)
+                {
+                    Console.WriteLine("embedding " + embedFiles.Count + " files");
+                    var embedFile = embedOption.Value();
+                    if (String.IsNullOrEmpty(embedFile))
+                        embedFile = Path.ChangeExtension(file, ".embed");
+                    using (var sw = new StreamWriter(File.OpenWrite(embedFile)))
+                    {
+                        foreach (var sf in embedFiles)
+                        {
+                            sw.WriteLine(sf.FilePath);
+                        }
+                    }
+                }
+
+                return errors == 0 ? 0 : 1;
             });
+        }
+
+        private static bool TryFixLineEndings(SHA1 sha1, SourceFile sf)
+        {
+            var fileBytes = new byte[] { };
+            var hashesMatch = false;
+
+            // https://github.com/ctaggart/SourceLink/blob/v1/Exe/LineFeed.fs#L31-L50
+            // passing UTFEncoding without the BOM set allows it to be detected
+            // http://stackoverflow.com/a/27976558/23059
+            using (var fs = File.OpenRead(sf.FilePath))
+            using (var sr = new StreamReader(fs, new UTF8Encoding(false)))
+            {
+                var text = sr.ReadToEnd();
+                var lines = text.Split(new char[]{'\n'});
+                if (lines.Length > 0 && HasCrLf(lines))
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        // check hash without carriage return
+                        // if the hash matches, overwrite file
+                        using (var sw = new StreamWriter(ms, sr.CurrentEncoding))
+                        {
+                            for (var i = 0; i < lines.Length - 1; i++)
+                            {
+                                sw.Write(lines[i].TrimEnd(new char[] { '\r' }));
+                                sw.Write('\n');
+                            }
+                            sw.Write(lines[lines.Length - 1].TrimEnd(new char[] { '\r' }));
+                        }
+                        fileBytes = ms.ToArray();
+                        var fileHash = ComputeGitHash(sha1, fileBytes);
+                        hashesMatch = HashesMatch(sf.GitHash, fileHash.ToHex());
+                    }
+                }
+            }
+
+            if (hashesMatch)
+                File.WriteAllBytes(sf.FilePath, fileBytes);
+            return hashesMatch;
+        }
+
+        public static bool HasCrLf(string[] lines)
+        {
+            foreach(var line in lines)
+            {
+                if (line.EndsWith("\r"))
+                    return true;
+            }
+            return false;
+        }
+
+        public static bool HashesMatch(string fileHash, string gitHash)
+        {
+            if (fileHash == null || fileHash == null) return false;
+            return fileHash.Equals(gitHash);
         }
 
         // https://github.com/ctaggart/SourceLink/blob/v1/SourceLink/SystemExtensions.fs#L115
@@ -215,5 +383,28 @@ namespace SourceLink.Git {
             }
         }
 
+        public static byte[] ComputeGitHash (SHA1 sha1, byte[] file)
+        {
+            // https://github.com/ctaggart/SourceLink/blob/v1/Git/GitRepo.fs#L31
+            // let checksum = sha1.ComputeHash(Byte.concat prefix.ToUtf8 bytes) |> Hex.encode
+            var prefix = string.Format("blob {0}{1}", file.Length, '\0');
+            return sha1.ComputeHash(ConcatBytes(Encoding.UTF8.GetBytes(prefix), file));
+        }
+
+        public static byte[] ConcatBytes(byte[] a, byte[] b)
+        {
+            // https://github.com/ctaggart/SourceLink/blob/v1/SourceLink/SystemExtensions.fs#L144
+            var c = new byte[a.Length + b.Length];
+            Buffer.BlockCopy(a, 0, c, 0, a.Length);
+            Buffer.BlockCopy(b, 0, c, a.Length, b.Length);
+            return c;
+        }
+
+        public static string GetGitPath(string repo, string file)
+        {
+            var path = Path.GetFullPath(file);
+            if (!path.StartsWith(repo)) return null;
+            return path.Substring(repo.Length + 1);
+        }
     }
 }

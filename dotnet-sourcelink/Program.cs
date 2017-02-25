@@ -100,7 +100,7 @@ namespace SourceLink {
 
                 foreach (var doc in GetDocuments(path))
                 {
-                    Console.WriteLine("{0} {1} {2} {3}", toHex(doc.Hash), HashAlgorithmGuids.GetName(doc.HashAlgorithm), LanguageGuids.GetName(doc.Language), doc.Name);
+                    Console.WriteLine("{0} {1} {2} {3}", doc.Hash.ToHex(), HashAlgorithmGuids.GetName(doc.HashAlgorithm), LanguageGuids.GetName(doc.Language), doc.Name);
                 }
 
                 return 0;
@@ -132,7 +132,7 @@ namespace SourceLink {
                 {
                     if (doc.Url != null)
                     {
-                        Console.WriteLine("{0} {1} {2} {3}", toHex(doc.Hash), HashAlgorithmGuids.GetName(doc.HashAlgorithm), LanguageGuids.GetName(doc.Language), doc.Name);
+                        Console.WriteLine("{0} {1} {2} {3}", doc.Hash.ToHex(), HashAlgorithmGuids.GetName(doc.HashAlgorithm), LanguageGuids.GetName(doc.Language), doc.Name);
                         Console.WriteLine(doc.Url);
                     }
                     else
@@ -145,7 +145,7 @@ namespace SourceLink {
                     Console.WriteLine("" + missingDocs.Count + " Documents without URLs:");
                     foreach (var doc in missingDocs)
                     {
-                        Console.WriteLine("{0} {1} {2} {3}", toHex(doc.Hash), HashAlgorithmGuids.GetName(doc.HashAlgorithm), LanguageGuids.GetName(doc.Language), doc.Name);
+                        Console.WriteLine("{0} {1} {2} {3}", doc.Hash.ToHex(), HashAlgorithmGuids.GetName(doc.HashAlgorithm), LanguageGuids.GetName(doc.Language), doc.Name);
                     }
                     return 4;
                 }
@@ -182,7 +182,7 @@ namespace SourceLink {
                     {
                         if(doc.Error == null)
                         {
-                            Console.WriteLine("{0} {1} {2} {3}", toHex(doc.Hash), HashAlgorithmGuids.GetName(doc.HashAlgorithm), LanguageGuids.GetName(doc.Language), doc.Name);
+                            Console.WriteLine("{0} {1} {2} {3}", doc.Hash.ToHex(), HashAlgorithmGuids.GetName(doc.HashAlgorithm), LanguageGuids.GetName(doc.Language), doc.Name);
                             Console.WriteLine(doc.Url);
                         }
                         else
@@ -200,7 +200,7 @@ namespace SourceLink {
                     Console.WriteLine("" + missingDocs.Count + " Documents without URLs:");
                     foreach (var doc in missingDocs)
                     {
-                        Console.WriteLine("{0} {1} {2} {3}", toHex(doc.Hash), HashAlgorithmGuids.GetName(doc.HashAlgorithm), LanguageGuids.GetName(doc.Language), doc.Name);
+                        Console.WriteLine("{0} {1} {2} {3}", doc.Hash.ToHex(), HashAlgorithmGuids.GetName(doc.HashAlgorithm), LanguageGuids.GetName(doc.Language), doc.Name);
                     }
                 }
                 if (erroredDocs.Count > 0)
@@ -208,7 +208,7 @@ namespace SourceLink {
                     Console.WriteLine("" + erroredDocs.Count + " Documents with errors:");
                     foreach (var doc in erroredDocs)
                     {
-                        Console.WriteLine("{0} {1} {2} {3}", toHex(doc.Hash), HashAlgorithmGuids.GetName(doc.HashAlgorithm), LanguageGuids.GetName(doc.Language), doc.Name);
+                        Console.WriteLine("{0} {1} {2} {3}", doc.Hash.ToHex(), HashAlgorithmGuids.GetName(doc.HashAlgorithm), LanguageGuids.GetName(doc.Language), doc.Name);
                         Console.WriteLine(doc.Url);
                         Console.WriteLine("error: " + doc.Error);
                     }
@@ -258,11 +258,6 @@ namespace SourceLink {
                     };
                 }
             }
-        }
-
-        public static string toHex(byte[] bytes)
-        {
-            return BitConverter.ToString(bytes).Replace("-", "").ToLowerInvariant();
         }
 
         public static IEnumerable<Document> GetDocumentsWithUrls(string pdb)
@@ -323,7 +318,7 @@ namespace SourceLink {
                         if (doc.Error != null) continue;
                         if (!doc.Hash.CollectionEquals(doc.UrlHash))
                         {
-                            doc.Error = "url hash does not match: " + toHex(doc.Hash);
+                            doc.Error = "url hash does not match: " + doc.Hash.ToHex();
                         }
                     }
                     yield return doc;
