@@ -13,6 +13,4 @@
   <Target Name="SourceLinkTest">
     <SourceLink.Test.TestTask Pdb="$(SourceLinkPdb)" />
   </Target>
-
-  <Import Project="$(MSBuildThisFileDirectory)../SourceLink.props" />
 </Project>
