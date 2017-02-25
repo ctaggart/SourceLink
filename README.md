@@ -18,17 +18,19 @@ SourceLink v2 is a set of dotnet and msbuild tools to help create the source lin
 /sourcelink:<file>            Source link info to embed into Portable PDB.
 ```
 
-SourceLine v2 is [under active development](https://github.com/ctaggart/SourceLink/milestone/16) and a prerelease will be out soon. Installation will hopefully be as simple as adding a single reference to one of the SourceLink.Create NuGet packages.
+A prerelease of SourceLine v2 is available. Updated docs are coming soon. Add the references below to your project file and it should run automatically on a CI server. To try it out locally, you can do `dotnet build /p:ci=true /v:n`.
 
 ``` xml
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard1.4</TargetFramework>
+    <TargetFramework>netstandard1.6</TargetFramework>
     <DebugType>Portable</DebugType>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="SourceLink.Create.GitHub" Version="2.0.0-*" />
+    <PackageReference Include="SourceLink.Test" Version="2.0.0-*" />
     <DotNetCliToolReference Include="dotnet-sourcelink-git" Version="2.0.0-*" />
+    <DotNetCliToolReference Include="dotnet-sourcelink" Version="2.0.0-*" />
   </ItemGroup>
 </Project>
 ```
