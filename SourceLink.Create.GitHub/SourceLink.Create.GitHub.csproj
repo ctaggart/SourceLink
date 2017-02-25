@@ -26,7 +26,7 @@
       <Pack>true</Pack>
       <PackagePath>build</PackagePath>
     </Content>
-    <Content Include="$(OutputPath)*.*">
+    <Content Include="$(OutputPath)*.dll">
       <Pack>true</Pack>
       <PackagePath>build</PackagePath>
     </Content>

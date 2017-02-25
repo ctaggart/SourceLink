@@ -31,6 +31,7 @@ namespace SourceLink {
 
             if (args.Length == 0)
             {
+                Console.WriteLine("SourceLink " + Version.GetAssemblyInformationalVersion());
                 app.ShowHelp();
                 return 0;
             }

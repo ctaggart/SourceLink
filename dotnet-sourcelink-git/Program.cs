@@ -25,6 +25,7 @@ namespace SourceLink.Git {
 
             if (args.Length == 0)
             {
+                Console.WriteLine("SourceLink Git " + Version.GetAssemblyInformationalVersion());
                 app.ShowHelp();
                 return 0;
             }
