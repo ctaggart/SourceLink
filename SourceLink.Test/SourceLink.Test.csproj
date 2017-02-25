@@ -26,6 +26,10 @@
       <Pack>true</Pack>
       <PackagePath>build</PackagePath>
     </Content>
+    <Content Include="(OutputPath)*.*">
+      <Pack>true</Pack>
+      <PackagePath>build</PackagePath>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\SourceLink.Create.GitHub\Process.cs" Link="Process.cs" />
