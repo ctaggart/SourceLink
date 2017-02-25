@@ -28,4 +28,10 @@
     </Content>
   </ItemGroup>
 
+  <Target Name="Paths">
+    <Message Importance="high" Text="OutputPath = $(OutputPath)" />
+    <Message Importance="high" Text="OutDir = $(OutDir)" />
+    <Message Importance="high" Text="IntermediateOutputPath = $(IntermediateOutputPath)" />
+  </Target>
+
 </Project>
