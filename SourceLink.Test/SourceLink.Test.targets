@@ -5,7 +5,7 @@
   <PropertyGroup>
     <!-- enable only in CI environments by default -->
     <SourceLinkTest Condition="'$(SourceLinkTest)' == ''">$(CI)</SourceLinkTest>
-    <CompileDependsOn Condition="'$(SourceLinkTest)' == 'true'">$(CompileDependsOn);SourceLinkTest</CompileDependsOn>
+    <CompileDependsOn Condition="'$(SourceLinkTest)' == 'true' and $(DebugType) == 'portable'">$(CompileDependsOn);SourceLinkTest</CompileDependsOn>
     <SourceLinkPdb Condition="'$(SourceLinkPdb)' == ''">$(PdbFile)</SourceLinkPdb>
     <SourceLinkPdb Condition="'$(SourceLinkPdb)' == ''">$(IntermediateOutputPath)$(TargetName).pdb</SourceLinkPdb>
   </PropertyGroup>
