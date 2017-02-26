@@ -1,24 +1,22 @@
 
 # SourceLink
 <img src="https://ctaggart.github.io/SourceLink/SourceLink128.jpg" align="right">
-SourceLink is a set of dotnet and msbuild tools to automate source linking.
+SourceLink is a set of dotnet and msbuild tools to automate source linking. [Documentation is on the Wiki](https://github.com/ctaggart/SourceLink/wiki). In brief:
 
-## SourceLink v1 vs v2
+![image](https://cloud.githubusercontent.com/assets/80104/23337630/001cedb6-fbba-11e6-9c44-68f4c826470c.png)
 
-SourceLink version 1 automates [source indexing](http://msdn.microsoft.com/en-us/library/windows/hardware/ff556898.aspx) for Windows PDB files. It enables the source control management system to be the [source server](http://msdn.microsoft.com/en-us/library/windows/desktop/ms680641.aspx) by updating the pdb files with a source index of https links to the SCM. Access to the source code is controlled by the SCM.
+### source server support
+[SourceLink v1](https://github.com/ctaggart/SourceLink/wiki/SourceLink-v1) automates [source indexing](http://msdn.microsoft.com/en-us/library/windows/hardware/ff556898.aspx) of Windows PDB files. It enables the source control management system to be the [source server](http://msdn.microsoft.com/en-us/library/windows/desktop/ms680641.aspx) by updating the pdb files with a source index of https links to the SCM. Source indexing is done by modifying the pdb file after the compile.
 
-SourceLink v1 is distributed a couple of ways:
+### source link support
+The new source link support is done with Portable PDB files which are cross platform and many times more compact. The source link json is built before the the compile and the compiler embeds it in the pdb.
 
-[![SourceLink.Fake NuGet Status](http://img.shields.io/nuget/v/SourceLink.Fake.svg?style=flat)](https://www.nuget.org/packages/SourceLink.Fake/) [SourceLink.Fake](https://github.com/ctaggart/SourceLink/wiki/FAKE) is a component for the FAKE - F# Make
-
-[![SourceLink.exe NuGet Status](http://img.shields.io/nuget/v/SourceLink.svg?style=flat)](https://www.nuget.org/packages/SourceLink/) [SourceLink.exe](https://github.com/ctaggart/SourceLink/wiki/SourceLink.exe) is an executable that may be installed using Chocolatey 
-
-SourceLink v2 is a set of dotnet and msbuild tools to help create the source link info to embed into Portable PDB files. The compilers shipping with Visual Studio 2017 and with the dotnet SDKs support a new `/sourcelink` option. Here is the help for the latest C# compiler:
+SourceLink v2 is a set of DotNet and MSBuild tools to help create the source link JSON to embed into Portable PDB files. The compilers shipping with Visual Studio 2017 and with the DotNet SDKs support a new `/sourcelink` option. Here is the help for the latest C# compiler:
 ```
 /sourcelink:<file>            Source link info to embed into Portable PDB.
 ```
 
-A prerelease of SourceLine v2 is available. Updated docs are coming soon. Add the references below to your project file and it should run automatically on a CI server. To try it out locally, you can do `dotnet build /p:ci=true /v:n`.
+A prerelease of SourceLine v2 is available. Add the references below to your project file and it should run automatically on a CI server. To try it out locally, you can do `dotnet build /p:ci=true /v:n`.
 
 ``` xml
 <Project Sdk="Microsoft.NET.Sdk">
@@ -34,6 +32,3 @@ A prerelease of SourceLine v2 is available. Updated docs are coming soon. Add th
   </ItemGroup>
 </Project>
 ```
-
-## Documentation
-Additional [documentation is on the Wiki](https://github.com/ctaggart/SourceLink/wiki).
