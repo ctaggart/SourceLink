@@ -3,7 +3,7 @@
 <img src="https://ctaggart.github.io/SourceLink/SourceLink128.jpg" align="right">
 Source link support allows source code to be downloaded on demand while debugging. SourceLink is a set of build tools to help create and test for source link support.
 
-[Documentation is on the Wiki](https://github.com/ctaggart/SourceLink/wiki).
+Additional [documentation is on the wiki](https://github.com/ctaggart/SourceLink/wiki).
 
 Here is the [General, Debugging, Options Dialog Box](https://docs.microsoft.com/en-us/visualstudio/debugger/general-debugging-options-dialog-box) from Visual Studio 2017:
 ![image](https://cloud.githubusercontent.com/assets/80104/23337630/001cedb6-fbba-11e6-9c44-68f4c826470c.png)
