@@ -21,7 +21,7 @@ Here is the [General, Debugging, Options Dialog Box](https://docs.microsoft.com/
 
 It is possible to create a source link JSON without these tools. Here is [an example](https://github.com/ctaggart/sourcelink-test/blob/18a795d827a4b9913d4d0e1f0e6ac533ab508670/src/ClassLibrary1/ClassLibrary1.csproj) just using the git command line. However, it is easy to get wrong. dotnet-sourcelink is tool you can use to test that the source link works for the Portable PDB.
 
-Install by adding this the project file:
+Install by adding this `DotNetCliToolReference` to the project file:
 ``` xml
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
