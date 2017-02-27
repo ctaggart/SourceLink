@@ -38,7 +38,7 @@ From the project folder, you can then test the Portable PDB by running `dotnet s
 
 If you wish to have `dotnet sourcelink test` run on your build server for each build, you can add the MSBuild targets by adding this to your project file too:
 ``` xml
-<PackageReference Include="SourceLink.Test" Version="2.0.0-*" />
+<PackageReference Include="SourceLink.Test" Version="2.0.0-*" PrivateAssets="all" />
 ```
 You can control when it runs by setting the `SourceLinkTest` property. It defaults to running when CI is true, so it will run automatically on continuous integration servers like AppVeyor and Travis CI which have that environment variable set. In general these tools are meant to be run only on your build server, but it is simple to test locally with:
 ```
@@ -58,5 +58,5 @@ By default, sourcelink-git will verify that all of the source files are in the r
 The tool can be run automatically by installing MSBuild targets. This tool automatically figures out the `SourceLinkUrl` based on a git remote origin for GitHub. That property can be set manually for other providers. Contributions for other MSBuild targets for other providers are welcome.
 
 ``` xml
-<PackageReference Include="SourceLink.Create.GitHub" Version="2.0.0-*" />
+<PackageReference Include="SourceLink.Create.GitHub" Version="2.0.0-*" PrivateAssets="all" />
 ```
