@@ -17,14 +17,14 @@ if ($env:appveyor){
 
 $pack = "pack", "-c", "release", "-o", "../bin", "/p:Version=$version$versionSuffix", "/v:n"
 
-Set-Location $psscriptroot\dotnet-sourcelink
-dotnet restore
-dotnet sourcelink-git origin
+# Set-Location $psscriptroot\dotnet-sourcelink
+# dotnet restore
+# dotnet sourcelink-git origin
 # dotnet $pack
 
-# Set-Location $psscriptroot\dotnet-sourcelink-git
-# dotnet restore
-# dotnet $pack
+Set-Location $psscriptroot\dotnet-sourcelink-git
+dotnet restore
+dotnet $pack
 
 # Set-Location $psscriptroot\SourceLink.Create.GitHub
 # dotnet msbuild /t:Paths
