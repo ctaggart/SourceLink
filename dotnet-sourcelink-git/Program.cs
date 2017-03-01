@@ -47,7 +47,7 @@ namespace SourceLink.Git {
 
             command.OnExecute(() =>
             {
-                var dir = "./";
+                var dir = ".";
                 if (dirOption.HasValue())
                     dir = dirOption.Value();
 
@@ -71,7 +71,7 @@ namespace SourceLink.Git {
 
             command.OnExecute(() =>
             {
-                var dir = "./";
+                var dir = ".";
                 if (dirOption.HasValue())
                     dir = dirOption.Value();
 
@@ -125,7 +125,7 @@ namespace SourceLink.Git {
                 var embedFiles = new List<SourceFile>();
                 var errors = 0;
 
-                var dir = "./";
+                var dir = ".";
                 if (dirOption.HasValue())
                     dir = dirOption.Value();
 
@@ -355,10 +355,8 @@ namespace SourceLink.Git {
         {
             foreach(var d in GetDirectoryNames(dir))
             {
-                Console.WriteLine("looking for git repo in:" + d);
                 if (Repository.IsValid(d))
                 {
-                    Console.WriteLine("found git repo in:" + dir);
                     return d;
                 }
             }
