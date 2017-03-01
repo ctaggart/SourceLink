@@ -2,6 +2,7 @@
   
   <PropertyGroup>
     <TargetFramework>netstandard1.6</TargetFramework>
+    <DebugType>Embedded</DebugType>
     <!-- https://github.com/NuGet/Home/wiki/Adding-nuget-pack-as-a-msbuild-target -->
     <IncludeBuildOutput>false</IncludeBuildOutput>
 
@@ -31,10 +32,6 @@
       <PackagePath>build</PackagePath>
     </Content>
     <Content Include="$(OutputPath)SourceLink.Create.GitHub.deps.json">
-      <Pack>true</Pack>
-      <PackagePath>build</PackagePath>
-    </Content>
-    <Content Include="$(OutputPath)SourceLink.Create.GitHub.pdb">
       <Pack>true</Pack>
       <PackagePath>build</PackagePath>
     </Content>

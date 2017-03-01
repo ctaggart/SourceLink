@@ -2,6 +2,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp1.0</TargetFramework>
+    <DebugType>Embedded</DebugType>
     <PackageType>DotnetCliTool</PackageType>
 
     <Authors>Cameron Taggart</Authors>
