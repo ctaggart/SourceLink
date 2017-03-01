@@ -15,7 +15,7 @@ if ($env:appveyor){
     Update-AppveyorBuild -Version "$version$versionSuffix"
 }
 
-$pack = "pack", "-c", "release", "--include-symbols", "-o", "../bin", "/p:Version=$version$versionSuffix", "/v:n"
+$pack = "pack", "-c", "release", "-o", "../bin", "/p:Version=$version$versionSuffix", "/v:n"
 
 Set-Location $psscriptroot\dotnet-sourcelink
 dotnet restore
@@ -35,7 +35,6 @@ dotnet restore
 dotnet $pack
 
 Set-Location $psscriptroot
-bash .\build-rename.sh
 
 # testing on local nuget feed
 if (-not $env:appveyor){
