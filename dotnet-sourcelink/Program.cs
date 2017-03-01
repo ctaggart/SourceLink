@@ -10,6 +10,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
+using System.Reflection.PortableExecutable;
 
 namespace SourceLink {
     public class Program
@@ -233,11 +234,31 @@ namespace SourceLink {
 
         public static readonly Guid SourceLinkId = new Guid("CC110556-A091-4D38-9FEC-25AB9A351A6A");
 
-        public static byte[] GetSourceLinkBytes(string pdb)
+        public static MetadataReader GetMetaDataReader(string path, Stream stream)
         {
-            using (var mrp = MetadataReaderProvider.FromPortablePdbStream(File.OpenRead(pdb)))
+            if (path.EndsWith(".dll"))
             {
-                var mr = mrp.GetMetadataReader();
+                var reader = new PEReader(stream);
+                if (reader.HasMetadata)
+                {
+                    // https://github.com/dotnet/corefx/blob/master/src/System.Reflection.Metadata/tests/PortableExecutable/PEReaderTests.cs#L392
+                    var embeddedProvider = reader.ReadEmbeddedPortablePdbDebugDirectoryData(reader.ReadDebugDirectory()[2]);
+                    return embeddedProvider.GetMetadataReader();
+                }
+            }
+            else
+            {
+                var mrp = MetadataReaderProvider.FromPortablePdbStream(stream);
+                return mrp.GetMetadataReader();
+            }
+            return null;
+        }
+
+        public static byte[] GetSourceLinkBytes(string path)
+        {
+            using (var file = File.OpenRead(path))
+            {
+                var mr = GetMetaDataReader(path, file);
                 var blobh = default(BlobHandle);
                 foreach (var cdih in mr.GetCustomDebugInformation(EntityHandle.ModuleDefinition))
                 {
@@ -263,11 +284,11 @@ namespace SourceLink {
             return false;
         }
 
-        public static IEnumerable<Document> GetDocuments(string pdb)
+        public static IEnumerable<Document> GetDocuments(string path)
         {
-            using (var mrp = MetadataReaderProvider.FromPortablePdbStream(File.OpenRead(pdb)))
+            using (var file = File.OpenRead(path))
             {
-                var mr = mrp.GetMetadataReader();
+                var mr = GetMetaDataReader(path, file);
                 foreach (var dh in mr.Documents)
                 {
                     var d = mr.GetDocument(dh);

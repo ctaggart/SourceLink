@@ -39,10 +39,11 @@ namespace SourceLink.Create.GitHub
 
             if (string.IsNullOrEmpty(url))
             {
-                var originCmd = Process.RunAndGetOutput("dotnet", "sourcelink-git origin" + gitOption);
+                var originArgs = "sourcelink-git origin" + gitOption;
+                var originCmd = Process.RunAndGetOutput("dotnet", originArgs);
                 if (originCmd.ExitCode != 0 || originCmd.OutputLines.Count != 1)
                 {
-                    Log.LogMessage(MessageImportance.High, "unable to get repository origin");
+                    Log.LogMessage(MessageImportance.High, "unable to find repository origin with: dotnet " + originArgs);
                     return false;
                 }
                 var origin = originCmd.OutputLines[0];

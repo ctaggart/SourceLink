@@ -26,7 +26,7 @@ Install by adding this `DotNetCliToolReference` to the project file:
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard1.6</TargetFramework>
-    <DebugType>Portable</DebugType>
+    <DebugType>embedded</DebugType>
   </PropertyGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="dotnet-sourcelink" Version="2.0.0-*" />

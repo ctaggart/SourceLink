@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.6</TargetFramework>
+    <DebugType>embedded</DebugType>
     <!-- https://github.com/NuGet/Home/wiki/Adding-nuget-pack-as-a-msbuild-target -->
     <IncludeBuildOutput>false</IncludeBuildOutput>
 
@@ -34,13 +35,10 @@
       <Pack>true</Pack>
       <PackagePath>build</PackagePath>
     </Content>
-    <Content Include="$(OutputPath)SourceLink.Test.pdb">
-      <Pack>true</Pack>
-      <PackagePath>build</PackagePath>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\SourceLink.Create.GitHub\Process.cs" Link="Process.cs" />
   </ItemGroup>
 
+  <!--<Import Project="$(MSBuildThisFileDirectory)../SourceLink.props" />-->
 </Project>
