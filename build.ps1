@@ -19,21 +19,21 @@ $pack = "pack", "-c", "release", "-o", "../bin", "/p:Version=$version$versionSuf
 
 Set-Location $psscriptroot\dotnet-sourcelink
 dotnet restore
-dotnet sourcelink-git origin
-dotnet $pack
+# dotnet sourcelink-git origin
+# dotnet $pack
 
-Set-Location $psscriptroot\dotnet-sourcelink-git
-dotnet restore
-dotnet $pack
+# Set-Location $psscriptroot\dotnet-sourcelink-git
+# dotnet restore
+# dotnet $pack
 
-Set-Location $psscriptroot\SourceLink.Create.GitHub
-dotnet msbuild /t:Paths
-dotnet restore
-dotnet $pack
+# Set-Location $psscriptroot\SourceLink.Create.GitHub
+# dotnet msbuild /t:Paths
+# dotnet restore
+# dotnet $pack
 
-Set-Location $psscriptroot\SourceLink.Test
-dotnet restore
-dotnet $pack
+# Set-Location $psscriptroot\SourceLink.Test
+# dotnet restore
+# dotnet $pack
 
 Set-Location $psscriptroot
 
