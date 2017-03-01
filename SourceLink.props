@@ -2,7 +2,7 @@
   <PropertyGroup>
     <SourceLinkCreate>false</SourceLinkCreate>
     <SourceLinkCreate>false</SourceLinkCreate>
-  <PropertyGroup>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="SourceLink.Create.GitHub" Version="[2.0.0-b375]" PrivateAssets="all" />
     <PackageReference Include="SourceLink.Test" Version="[2.0.0-b375]" PrivateAssets="all" />
