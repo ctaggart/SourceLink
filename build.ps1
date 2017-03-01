@@ -18,6 +18,7 @@ if ($env:appveyor){
 $pack = "pack", "-c", "release", "-o", "../bin", "/p:Version=$version$versionSuffix", "/v:n"
 
 Set-Location $psscriptroot\dotnet-sourcelink
+dotnet sourcelink-git origin
 dotnet restore
 dotnet $pack
 
