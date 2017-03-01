@@ -355,8 +355,12 @@ namespace SourceLink.Git {
         {
             foreach(var d in GetDirectoryNames(dir))
             {
+                Console.WriteLine("looking for git repo in:" + dir);
                 if (Repository.IsValid(d))
+                {
+                    Console.WriteLine("found git repo in:" + dir);
                     return d;
+                }
             }
             return null;
         }
