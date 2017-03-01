@@ -367,14 +367,11 @@ namespace SourceLink.Git {
         {
             using (var repo = new Repository(repoPath))
             {
-                if (repo.Head.IsTracking)
+                foreach (var r in repo.Network.Remotes)
                 {
-                    foreach (var r in repo.Network.Remotes)
+                    if (r.Name == "origin")
                     {
-                        if (r.Name == "origin")
-                        {
-                            return r.Url;
-                        }
+                        return r.Url;
                     }
                 }
             }
