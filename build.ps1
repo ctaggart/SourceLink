@@ -21,6 +21,7 @@ git remote -v
 
 Set-Location $psscriptroot\dotnet-sourcelink
 dotnet restore
+dotnet sourcelink-git origin -d c:\projects\sourcelink
 dotnet sourcelink-git origin
 dotnet $pack
 
