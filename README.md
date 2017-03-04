@@ -12,10 +12,19 @@ Here is the [General, Debugging, Options Dialog Box](https://docs.microsoft.com/
 [SourceLink v1](https://github.com/ctaggart/SourceLink/wiki/SourceLink-v1) automates [source indexing](http://msdn.microsoft.com/en-us/library/windows/hardware/ff556898.aspx) of Windows PDB files. It enables the source code repostiory to be the [source server](http://msdn.microsoft.com/en-us/library/windows/desktop/ms680641.aspx) by updating the Windows PDB files with a source index of https links. Source indexing is done by modifying the Windows PDB file after a compile.
 
 ### Enable source link support
-.NET Core introduced the [Portable PDB](https://github.com/dotnet/core/blob/master/Documentation/diagnostics/portable_pdb.md) format. They are cross platform and several times smaller. The implementation and specification are open source. Source link support is [in the spec](https://github.com/dotnet/corefx/blob/master/src/System.Reflection.Metadata/specs/PortablePdb-Metadata.md#SourceLink). The source link JSON file is built before the compile and the .NET compilers embeds it in the Portable PDB file. The compilers shipping with Visual Studio 2017 and with the DotNet SDKs support the `/sourcelink` option. Here is the help for the latest C# compiler:
+SourceLink v2 helps enable source link support using the [Portable PDB](https://github.com/dotnet/core/blob/master/Documentation/diagnostics/portable_pdb.md) format. They are cross platform and several times smaller than Windows PDB files. The implementation and specification are open source. Source link support is [in the spec](https://github.com/dotnet/corefx/blob/master/src/System.Reflection.Metadata/specs/PortablePdb-Metadata.md#SourceLink). The source link JSON file is built before the compile and the .NET compilers embeds it in the Portable PDB file. The compilers shipping with Visual Studio 2017 and with the DotNet SDKs support the `/sourcelink` option. Here is the relevant help for the latest C# compiler:
 ```
-/sourcelink:<file>            Source link info to embed into Portable PDB.
+. "C:\Program Files\dotnet\sdk\1.0.0-rc4-004771\Roslyn\RunCsc.cmd" /?
+
+ /debug:{full|pdbonly|portable|embedded}
+                               Specify debugging type ('full' is default,
+                               'portable' is a cross-platform format,
+                               'embedded' is a cross-platform format embedded into
+                               the target .dll or .exe)
+
+ /sourcelink:<file>            Source link info to embed into Portable PDB.
 ```
+We recommend using the `embedded` debug type. This works for both .NET Framework and .NET Core.
 
 ### dotnet sourcelink
 
