@@ -21,10 +21,14 @@ SourceLink v2 helps enable source link support using the [Portable PDB](https://
                                'portable' is a cross-platform format,
                                'embedded' is a cross-platform format embedded into
                                the target .dll or .exe)
-
+                               
+ /embed                        Embed all source files in the PDB.
+ 
+ /embed:<file list>            Embed specific files in the PDB
+ 
  /sourcelink:<file>            Source link info to embed into Portable PDB.
 ```
-We recommend using the `embedded` debug type. This works for both .NET Framework and .NET Core.
+We recommend using the `embedded` debug type. This works for both .NET Framework and .NET Core. If you choose to embed all source files, you don't need this tool. This may be useful to private repositories before authentication is added to the debugging tools. Hopefully, [authentication support](https://github.com/dotnet/roslyn/issues/12759#issuecomment-282793617) will be in the first update for Visual Studio 2017. 
 
 ### dotnet sourcelink
 
