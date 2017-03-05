@@ -361,10 +361,12 @@ namespace SourceLink {
                     if(doc.Url != null)
                     {
                         HashUrl(hc, doc);
-                        if (doc.Error != null) continue;
-                        if (!doc.Hash.CollectionEquals(doc.UrlHash))
+                        if (doc.Error == null)
                         {
-                            doc.Error = "url hash does not match: " + doc.Hash.ToHex();
+                            if (!doc.Hash.CollectionEquals(doc.UrlHash))
+                            {
+                                doc.Error = "url hash does not match: " + doc.Hash.ToHex();
+                            }
                         }
                     }
                     yield return doc;
