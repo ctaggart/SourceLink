@@ -42,7 +42,7 @@ Install by adding this `DotNetCliToolReference` to the project file:
     <DebugType>embedded</DebugType>
   </PropertyGroup>
   <ItemGroup>
-    <DotNetCliToolReference Include="dotnet-sourcelink" Version="2.0.0-*" />
+    <DotNetCliToolReference Include="dotnet-sourcelink" Version="2.0.0" />
   </ItemGroup>
 </Project>
 ```
@@ -51,7 +51,7 @@ From the project folder, you can then test the Portable PDB by running `dotnet s
 
 If you wish to have `dotnet sourcelink test` run on your build server for each build, you can add the MSBuild targets by adding this to your project file too:
 ``` xml
-<PackageReference Include="SourceLink.Test" Version="2.0.0-*" PrivateAssets="all" />
+<PackageReference Include="SourceLink.Test" Version="2.0.0" PrivateAssets="all" />
 ```
 You can control when it runs by setting the `SourceLinkTest` property. It defaults to running when CI is true, so it will run automatically on continuous integration servers like AppVeyor and Travis CI which have that environment variable set. In general these tools are meant to be run only on your build server, but it is simple to test locally with:
 ```
@@ -65,11 +65,11 @@ The debugger will download the source file and verify that its checksum matches 
 By default, sourcelink-git will verify that all of the source files are in the repository and that their checksums match. If the checksums do not match due to line endings, it will automatically fix them to match the git repository like endings of `lf`. If the file checksums still don't match, it will tell the compiler to embed it in the Portable PDB. If the file is not in the git repository, it will tell the compiler to embed it in the Portable PDB. All of these settings are configurable.
 
 ``` xml
-<DotNetCliToolReference Include="dotnet-sourcelink-git" Version="2.0.0-*" />
+<DotNetCliToolReference Include="dotnet-sourcelink-git" Version="2.0.0" />
 ```
 
 The tool can be run automatically by installing MSBuild targets. This tool automatically figures out the `SourceLinkUrl` based on a git remote origin for GitHub. That property can be set manually for other providers. Contributions for other MSBuild targets for other providers are welcome.
 
 ``` xml
-<PackageReference Include="SourceLink.Create.GitHub" Version="2.0.0-*" PrivateAssets="all" />
+<PackageReference Include="SourceLink.Create.GitHub" Version="2.0.0" PrivateAssets="all" />
 ```

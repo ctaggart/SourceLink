@@ -4,9 +4,9 @@
     <SourceLinkTest>true</SourceLinkTest>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="SourceLink.Create.GitHub" Version="[2.0.0-b393]" PrivateAssets="all" />
-    <PackageReference Include="SourceLink.Test" Version="[2.0.0-b393]" PrivateAssets="all" />
-    <DotNetCliToolReference Include="dotnet-sourcelink-git" Version="[2.0.0-b393]" />
-    <DotNetCliToolReference Include="dotnet-sourcelink" Version="[2.0.0-b393]" />
+    <PackageReference Include="SourceLink.Create.GitHub" Version="[2.0.0-b400]" PrivateAssets="all" />
+    <PackageReference Include="SourceLink.Test" Version="[2.0.0-b400]" PrivateAssets="all" />
+    <DotNetCliToolReference Include="dotnet-sourcelink-git" Version="[2.0.0-b400]" />
+    <DotNetCliToolReference Include="dotnet-sourcelink" Version="[2.0.0-b400]" />
   </ItemGroup>
 </Project>
