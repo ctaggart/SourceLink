@@ -43,5 +43,5 @@
     </Content>
   </ItemGroup>
 
-  <!--<Import Project="$(MSBuildThisFileDirectory)../SourceLink.props" />-->
+  <!--<Import Project="../SourceLink.props" />-->
 </Project>
