@@ -1,33 +1,3 @@
-﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-
-  <UsingTask TaskName="SourceLink.Create.GitHub.CreateTask" AssemblyFile="SourceLink.Create.GitHub.dll" />
-
-  <PropertyGroup>
-    <!-- enable only in CI environments by default -->
-    <SourceLinkCreate Condition="'$(SourceLinkCreate)' == ''">$(CI)</SourceLinkCreate>
-    <CompileDependsOn Condition="'$(SourceLinkCreate)' == 'true' and ($(DebugType) == 'portable' or $(DebugType) == 'embedded')">SourceLinkCreate;$(CompileDependsOn)</CompileDependsOn>
-    <SourceLinkRepo Condition="'$(SourceLinkRepo)' == ''">$(MSBuildProjectDirectory)</SourceLinkRepo>
-    <SourceLinkFile Condition="'$(SourceLinkFile)' == ''">$(SourceLink)</SourceLinkFile>
-    <SourceLinkFile Condition="'$(SourceLinkFile)' == ''">$(BaseIntermediateOutputPath)sourcelink.json</SourceLinkFile>
-    <SourceLinkNotInGit Condition="'$(SourceLinkNotInGit)' == ''">embed</SourceLinkNotInGit>
-    <SourceLinkHashMismatch Condition="'$(SourceLinkHashMismatch)' == ''">embed</SourceLinkHashMismatch>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <SourceLinkSources Condition="'@(SourceLinkSources)' == ''" Include="@(Compile)" Exclude="@(EmbeddedFiles)" />
-  </ItemGroup>
-
-  <Target Name="SourceLinkCreate">
-    <SourceLink.Create.GitHub.CreateTask
-        GitDirectory="$(SourceLinkGitDirectory)"
-        Url="$(SourceLinkUrl)"
-        File="$(SourceLinkFile)"
-        Sources="@(SourceLinkSources)"
-        NoAutoLF="$(SourceLinkNoAutoLF)"
-        EmbeddedFilesIn="@(EmbeddedFiles)">
-      <Output PropertyName="SourceLink" TaskParameter="SourceLink" />
-      <Output ItemName="EmbeddedFiles" TaskParameter="EmbeddedFiles" />
-    </SourceLink.Create.GitHub.CreateTask>
-  </Target>
-
+﻿<Project>
+  <Import Condition="'$(MSBuildRuntimeType)' == 'Core'" Project="SourceLink.Create.GitHub.Core.targets" />
 </Project>

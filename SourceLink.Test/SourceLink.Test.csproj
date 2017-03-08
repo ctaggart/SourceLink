@@ -1,10 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.6</TargetFramework>
+    <TargetFramework>netstandard1.4</TargetFramework>
     <DebugType>embedded</DebugType>
     <!-- https://github.com/NuGet/Home/wiki/Adding-nuget-pack-as-a-msbuild-target -->
     <IncludeBuildOutput>false</IncludeBuildOutput>
+    <!--<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>-->
 
     <Authors>Cameron Taggart</Authors>
     <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
@@ -24,6 +25,10 @@
   <!-- https://docs.microsoft.com/en-us/dotnet/articles/core/preview3/tools/extensibility -->
   <ItemGroup Label="dotnet pack instructions">
     <Content Include="SourceLink.Test.targets">
+      <Pack>true</Pack>
+      <PackagePath>build</PackagePath>
+    </Content>
+    <Content Include="SourceLink.Test.Core.targets">
       <Pack>true</Pack>
       <PackagePath>build</PackagePath>
     </Content>
