@@ -1,17 +1,3 @@
-﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-
-  <UsingTask TaskName="SourceLink.Test.TestTask" AssemblyFile="SourceLink.Test.dll" />
-
-  <PropertyGroup>
-    <!-- enable only in CI environments by default -->
-    <SourceLinkTest Condition="'$(SourceLinkTest)' == ''">$(CI)</SourceLinkTest>
-    <CompileDependsOn Condition="'$(SourceLinkTest)' == 'true' and ($(DebugType) == 'portable' or $(DebugType) == 'embedded')">$(CompileDependsOn);SourceLinkTest</CompileDependsOn>
-    <SourceLinkPdb Condition="'$(SourceLinkPdb)' == ''">$(PdbFile)</SourceLinkPdb>
-    <SourceLinkPdb Condition="'$(SourceLinkPdb)' == '' and $(DebugType) == 'portable'">$(IntermediateOutputPath)$(TargetName).pdb</SourceLinkPdb>
-    <SourceLinkPdb Condition="'$(SourceLinkPdb)' == '' and $(DebugType) == 'embedded'">$(IntermediateOutputPath)$(TargetName).dll</SourceLinkPdb>
-  </PropertyGroup>
-
-  <Target Name="SourceLinkTest">
-    <SourceLink.Test.TestTask Pdb="$(SourceLinkPdb)" />
-  </Target>
+﻿<Project>
+  <Import Condition="'$(MSBuildRuntimeType)' == 'Core'" Project="SourceLink.Test.Core.targets" />
 </Project>
