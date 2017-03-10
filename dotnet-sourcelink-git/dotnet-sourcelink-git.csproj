@@ -1,19 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../build/common.props" />
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp1.0</TargetFramework>
-    <DebugType>embedded</DebugType>
     <PackageType>DotnetCliTool</PackageType>
-    
-    <Authors>Cameron Taggart</Authors>
-    <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
-    <PackageIconUrl>https://ctaggart.github.io/SourceLink/SourceLink128.jpg</PackageIconUrl>
-    <PackageProjectUrl>https://github.com/ctaggart/SourceLink</PackageProjectUrl>
-    <PackageTags>sourcelink pdb symbols git sourceindexing debugging sourceserver build</PackageTags>
-    <Description>
-      SourceLink: Source Code On Demand
-      Source Link your Portable PDB files to allow source code to be downloaded on demand
-    </Description>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\dotnet-sourcelink\SourceLinkJson.cs" Link="SourceLinkJson.cs" />
@@ -25,5 +15,5 @@
     <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
   </ItemGroup>
-  <Import Project="../SourceLink.props" />
+  <Import Project="../build/sourcelink.props" />
 </Project>

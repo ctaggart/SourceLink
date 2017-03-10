@@ -1,3 +1,23 @@
 ﻿<Project>
-  <Import Condition="'$(MSBuildRuntimeType)' == 'Core'" Project="SourceLink.Test.Core.targets" />
+  <PropertyGroup>
+    <SourceLinkTestDll Condition="'$(MSBuildRuntimeType)' == 'Core'">netstandard1.4\SourceLink.Test.dll</SourceLinkTestDll>
+    <SourceLinkTestDll Condition="'$(MSBuildRuntimeType)' != 'Core'">net461\SourceLink.Test.dll</SourceLinkTestDll>
+  </PropertyGroup>
+  <UsingTask TaskName="SourceLink.Test.TestTask" AssemblyFile="$(SourceLinkTestDll)" />
+
+  <PropertyGroup>
+    <!-- enable only in CI environments by default -->
+    <!-- enable on AppVeyor and Travis CI, detect CI environment variable -->
+    <SourceLinkTest Condition="'$(SourceLinkTest)' == ''">$(CI)</SourceLinkTest>
+    <!-- enable on Jenkins and TeamCity, detect BUILD_NUMBER environment variable -->
+    <SourceLinkTest Condition="'$(SourceLinkTest)' == '' and '$(BUILD_NUMBER)' != ''">true</SourceLinkTest>
+    <CompileDependsOn Condition="'$(SourceLinkTest)' == 'true' and ($(DebugType) == 'portable' or $(DebugType) == 'embedded')">$(CompileDependsOn);SourceLinkTest</CompileDependsOn>
+    <SourceLinkPdb Condition="'$(SourceLinkPdb)' == ''">$(PdbFile)</SourceLinkPdb>
+    <SourceLinkPdb Condition="'$(SourceLinkPdb)' == '' and $(DebugType) == 'portable'">$(IntermediateOutputPath)$(TargetName).pdb</SourceLinkPdb>
+    <SourceLinkPdb Condition="'$(SourceLinkPdb)' == '' and $(DebugType) == 'embedded'">$(IntermediateOutputPath)$(TargetName).dll</SourceLinkPdb>
+  </PropertyGroup>
+
+  <Target Name="SourceLinkTest">
+    <SourceLink.Test.TestTask Pdb="$(SourceLinkPdb)" />
+  </Target>
 </Project>
