@@ -1,21 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  
+  <Import Project="../build/common.props" />
   <PropertyGroup>
-    <TargetFramework>netstandard1.4</TargetFramework>
-    <DebugType>embedded</DebugType>
+    <TargetFrameworks>netstandard1.4;net461</TargetFrameworks>
     <!-- https://github.com/NuGet/Home/wiki/Adding-nuget-pack-as-a-msbuild-target -->
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <!--<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>-->
-
-    <Authors>Cameron Taggart</Authors>
-    <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
-    <PackageIconUrl>https://ctaggart.github.io/SourceLink/SourceLink128.jpg</PackageIconUrl>
-    <PackageProjectUrl>https://github.com/ctaggart/SourceLink</PackageProjectUrl>
-    <PackageTags>sourcelink pdb symbols git sourceindexing debugging sourceserver build</PackageTags>
-    <Description>
-      SourceLink: Source Code On Demand
-      Source Link your Portable PDB files to allow source code to be downloaded on demand
-    </Description>
   </PropertyGroup>
   
   <ItemGroup>
@@ -28,19 +17,21 @@
       <Pack>true</Pack>
       <PackagePath>build</PackagePath>
     </Content>
-    <Content Include="SourceLink.Create.GitHub.Core.targets">
+
+    <Content Include="$(OutputPath)netstandard1.4/SourceLink.Create.GitHub.dll">
       <Pack>true</Pack>
-      <PackagePath>build</PackagePath>
+      <PackagePath>build/netstandard1.4</PackagePath>
     </Content>
-    <Content Include="$(OutputPath)SourceLink.Create.GitHub.dll">
+    <Content Include="$(OutputPath)netstandard1.4/SourceLink.Create.GitHub.deps.json">
       <Pack>true</Pack>
-      <PackagePath>build</PackagePath>
+      <PackagePath>build/netstandard1.4</PackagePath>
     </Content>
-    <Content Include="$(OutputPath)SourceLink.Create.GitHub.deps.json">
+
+    <Content Include="$(OutputPath)net461/SourceLink.Create.GitHub.dll">
       <Pack>true</Pack>
-      <PackagePath>build</PackagePath>
+      <PackagePath>build/net461</PackagePath>
     </Content>
   </ItemGroup>
 
-  <!--<Import Project="../SourceLink.props" />-->
+  <!--<Import Project="../build/sourcelink.props" />-->
 </Project>
