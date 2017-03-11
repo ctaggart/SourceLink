@@ -14,7 +14,7 @@
     <CompileDependsOn Condition="'$(SourceLinkCreate)' == 'true' and ($(DebugType) == 'portable' or $(DebugType) == 'embedded')">SourceLinkCreate;$(CompileDependsOn)</CompileDependsOn>
     <SourceLinkRepo Condition="'$(SourceLinkRepo)' == ''">$(MSBuildProjectDirectory)</SourceLinkRepo>
     <SourceLinkFile Condition="'$(SourceLinkFile)' == ''">$(SourceLink)</SourceLinkFile>
-    <SourceLinkFile Condition="'$(SourceLinkFile)' == ''">$(BaseIntermediateOutputPath)sourcelink.json</SourceLinkFile>
+    <SourceLinkFile Condition="'$(SourceLinkFile)' == ''">$(IntermediateOutputPath)sourcelink.json</SourceLinkFile>
     <SourceLinkNotInGit Condition="'$(SourceLinkNotInGit)' == ''">embed</SourceLinkNotInGit>
     <SourceLinkHashMismatch Condition="'$(SourceLinkHashMismatch)' == ''">embed</SourceLinkHashMismatch>
   </PropertyGroup>
