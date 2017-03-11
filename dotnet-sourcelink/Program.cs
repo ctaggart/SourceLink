@@ -60,14 +60,14 @@ namespace SourceLink {
                 }
                 if (!File.Exists(path))
                 {
-                    Console.WriteLine("PDB file does not exist");
+                    Console.WriteLine("file does not exist: " + path);
                     return 3;
                 }
 
                 var bytes = GetSourceLinkBytes(path);
-                if (bytes.Length == 0)
+                if (bytes == null || bytes.Length == 0)
                 {
-                    Console.WriteLine("Source Link JSON not found in PDB file");
+                    Console.WriteLine("Source Link JSON not found in file: " + path);
                     return 4;
                 }
                 Console.WriteLine(Encoding.UTF8.GetString(bytes));
@@ -92,7 +92,7 @@ namespace SourceLink {
                 }
                 if (!File.Exists(path))
                 {
-                    Console.WriteLine("PDB file does not exist");
+                    Console.WriteLine("file does not exist: " + path);
                     return 3;
                 }
 
@@ -121,7 +121,7 @@ namespace SourceLink {
                 }
                 if (!File.Exists(path))
                 {
-                    Console.WriteLine("PDB file does not exist");
+                    Console.WriteLine("file does not exist: " + path);
                     return 3;
                 }
 
@@ -173,7 +173,7 @@ namespace SourceLink {
                 }
                 if (!File.Exists(path))
                 {
-                    Console.WriteLine("PDB file does not exist");
+                    Console.WriteLine("file does not exist: " + path);
                     return 3;
                 }
 
@@ -242,7 +242,9 @@ namespace SourceLink {
                 if (reader.HasMetadata)
                 {
                     // https://github.com/dotnet/corefx/blob/master/src/System.Reflection.Metadata/tests/PortableExecutable/PEReaderTests.cs#L392
-                    var embeddedProvider = reader.ReadEmbeddedPortablePdbDebugDirectoryData(reader.ReadDebugDirectory()[2]);
+                    var debugDirectoryEntries = reader.ReadDebugDirectory();
+                    if (debugDirectoryEntries.Length < 3) return null;
+                    var embeddedProvider = reader.ReadEmbeddedPortablePdbDebugDirectoryData(debugDirectoryEntries[2]);
                     return embeddedProvider.GetMetadataReader();
                 }
             }
@@ -259,6 +261,7 @@ namespace SourceLink {
             using (var file = File.OpenRead(path))
             {
                 var mr = GetMetaDataReader(path, file);
+                if (mr == null) return null;
                 var blobh = default(BlobHandle);
                 foreach (var cdih in mr.GetCustomDebugInformation(EntityHandle.ModuleDefinition))
                 {
