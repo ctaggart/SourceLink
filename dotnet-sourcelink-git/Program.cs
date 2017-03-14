@@ -173,12 +173,6 @@ namespace SourceLink.Git {
                                 {
                                     filesNotInGit.Add(sf);
                                 }
-                                else if (index.Path != sf.GitPath)
-                                {
-                                    // mysysgit sets core.ignorecase true by default
-                                    // but most web sites like GitHub are case sensitive
-                                    filesNotInGit.Add(sf);
-                                }
                                 else
                                 {
                                     sf.GitHash = index.Id.Sha;

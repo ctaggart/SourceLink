@@ -1,4 +1,4 @@
-os: Visual Studio 2017 RC
+os: Visual Studio 2017
 clone_depth: 10
 build_script:
   - ps: |
