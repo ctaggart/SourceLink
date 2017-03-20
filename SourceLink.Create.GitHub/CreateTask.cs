@@ -44,6 +44,8 @@ namespace SourceLink.Create.GitHub
                 if (originCmd.ExitCode != 0 || originCmd.OutputLines.Count != 1)
                 {
                     Log.LogMessage(MessageImportance.High, "unable to find repository origin with: dotnet " + originArgs);
+                    foreach(var line in originCmd.OutputLines)
+                        Log.LogMessage(MessageImportance.High, line);
                     return false;
                 }
                 var origin = originCmd.OutputLines[0];

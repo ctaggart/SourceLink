@@ -1,0 +1,10 @@
+﻿<Project>
+  <PropertyGroup>
+    <SourceLinkShowTargetsDll Condition="'$(MSBuildRuntimeType)' == 'Core'">netstandard1.4\SourceLink.ShowTargets.dll</SourceLinkShowTargetsDll>
+    <SourceLinkShowTargetsDll Condition="'$(MSBuildRuntimeType)' != 'Core'">net461\SourceLink.ShowTargets.dll</SourceLinkShowTargetsDll>
+  </PropertyGroup>
+  <UsingTask TaskName="SourceLink.ShowTargetsTask" AssemblyFile="$(SourceLinkShowTargetsDll)" />
+  <Target Name="ShowTargets">
+    <SourceLink.ShowTargets/>
+  </Target>
+</Project>
