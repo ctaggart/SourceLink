@@ -51,7 +51,7 @@ namespace SourceLink.Create.GitHub
             }
 
             var compileFile = IO.Path.ChangeExtension(File, ".compile");
-            using(var sw = new IO.StreamWriter(compileFile))
+            using(var sw = new IO.StreamWriter(IO.File.OpenWrite(compileFile)))
             {
                 if (Sources != null)
                 {
