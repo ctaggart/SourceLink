@@ -50,14 +50,21 @@ namespace SourceLink.Create.GitHub
                 url = GetRepoUrl(origin);
             }
 
+            var compileFile = IO.Path.ChangeExtension(File, ".compile");
+            using(var sw = new IO.StreamWriter(compileFile))
+            {
+                if (Sources != null)
+                {
+                    foreach (var source in Sources)
+                        sw.WriteLine(source);
+                }
+            }
+
             var sbArgs = new StringBuilder();
             sbArgs.Append("sourcelink-git create" + gitOption);
             sbArgs.Append(" -u \"" + url + "\"");
             sbArgs.Append(" -f \"" + File + "\"");
-            if (Sources != null) {
-                foreach (var source in Sources)
-                    sbArgs.Append(" -s \"" + source + "\"");
-            }
+
             if (!string.IsNullOrEmpty(NotInGit))
             {
                 sbArgs.Append(" --notingit \"" + NotInGit + "\"");
