@@ -98,9 +98,7 @@ namespace SourceLink.Git {
             command.Description = "creates the Source Link JSON file";
             var dirOption = command.Option("-d|--dir <directory>", "the directory to look for the git repository", CommandOptionType.SingleValue);
             var fileOption = command.Option("-f|--file <file>", "the sourcelink.json file to write", CommandOptionType.SingleValue);
-            //var embedOption = command.Option("-e|--embed <file>", "the sourcelink.embed file to write", CommandOptionType.SingleValue);
             var urlOption = command.Option("-u|--url <url>", "URL for downloading the source files, use {0} for commit and * for path", CommandOptionType.SingleValue);
-            var sourceOption = command.Option("-s|--source <url>", "source file to verify checksum in git repository", CommandOptionType.MultipleValue);
             var notInGitOption = command.Option("--notingit <option>", "embed, warn, or error when a source file is not in git. embed is default", CommandOptionType.SingleValue);
             var hashMismatchOption = command.Option("--hashmismatch <option>", "embed, warn, or error when a source file hash does not match git. embed is default", CommandOptionType.SingleValue);
             var noAutoLfOption = command.Option("--noautolf", "disable changing the line endings to match the git repository", CommandOptionType.NoValue);
@@ -136,12 +134,7 @@ namespace SourceLink.Git {
                     return 1;
                 }
 
-                if (!fileOption.HasValue())
-                {
-                    Console.Error.WriteLine("--file option required");
-                    return 2;
-                }
-                var file = fileOption.Value();
+                var file = fileOption.HasValue() ? fileOption.Value() : "sourcelink.json";
 
                 if (!urlOption.HasValue())
                 {
@@ -152,9 +145,11 @@ namespace SourceLink.Git {
                 var commit = GetCommit(repoPath);
                 url = url.Replace("{commit}", commit);
 
-                if (sourceOption.HasValue())
+                var compileFile = Path.ChangeExtension(file, ".compile");
+                if (File.Exists(compileFile))
                 {
-                    var files = sourceOption.Values.Select(source => new SourceFile { FilePath = source });
+                    var compileFiles = File.ReadAllLines(compileFile);
+                    var files = compileFiles.Select(source => new SourceFile { FilePath = source });
 
                     using (var repo = new Repository(repoPath))
                     using (var sha1 = SHA1.Create())
@@ -263,8 +258,6 @@ namespace SourceLink.Git {
                     js.Serialize(sw, json);
                 }
 
-                //var embedFile = embedOption.Value();
-                //if (String.IsNullOrEmpty(embedFile))
                 var embedFile = Path.ChangeExtension(file, ".embed");
                 if (embedFiles.Count > 0)
                 {
