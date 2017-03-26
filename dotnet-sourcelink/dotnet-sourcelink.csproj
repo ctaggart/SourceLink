@@ -2,7 +2,7 @@
   <Import Project="../build/common.props" />
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp1.0</TargetFramework>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
     <PackageType>DotnetCliTool</PackageType>
   </PropertyGroup>
   <ItemGroup>

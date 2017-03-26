@@ -23,3 +23,6 @@ lib/*.dll
 packages.config
 .vscode/launch.json
 launchSettings.json
+launchSettings.json
+/*.txt
+*.user
