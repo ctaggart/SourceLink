@@ -10,7 +10,6 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
-using System.Reflection.PortableExecutable;
 
 namespace SourceLink {
     public class Program
@@ -234,33 +233,11 @@ namespace SourceLink {
 
         public static readonly Guid SourceLinkId = new Guid("CC110556-A091-4D38-9FEC-25AB9A351A6A");
 
-        public static MetadataReader GetMetaDataReader(string path, Stream stream)
-        {
-            if (path.EndsWith(".dll"))
-            {
-                var reader = new PEReader(stream);
-                if (reader.HasMetadata)
-                {
-                    // https://github.com/dotnet/corefx/blob/master/src/System.Reflection.Metadata/tests/PortableExecutable/PEReaderTests.cs#L392
-                    var debugDirectoryEntries = reader.ReadDebugDirectory();
-                    if (debugDirectoryEntries.Length < 3) return null;
-                    var embeddedProvider = reader.ReadEmbeddedPortablePdbDebugDirectoryData(debugDirectoryEntries[2]);
-                    return embeddedProvider.GetMetadataReader();
-                }
-            }
-            else
-            {
-                var mrp = MetadataReaderProvider.FromPortablePdbStream(stream);
-                return mrp.GetMetadataReader();
-            }
-            return null;
-        }
-
         public static byte[] GetSourceLinkBytes(string path)
         {
-            using (var file = File.OpenRead(path))
+            using (var drp = new DebugReaderProvider(path))
             {
-                var mr = GetMetaDataReader(path, file);
+                var mr = drp.GetMetaDataReader();
                 if (mr == null) return null;
                 var blobh = default(BlobHandle);
                 foreach (var cdih in mr.GetCustomDebugInformation(EntityHandle.ModuleDefinition))
@@ -289,12 +266,14 @@ namespace SourceLink {
 
         public static IEnumerable<Document> GetDocuments(string path)
         {
-            using (var file = File.OpenRead(path))
+            using (var drp = new DebugReaderProvider(path))
             {
-                var mr = GetMetaDataReader(path, file);
+                var mr = drp.GetMetaDataReader();
                 foreach (var dh in mr.Documents)
                 {
+                    if (dh.IsNil) continue;
                     var d = mr.GetDocument(dh);
+                    if (d.Name.IsNil || d.Language.IsNil || d.HashAlgorithm.IsNil || d.Hash.IsNil) continue;
                     yield return new Document
                     {
                         Name = mr.GetString(d.Name),
