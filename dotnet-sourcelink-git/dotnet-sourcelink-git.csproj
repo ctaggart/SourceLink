@@ -4,6 +4,7 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp1.0</TargetFramework>
     <PackageType>DotnetCliTool</PackageType>
+    <RootNamespace>SourceLink.Git</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\dotnet-sourcelink\SourceLinkJson.cs" Link="SourceLinkJson.cs" />
