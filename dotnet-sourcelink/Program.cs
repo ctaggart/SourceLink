@@ -289,13 +289,16 @@ namespace SourceLink {
         public static IEnumerable<Document> GetDocumentsWithUrls(string pdb)
         {
             var bytes = GetSourceLinkBytes(pdb);
-            var text = Encoding.UTF8.GetString(bytes);
-            var json = JsonConvert.DeserializeObject<SourceLinkJson>(text);
-            foreach (var doc in GetDocuments(pdb))
+            if (bytes != null)
             {
-                if(!doc.IsEmbedded)
-                    doc.Url = GetUrl(doc.Name, json);
-                yield return doc;
+                var text = Encoding.UTF8.GetString(bytes);
+                var json = JsonConvert.DeserializeObject<SourceLinkJson>(text);
+                foreach (var doc in GetDocuments(pdb))
+                {
+                    if (!doc.IsEmbedded)
+                        doc.Url = GetUrl(doc.Name, json);
+                    yield return doc;
+                }
             }
         }
 

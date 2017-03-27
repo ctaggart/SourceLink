@@ -32,7 +32,7 @@ namespace SourceLink
 
         public MetadataReader GetMetaDataReader()
         {
-            return provider.GetMetadataReader();
+            return provider?.GetMetadataReader();
         }
 
         // Basic Dispose Pattern https://msdn.microsoft.com/en-us/library/b1yfkh5e(v=vs.110).aspx#Anchor_0
