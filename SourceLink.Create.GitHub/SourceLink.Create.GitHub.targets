@@ -11,7 +11,7 @@
     <SourceLinkCreate Condition="'$(SourceLinkCreate)' == ''">$(CI)</SourceLinkCreate>
     <!-- enable on Jenkins and TeamCity, detect BUILD_NUMBER environment variable -->
     <SourceLinkCreate Condition="'$(SourceLinkCreate)' == '' and '$(BUILD_NUMBER)' != ''">true</SourceLinkCreate>
-    <CoreCompileDependsOn Condition="'$(SourceLinkCreate)' == 'true' and ($(DebugType) == 'portable' or $(DebugType) == 'embedded')">SourceLinkCreate;$(CoreCompileDependsOn)</CoreCompileDependsOn>
+    <CompileDependsOn Condition="'$(SourceLinkCreate)' == 'true' and ($(DebugType) == 'portable' or $(DebugType) == 'embedded')">SourceLinkCreate;$(CompileDependsOn)</CompileDependsOn>
     <SourceLinkRepo Condition="'$(SourceLinkRepo)' == ''">$(MSBuildProjectDirectory)</SourceLinkRepo>
     <SourceLinkFile Condition="'$(SourceLinkFile)' == ''">$(SourceLink)</SourceLinkFile>
     <SourceLinkFile Condition="'$(SourceLinkFile)' == ''">$(IntermediateOutputPath)sourcelink.json</SourceLinkFile>
