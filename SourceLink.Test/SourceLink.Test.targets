@@ -6,10 +6,7 @@
   <UsingTask TaskName="SourceLink.Test.TestTask" AssemblyFile="$(SourceLinkTestDll)" />
 
   <PropertyGroup>
-    <!-- enable only in CI environments by default -->
-    <!-- enable on AppVeyor and Travis CI, detect CI environment variable -->
     <SourceLinkTest Condition="'$(SourceLinkTest)' == ''">$(CI)</SourceLinkTest>
-    <!-- enable on Jenkins and TeamCity, detect BUILD_NUMBER environment variable -->
     <SourceLinkTest Condition="'$(SourceLinkTest)' == '' and '$(BUILD_NUMBER)' != ''">true</SourceLinkTest>
     <CompileDependsOn Condition="'$(SourceLinkTest)' == 'true' and ($(DebugType) == 'portable' or $(DebugType) == 'embedded')">$(CompileDependsOn);SourceLinkTest</CompileDependsOn>
     <SourceLinkPdb Condition="'$(SourceLinkPdb)' == ''">$(PdbFile)</SourceLinkPdb>

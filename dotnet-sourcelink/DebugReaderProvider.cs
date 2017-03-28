@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
+using System.Linq;
 
 namespace SourceLink
 {
@@ -18,10 +19,13 @@ namespace SourceLink
                 var reader = new PEReader(stream);
                 if (reader.HasMetadata)
                 {
-                    // https://github.com/dotnet/corefx/blob/master/src/System.Reflection.Metadata/tests/PortableExecutable/PEReaderTests.cs#L392
+                    // https://github.com/dotnet/corefx/blob/master/src/System.Reflection.Metadata/tests/PortableExecutable/PEReaderTests.cs
                     var debugDirectoryEntries = reader.ReadDebugDirectory();
-                    if (debugDirectoryEntries.Length < 3) return;
-                    provider = reader.ReadEmbeddedPortablePdbDebugDirectoryData(debugDirectoryEntries[2]);
+                    var embeddedPdb = debugDirectoryEntries.Where(dde => dde.Type == DebugDirectoryEntryType.EmbeddedPortablePdb).FirstOrDefault();
+                    if (!embeddedPdb.Equals(default(DebugDirectoryEntry)))
+                    {
+                        provider = reader.ReadEmbeddedPortablePdbDebugDirectoryData(embeddedPdb);
+                    }
                 }
             }
             else

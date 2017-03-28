@@ -1,0 +1,39 @@
+﻿<Project>
+  <PropertyGroup>
+    <SourceLinkCreateCommandLineDll Condition="'$(MSBuildRuntimeType)' == 'Core'">netstandard1.4\SourceLink.Create.CommandLine.dll</SourceLinkCreateCommandLineDll>
+    <SourceLinkCreateCommandLineDll Condition="'$(MSBuildRuntimeType)' != 'Core'">net461\SourceLink.Create.CommandLine.dll</SourceLinkCreateCommandLineDll>
+  </PropertyGroup>
+  <UsingTask TaskName="SourceLink.Create.CommandLine.CreateTask" AssemblyFile="$(SourceLinkCreateCommandLineDll)" />
+
+  <PropertyGroup>
+    <SourceLinkCreate Condition="'$(SourceLinkCreate)' == ''">$(CI)</SourceLinkCreate>
+    <SourceLinkCreate Condition="'$(SourceLinkCreate)' == '' and '$(BUILD_NUMBER)' != ''">true</SourceLinkCreate>
+    <CompileDependsOn Condition="'$(SourceLinkCreate)' == 'true' and ($(DebugType) == 'portable' or $(DebugType) == 'embedded')">SourceLinkCreate;$(CompileDependsOn)</CompileDependsOn>
+    <SourceLinkFile Condition="'$(SourceLinkFile)' == ''">$(SourceLink)</SourceLinkFile>
+    <SourceLinkFile Condition="'$(SourceLinkFile)' == ''">$(IntermediateOutputPath)sourcelink.json</SourceLinkFile>
+    <SourceLinkRootDirectoryCommand Condition="'$(SourceLinkRootDirectoryCommand)' == ''">git rev-parse --show-toplevel</SourceLinkRootDirectoryCommand>
+    <SourceLinkOriginUrlCommand Condition="'$(SourceLinkOriginUrlCommand)' == ''">git config --get remote.origin.url</SourceLinkOriginUrlCommand>
+    <SourceLinkCommitCommand Condition="'$(SourceLinkCommitCommand)' == ''">git rev-parse HEAD</SourceLinkCommitCommand>
+  </PropertyGroup>
+
+  <Target Name="SourceLinkCreate">
+    <Exec Condition="'$(SourceLinkRootDirectory)' == ''" Command="$(SourceLinkRootDirectoryCommand)" ConsoleToMsBuild="true">
+      <Output TaskParameter="ConsoleOutput" PropertyName="SourceLinkRootDirectory" />
+    </Exec>
+    <Exec Condition="'$(SourceLinkUrl)' == '' and '$(SourceLinkOriginUrl)' == ''" Command="$(SourceLinkOriginUrlCommand)" ConsoleToMsBuild="true">
+      <Output TaskParameter="ConsoleOutput" PropertyName="SourceLinkOriginUrl" />
+    </Exec>
+    <Exec Condition="'$(SourceLinkCommit)' == ''" Command="$(SourceLinkCommitCommand)" ConsoleToMsBuild="true">
+      <Output TaskParameter="ConsoleOutput" PropertyName="SourceLinkCommit" />
+    </Exec>
+    <SourceLink.Create.CommandLine.CreateTask
+        RootDirectory="$(SourceLinkRootDirectory)"
+        Url="$(SourceLinkUrl)"
+        OriginUrl="$(SourceLinkOriginUrl)"
+        Commit="$(SourceLinkCommit)"
+        File="$(SourceLinkFile)">
+      <Output PropertyName="SourceLink" TaskParameter="SourceLink" />
+    </SourceLink.Create.CommandLine.CreateTask>
+  </Target>
+
+</Project>

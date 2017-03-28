@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../build/common.props" />
+  <PropertyGroup>
+    <TargetFrameworks>netstandard1.4;net461</TargetFrameworks>
+    <!-- https://github.com/NuGet/Home/wiki/Adding-nuget-pack-as-a-msbuild-target -->
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <!--<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>-->
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\SourceLink.Create.BitBucket\BitBucketUrlConverter.cs" Link="BitBucketUrlConverter.cs" />
+    <Compile Include="..\SourceLink.Create.GitHub\GitHubUrlConverter.cs" Link="GitHubUrlConverter.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.1.548" />
+  </ItemGroup>
+
+  <!-- https://docs.microsoft.com/en-us/dotnet/articles/core/preview3/tools/extensibility -->
+  <ItemGroup Label="dotnet pack instructions">
+    <Content Include="SourceLink.Create.CommandLine.targets">
+      <Pack>true</Pack>
+      <PackagePath>build</PackagePath>
+    </Content>
+
+    <Content Include="$(OutputPath)netstandard1.4/SourceLink.Create.CommandLine.dll">
+      <Pack>true</Pack>
+      <PackagePath>build/netstandard1.4</PackagePath>
+    </Content>
+    <Content Include="$(OutputPath)netstandard1.4/SourceLink.Create.CommandLine.deps.json">
+      <Pack>true</Pack>
+      <PackagePath>build/netstandard1.4</PackagePath>
+    </Content>
+
+    <Content Include="$(OutputPath)net461/SourceLink.Create.CommandLine.dll">
+      <Pack>true</Pack>
+      <PackagePath>build/net461</PackagePath>
+    </Content>
+  </ItemGroup>
+
+  <!--<Import Project="../build/sourcelink.props" />-->
+</Project>

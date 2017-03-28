@@ -1,4 +1,4 @@
-﻿namespace SourceLink.Create.GitHub
+﻿namespace SourceLink.Create.BitBucket
 {
     public class CreateTask : GitCreateTask
     {

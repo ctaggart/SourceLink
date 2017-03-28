@@ -1,4 +1,6 @@
 os: Visual Studio 2017
+init:
+  - git config --global core.autocrlf input
 clone_depth: 10
 build_script:
   - ps: |
