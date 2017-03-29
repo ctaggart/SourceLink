@@ -46,8 +46,8 @@ namespace SourceLink {
 
         public static void PrintJson(CommandLineApplication command)
         {
-            command.Description = "print the Source Link JSON stored in the Portable PDB file";
-            var pdbArgument = command.Argument("pdb", "set path to Porable PDB", false);
+            command.Description = "print the Source Link JSON stored in the pdb or dll";
+            var pdbArgument = command.Argument("path", "set path to pdb or dll", false);
             command.HelpOption("-h|--help");
 
             command.OnExecute(() =>
@@ -81,8 +81,8 @@ namespace SourceLink {
 
         public static void PrintDocuments(CommandLineApplication command)
         {
-            command.Description = "print the documents stored in the Portable PDB file";
-            var pdbArgument = command.Argument("pdb", "set path to Porable PDB", false);
+            command.Description = "print the documents stored in the pdb or dll";
+            var pdbArgument = command.Argument("path", "set path to pdb or dll", false);
             command.HelpOption("-h|--help");
 
             command.OnExecute(() =>
@@ -114,7 +114,7 @@ namespace SourceLink {
         public static void PrintUrls(CommandLineApplication command)
         {
             command.Description = "print the URLs for each document based on the Source Link JSON";
-            var pdbArgument = command.Argument("pdb", "set path to Porable PDB", false);
+            var pdbArgument = command.Argument("path", "set path to pdb or dll", false);
             command.HelpOption("-h|--help");
 
             command.OnExecute(() =>
@@ -226,20 +226,20 @@ namespace SourceLink {
                 return 4;
             }
 
-            Console.WriteLine("sourcelink test passed");
+            Console.WriteLine("sourcelink test passed: " + drp.Path);
             return 0;
         }
 
-        public static int TestNupkg(string path)
+        public static int TestNupkg(string path, List<string> files)
         {
             var errors = 0;
             using (var p = new PackageArchiveReader(File.OpenRead(path)))
             {
                 var dlls = new List<string>();
                 var pdbs = new HashSet<string>();
+
                 foreach(var f in p.GetFiles())
                 {
-                    Console.WriteLine("nupkg file: " + f);
                     switch (Path.GetExtension(f))
                     {
                         case ".dll":
@@ -250,36 +250,61 @@ namespace SourceLink {
                             break;
                     }
                 }
-                foreach(var dll in dlls)
+
+                if (files.Count == 0)
                 {
-                    var pdb = Path.ChangeExtension(dll, ".pdb");
-                    if (pdbs.Contains(pdb))
+                    foreach (var dll in dlls)
                     {
-                        using(var drp = new DebugReaderProvider(pdb, p.GetStream(pdb)))
+                        var pdb = Path.ChangeExtension(dll, ".pdb");
+                        if (pdbs.Contains(pdb))
                         {
-                            if (TestFile(drp) != 0)
-                            {
-                                Console.WriteLine("failed for " + pdb);
-                                errors++;
-                            }
+                            files.Add(pdb);
+                        }
+                        else
+                        {
+                            files.Add(dll);
                         }
                     }
-                    else
+                }
+
+                foreach(var file in files)
+                {
+                    try
                     {
-                        using (var stream = p.GetStream(dll))
-                        using (var ms = new MemoryStream()) // PEReader requires seek
+                        var ext = Path.GetExtension(file);
+                        if (ext == ".pdb")
                         {
-                            stream.CopyTo(ms);
-                            ms.Position = 0;
-                            using (var drp = new DebugReaderProvider(dll, ms))
+                            using (var drp = new DebugReaderProvider(file, p.GetStream(file)))
                             {
                                 if (TestFile(drp) != 0)
                                 {
-                                    Console.WriteLine("failed for " + dll);
+                                    Console.WriteLine("failed for " + file);
                                     errors++;
                                 }
                             }
                         }
+                        else
+                        {
+                            using (var stream = p.GetStream(file))
+                            using (var ms = new MemoryStream()) // PEReader requires seek
+                            {
+                                stream.CopyTo(ms);
+                                ms.Position = 0;
+                                using (var drp = new DebugReaderProvider(file, ms))
+                                {
+                                    if (TestFile(drp) != 0)
+                                    {
+                                        Console.WriteLine("failed for " + file);
+                                        errors++;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch (FileNotFoundException)
+                    {
+                        Console.WriteLine("file not found: " + file);
+                        errors++;
                     }
                 }
             }
@@ -288,8 +313,9 @@ namespace SourceLink {
 
         public static void Test(CommandLineApplication command)
         {
-            command.Description = "test each URL and verify that the checksums from the Portable PDB match";
+            command.Description = "test each URL and verify that the checksums match";
             var pathArgument = command.Argument("path", "path to pdb, dll or nupkg", false);
+            var fileOption = command.Option("-f|--file <path>", "the path to a dll or pdb in a nupkg", CommandOptionType.MultipleValue);
             command.HelpOption("-h|--help");
 
             command.OnExecute(() =>
@@ -311,10 +337,10 @@ namespace SourceLink {
                     case ".pdb":
                         return TestFile(path);
                     case ".nupkg":
-                        var errors = TestNupkg(path);
+                        var errors = TestNupkg(path, fileOption.Values);
                         if (errors > 0)
                         {
-                            Console.WriteLine("{0} files did not pass in the nupkg", errors);
+                            Console.WriteLine("{0} files did not pass in {1}", errors, path);
                             return 5;
                         }
                         return 0;

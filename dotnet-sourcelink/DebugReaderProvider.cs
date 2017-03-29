@@ -8,11 +8,13 @@ namespace SourceLink
 {
     public class DebugReaderProvider : IDisposable
     {
+        public string Path {get; private set; }
         private Stream stream;
         private MetadataReaderProvider provider;
 
         public DebugReaderProvider(string path, Stream stream)
         {
+            Path = path;
             this.stream = stream;
             if (path.EndsWith(".dll"))
             {
