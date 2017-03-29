@@ -10,6 +10,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
+using NuGet.Packaging;
 
 namespace SourceLink {
     public class Program
@@ -45,8 +46,8 @@ namespace SourceLink {
 
         public static void PrintJson(CommandLineApplication command)
         {
-            command.Description = "print the Source Link JSON stored in the Portable PDB file";
-            var pdbArgument = command.Argument("pdb", "set path to Porable PDB", false);
+            command.Description = "print the Source Link JSON stored in the pdb or dll";
+            var pdbArgument = command.Argument("path", "set path to pdb or dll", false);
             command.HelpOption("-h|--help");
 
             command.OnExecute(() =>
@@ -63,13 +64,16 @@ namespace SourceLink {
                     return 3;
                 }
 
-                var bytes = GetSourceLinkBytes(path);
-                if (bytes == null || bytes.Length == 0)
+                using (var drp = new DebugReaderProvider(path))
                 {
-                    Console.WriteLine("Source Link JSON not found in file: " + path);
-                    return 4;
+                    var bytes = GetSourceLinkBytes(drp);
+                    if (bytes == null || bytes.Length == 0)
+                    {
+                        Console.WriteLine("Source Link JSON not found in file: " + path);
+                        return 4;
+                    }
+                    Console.WriteLine(Encoding.UTF8.GetString(bytes));
                 }
-                Console.WriteLine(Encoding.UTF8.GetString(bytes));
 
                 return 0;
             });
@@ -77,8 +81,8 @@ namespace SourceLink {
 
         public static void PrintDocuments(CommandLineApplication command)
         {
-            command.Description = "print the documents stored in the Portable PDB file";
-            var pdbArgument = command.Argument("pdb", "set path to Porable PDB", false);
+            command.Description = "print the documents stored in the pdb or dll";
+            var pdbArgument = command.Argument("path", "set path to pdb or dll", false);
             command.HelpOption("-h|--help");
 
             command.OnExecute(() =>
@@ -95,9 +99,12 @@ namespace SourceLink {
                     return 3;
                 }
 
-                foreach (var doc in GetDocuments(path))
+                using (var drp = new DebugReaderProvider(path))
                 {
-                    Console.WriteLine("{0} {1} {2} {3}", doc.Hash.ToHex(), HashAlgorithmGuids.GetName(doc.HashAlgorithm), LanguageGuids.GetName(doc.Language), doc.Name);
+                    foreach (var doc in GetDocuments(drp))
+                    {
+                        Console.WriteLine("{0} {1} {2} {3}", doc.Hash.ToHex(), HashAlgorithmGuids.GetName(doc.HashAlgorithm), LanguageGuids.GetName(doc.Language), doc.Name);
+                    }
                 }
 
                 return 0;
@@ -107,7 +114,7 @@ namespace SourceLink {
         public static void PrintUrls(CommandLineApplication command)
         {
             command.Description = "print the URLs for each document based on the Source Link JSON";
-            var pdbArgument = command.Argument("pdb", "set path to Porable PDB", false);
+            var pdbArgument = command.Argument("path", "set path to pdb or dll", false);
             command.HelpOption("-h|--help");
 
             command.OnExecute(() =>
@@ -124,47 +131,196 @@ namespace SourceLink {
                     return 3;
                 }
 
-                var missingDocs = new List<Document>();
-                foreach (var doc in GetDocumentsWithUrls(path))
+                using (var drp = new DebugReaderProvider(path))
                 {
-                    if (doc.IsEmbedded)
+                    var missingDocs = new List<Document>();
+                    foreach (var doc in GetDocumentsWithUrls(drp))
                     {
-                        Console.WriteLine("{0} {1} {2} {3}", doc.Hash.ToHex(), HashAlgorithmGuids.GetName(doc.HashAlgorithm), LanguageGuids.GetName(doc.Language), doc.Name);
-                        Console.WriteLine("embedded");
+                        if (doc.IsEmbedded)
+                        {
+                            Console.WriteLine("{0} {1} {2} {3}", doc.Hash.ToHex(), HashAlgorithmGuids.GetName(doc.HashAlgorithm), LanguageGuids.GetName(doc.Language), doc.Name);
+                            Console.WriteLine("embedded");
+                        }
+                        else if (doc.Url != null)
+                        {
+                            Console.WriteLine("{0} {1} {2} {3}", doc.Hash.ToHex(), HashAlgorithmGuids.GetName(doc.HashAlgorithm), LanguageGuids.GetName(doc.Language), doc.Name);
+                            Console.WriteLine(doc.Url);
+                        }
+                        else
+                        {
+                            missingDocs.Add(doc);
+                        }
                     }
-                    else if (doc.Url != null)
+                    if (missingDocs.Count > 0)
                     {
-                        Console.WriteLine("{0} {1} {2} {3}", doc.Hash.ToHex(), HashAlgorithmGuids.GetName(doc.HashAlgorithm), LanguageGuids.GetName(doc.Language), doc.Name);
-                        Console.WriteLine(doc.Url);
+                        Console.WriteLine("" + missingDocs.Count + " Documents without URLs:");
+                        foreach (var doc in missingDocs)
+                        {
+                            Console.WriteLine("{0} {1} {2} {3}", doc.Hash.ToHex(), HashAlgorithmGuids.GetName(doc.HashAlgorithm), LanguageGuids.GetName(doc.Language), doc.Name);
+                        }
+                        return 4;
                     }
-                    else
-                    {
-                        missingDocs.Add(doc);
-                    }
-                }
-                if (missingDocs.Count > 0)
-                {
-                    Console.WriteLine("" + missingDocs.Count + " Documents without URLs:");
-                    foreach (var doc in missingDocs)
-                    {
-                        Console.WriteLine("{0} {1} {2} {3}", doc.Hash.ToHex(), HashAlgorithmGuids.GetName(doc.HashAlgorithm), LanguageGuids.GetName(doc.Language), doc.Name);
-                    }
-                    return 4;
                 }
 
                 return 0;
             });
         }
 
+        public static int TestFile(string path)
+        {
+            using (var drp = new DebugReaderProvider(path))
+            {
+                return TestFile(drp);
+            }
+        }
+
+        public static int TestFile(DebugReaderProvider drp)
+        {
+            var missingDocs = new List<Document>();
+            var erroredDocs = new List<Document>();
+            foreach (var doc in GetDocumentsWithUrlHashes(drp))
+            {
+                if (doc.IsEmbedded)
+                {
+                    //Console.WriteLine("{0} {1} {2} {3}", doc.Hash.ToHex(), HashAlgorithmGuids.GetName(doc.HashAlgorithm), LanguageGuids.GetName(doc.Language), doc.Name);
+                    //Console.WriteLine("embedded");
+                }
+                else if (doc.Url != null)
+                {
+                    if (doc.Error == null)
+                    {
+                        //Console.WriteLine("{0} {1} {2} {3}", doc.Hash.ToHex(), HashAlgorithmGuids.GetName(doc.HashAlgorithm), LanguageGuids.GetName(doc.Language), doc.Name);
+                        //Console.WriteLine(doc.Url);
+                    }
+                    else
+                    {
+                        erroredDocs.Add(doc);
+                    }
+                }
+                else
+                {
+                    missingDocs.Add(doc);
+                }
+            }
+            if (missingDocs.Count > 0)
+            {
+                Console.WriteLine("" + missingDocs.Count + " Documents without URLs:");
+                foreach (var doc in missingDocs)
+                {
+                    Console.WriteLine("{0} {1} {2} {3}", doc.Hash.ToHex(), HashAlgorithmGuids.GetName(doc.HashAlgorithm), LanguageGuids.GetName(doc.Language), doc.Name);
+                }
+            }
+            if (erroredDocs.Count > 0)
+            {
+                Console.WriteLine("" + erroredDocs.Count + " Documents with errors:");
+                foreach (var doc in erroredDocs)
+                {
+                    Console.WriteLine("{0} {1} {2} {3}", doc.Hash.ToHex(), HashAlgorithmGuids.GetName(doc.HashAlgorithm), LanguageGuids.GetName(doc.Language), doc.Name);
+                    Console.WriteLine(doc.Url);
+                    Console.WriteLine("error: " + doc.Error);
+                }
+            }
+            if (missingDocs.Count > 0 || erroredDocs.Count > 0)
+            {
+                Console.WriteLine("sourcelink test failed");
+                return 4;
+            }
+
+            Console.WriteLine("sourcelink test passed: " + drp.Path);
+            return 0;
+        }
+
+        public static int TestNupkg(string path, List<string> files)
+        {
+            var errors = 0;
+            using (var p = new PackageArchiveReader(File.OpenRead(path)))
+            {
+                var dlls = new List<string>();
+                var pdbs = new HashSet<string>();
+
+                foreach(var f in p.GetFiles())
+                {
+                    switch (Path.GetExtension(f))
+                    {
+                        case ".dll":
+                            dlls.Add(f);
+                            break;
+                        case ".pdb":
+                            pdbs.Add(f);
+                            break;
+                    }
+                }
+
+                if (files.Count == 0)
+                {
+                    foreach (var dll in dlls)
+                    {
+                        var pdb = Path.ChangeExtension(dll, ".pdb");
+                        if (pdbs.Contains(pdb))
+                        {
+                            files.Add(pdb);
+                        }
+                        else
+                        {
+                            files.Add(dll);
+                        }
+                    }
+                }
+
+                foreach(var file in files)
+                {
+                    try
+                    {
+                        var ext = Path.GetExtension(file);
+                        if (ext == ".pdb")
+                        {
+                            using (var drp = new DebugReaderProvider(file, p.GetStream(file)))
+                            {
+                                if (TestFile(drp) != 0)
+                                {
+                                    Console.WriteLine("failed for " + file);
+                                    errors++;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            using (var stream = p.GetStream(file))
+                            using (var ms = new MemoryStream()) // PEReader requires seek
+                            {
+                                stream.CopyTo(ms);
+                                ms.Position = 0;
+                                using (var drp = new DebugReaderProvider(file, ms))
+                                {
+                                    if (TestFile(drp) != 0)
+                                    {
+                                        Console.WriteLine("failed for " + file);
+                                        errors++;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch (FileNotFoundException)
+                    {
+                        Console.WriteLine("file not found: " + file);
+                        errors++;
+                    }
+                }
+            }
+            return errors;
+        }
+
         public static void Test(CommandLineApplication command)
         {
-            command.Description = "test each URL and verify that the checksums from the Portable PDB match";
-            var pdbArgument = command.Argument("pdb", "set path to Porable PDB", false);
+            command.Description = "test each URL and verify that the checksums match";
+            var pathArgument = command.Argument("path", "path to pdb, dll or nupkg", false);
+            var fileOption = command.Option("-f|--file <path>", "the path to a dll or pdb in a nupkg", CommandOptionType.MultipleValue);
             command.HelpOption("-h|--help");
 
             command.OnExecute(() =>
             {
-                var path = pdbArgument.Value;
+                var path = pathArgument.Value;
                 if (path == null)
                 {
                     command.ShowHelp();
@@ -175,80 +331,40 @@ namespace SourceLink {
                     Console.WriteLine("file does not exist: " + path);
                     return 3;
                 }
-
-                var missingDocs = new List<Document>();
-                var erroredDocs = new List<Document>();
-                foreach (var doc in GetDocumentsWithUrlHashes(path))
+                switch (Path.GetExtension(path))
                 {
-                    if (doc.IsEmbedded)
-                    {
-                        //Console.WriteLine("{0} {1} {2} {3}", doc.Hash.ToHex(), HashAlgorithmGuids.GetName(doc.HashAlgorithm), LanguageGuids.GetName(doc.Language), doc.Name);
-                        //Console.WriteLine("embedded");
-                    }
-                    else if (doc.Url != null)
-                    {
-                        if(doc.Error == null)
+                    case ".dll":
+                    case ".pdb":
+                        return TestFile(path);
+                    case ".nupkg":
+                        var errors = TestNupkg(path, fileOption.Values);
+                        if (errors > 0)
                         {
-                            //Console.WriteLine("{0} {1} {2} {3}", doc.Hash.ToHex(), HashAlgorithmGuids.GetName(doc.HashAlgorithm), LanguageGuids.GetName(doc.Language), doc.Name);
-                            //Console.WriteLine(doc.Url);
+                            Console.WriteLine("{0} files did not pass in {1}", errors, path);
+                            return 5;
                         }
-                        else
-                        {
-                            erroredDocs.Add(doc);
-                        }
-                    }
-                    else
-                    {
-                        missingDocs.Add(doc);
-                    }
+                        return 0;
+                    default:
+                        return 4;
                 }
-                if (missingDocs.Count > 0)
-                {
-                    Console.WriteLine("" + missingDocs.Count + " Documents without URLs:");
-                    foreach (var doc in missingDocs)
-                    {
-                        Console.WriteLine("{0} {1} {2} {3}", doc.Hash.ToHex(), HashAlgorithmGuids.GetName(doc.HashAlgorithm), LanguageGuids.GetName(doc.Language), doc.Name);
-                    }
-                }
-                if (erroredDocs.Count > 0)
-                {
-                    Console.WriteLine("" + erroredDocs.Count + " Documents with errors:");
-                    foreach (var doc in erroredDocs)
-                    {
-                        Console.WriteLine("{0} {1} {2} {3}", doc.Hash.ToHex(), HashAlgorithmGuids.GetName(doc.HashAlgorithm), LanguageGuids.GetName(doc.Language), doc.Name);
-                        Console.WriteLine(doc.Url);
-                        Console.WriteLine("error: " + doc.Error);
-                    }
-                }
-                if (missingDocs.Count > 0 || erroredDocs.Count > 0)
-                {
-                    Console.WriteLine("sourcelink test failed");
-                    return 4;
-                }
-
-                Console.WriteLine("sourcelink test passed");
-                return 0;
             });
         }
 
         public static readonly Guid SourceLinkId = new Guid("CC110556-A091-4D38-9FEC-25AB9A351A6A");
 
-        public static byte[] GetSourceLinkBytes(string path)
+        public static byte[] GetSourceLinkBytes(DebugReaderProvider drp)
         {
-            using (var drp = new DebugReaderProvider(path))
+            var mr = drp.GetMetaDataReader();
+            if (mr == null) return null;
+            var blobh = default(BlobHandle);
+            foreach (var cdih in mr.GetCustomDebugInformation(EntityHandle.ModuleDefinition))
             {
-                var mr = drp.GetMetaDataReader();
-                if (mr == null) return null;
-                var blobh = default(BlobHandle);
-                foreach (var cdih in mr.GetCustomDebugInformation(EntityHandle.ModuleDefinition))
-                {
-                    var cdi = mr.GetCustomDebugInformation(cdih);
-                    if (mr.GetGuid(cdi.Kind) == SourceLinkId)
-                        blobh = cdi.Value;
-                }
-                if (blobh.IsNil) return Array.Empty<byte>();
-                return mr.GetBlobBytes(blobh);
+                var cdi = mr.GetCustomDebugInformation(cdih);
+                if (mr.GetGuid(cdi.Kind) == SourceLinkId)
+                    blobh = cdi.Value;
             }
+            if (blobh.IsNil) return Array.Empty<byte>();
+            return mr.GetBlobBytes(blobh);
         }
 
         public static readonly Guid EmbeddedSourceId = new Guid("0E8A571B-6926-466E-B4AD-8AB04611F5FE");
@@ -264,38 +380,38 @@ namespace SourceLink {
             return false;
         }
 
-        public static IEnumerable<Document> GetDocuments(string path)
+        public static IEnumerable<Document> GetDocuments(DebugReaderProvider drp)
         {
-            using (var drp = new DebugReaderProvider(path))
+            var mr = drp.GetMetaDataReader();
+            foreach (var dh in mr.Documents)
             {
-                var mr = drp.GetMetaDataReader();
-                foreach (var dh in mr.Documents)
+                if (dh.IsNil) continue;
+                var d = mr.GetDocument(dh);
+                if (d.Name.IsNil || d.Language.IsNil || d.HashAlgorithm.IsNil || d.Hash.IsNil) continue;
+                yield return new Document
                 {
-                    if (dh.IsNil) continue;
-                    var d = mr.GetDocument(dh);
-                    if (d.Name.IsNil || d.Language.IsNil || d.HashAlgorithm.IsNil || d.Hash.IsNil) continue;
-                    yield return new Document
-                    {
-                        Name = mr.GetString(d.Name),
-                        Language = mr.GetGuid(d.Language),
-                        HashAlgorithm = mr.GetGuid(d.HashAlgorithm),
-                        Hash = mr.GetBlobBytes(d.Hash),
-                        IsEmbedded = IsEmbedded(mr, dh)
-                    };
-                }
+                    Name = mr.GetString(d.Name),
+                    Language = mr.GetGuid(d.Language),
+                    HashAlgorithm = mr.GetGuid(d.HashAlgorithm),
+                    Hash = mr.GetBlobBytes(d.Hash),
+                    IsEmbedded = IsEmbedded(mr, dh)
+                };
             }
         }
 
-        public static IEnumerable<Document> GetDocumentsWithUrls(string pdb)
+        public static IEnumerable<Document> GetDocumentsWithUrls(DebugReaderProvider drp)
         {
-            var bytes = GetSourceLinkBytes(pdb);
-            var text = Encoding.UTF8.GetString(bytes);
-            var json = JsonConvert.DeserializeObject<SourceLinkJson>(text);
-            foreach (var doc in GetDocuments(pdb))
+            var bytes = GetSourceLinkBytes(drp);
+            if (bytes != null)
             {
-                if(!doc.IsEmbedded)
-                    doc.Url = GetUrl(doc.Name, json);
-                yield return doc;
+                var text = Encoding.UTF8.GetString(bytes);
+                var json = JsonConvert.DeserializeObject<SourceLinkJson>(text);
+                foreach (var doc in GetDocuments(drp))
+                {
+                    if (!doc.IsEmbedded)
+                        doc.Url = GetUrl(doc.Name, json);
+                    yield return doc;
+                }
             }
         }
 
@@ -323,7 +439,7 @@ namespace SourceLink {
             return null;
         }
 
-        static IEnumerable<Document> GetDocumentsWithUrlHashes(string pdb)
+        static IEnumerable<Document> GetDocumentsWithUrlHashes(DebugReaderProvider drp)
         {
             // https://github.com/ctaggart/SourceLink/blob/v1/Exe/Http.fs
             // https://github.com/ctaggart/SourceLink/blob/v1/Exe/Checksums.fs
@@ -338,7 +454,7 @@ namespace SourceLink {
                 //hc.DefaultRequestHeaders.Authorization = AuthenticationHeaderValue("Basic",
                 //    Convert.ToBase64String(Encoding.ASCII.GetBytes("username:password")));
 
-                foreach (var doc in GetDocumentsWithUrls(pdb))
+                foreach (var doc in GetDocumentsWithUrls(drp))
                 {
                     if(doc.Url != null)
                     {

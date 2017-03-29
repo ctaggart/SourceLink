@@ -2,26 +2,32 @@
 using System.IO;
 using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
+using System.Linq;
 
 namespace SourceLink
 {
     public class DebugReaderProvider : IDisposable
     {
+        public string Path {get; private set; }
         private Stream stream;
         private MetadataReaderProvider provider;
 
-        public DebugReaderProvider(string path)
+        public DebugReaderProvider(string path, Stream stream)
         {
-            stream = File.OpenRead(path);
+            Path = path;
+            this.stream = stream;
             if (path.EndsWith(".dll"))
             {
                 var reader = new PEReader(stream);
                 if (reader.HasMetadata)
                 {
-                    // https://github.com/dotnet/corefx/blob/master/src/System.Reflection.Metadata/tests/PortableExecutable/PEReaderTests.cs#L392
+                    // https://github.com/dotnet/corefx/blob/master/src/System.Reflection.Metadata/tests/PortableExecutable/PEReaderTests.cs
                     var debugDirectoryEntries = reader.ReadDebugDirectory();
-                    if (debugDirectoryEntries.Length < 3) return;
-                    provider = reader.ReadEmbeddedPortablePdbDebugDirectoryData(debugDirectoryEntries[2]);
+                    var embeddedPdb = debugDirectoryEntries.Where(dde => dde.Type == DebugDirectoryEntryType.EmbeddedPortablePdb).FirstOrDefault();
+                    if (!embeddedPdb.Equals(default(DebugDirectoryEntry)))
+                    {
+                        provider = reader.ReadEmbeddedPortablePdbDebugDirectoryData(embeddedPdb);
+                    }
                 }
             }
             else
@@ -30,9 +36,14 @@ namespace SourceLink
             }
         }
 
+        public DebugReaderProvider(string path)
+            : this(path, File.OpenRead(path))
+        {
+        }
+
         public MetadataReader GetMetaDataReader()
         {
-            return provider.GetMetadataReader();
+            return provider?.GetMetadataReader();
         }
 
         // Basic Dispose Pattern https://msdn.microsoft.com/en-us/library/b1yfkh5e(v=vs.110).aspx#Anchor_0

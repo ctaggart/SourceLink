@@ -1,9 +1,9 @@
 ﻿<Project>
   <PropertyGroup>
-    <SourceLinkCreateGitHubDll Condition="'$(MSBuildRuntimeType)' == 'Core'">netstandard1.4\SourceLink.Create.GitHub.dll</SourceLinkCreateGitHubDll>
-    <SourceLinkCreateGitHubDll Condition="'$(MSBuildRuntimeType)' != 'Core'">net461\SourceLink.Create.GitHub.dll</SourceLinkCreateGitHubDll>
+    <SourceLinkCreateBitBucketDll Condition="'$(MSBuildRuntimeType)' == 'Core'">netstandard1.4\SourceLink.Create.BitBucket.dll</SourceLinkCreateBitBucketDll>
+    <SourceLinkCreateBitBucketDll Condition="'$(MSBuildRuntimeType)' != 'Core'">net461\SourceLink.Create.BitBucket.dll</SourceLinkCreateBitBucketDll>
   </PropertyGroup>
-  <UsingTask TaskName="SourceLink.Create.GitHub.CreateTask" AssemblyFile="$(SourceLinkCreateGitHubDll)" />
+  <UsingTask TaskName="SourceLink.Create.BitBucket.CreateTask" AssemblyFile="$(SourceLinkCreateBitBucketDll)" />
 
   <PropertyGroup>
     <SourceLinkCreate Condition="'$(SourceLinkCreate)' == ''">$(CI)</SourceLinkCreate>
@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <Target Name="SourceLinkCreate">
-    <SourceLink.Create.GitHub.CreateTask
+    <SourceLink.Create.BitBucket.CreateTask
         GitDirectory="$(SourceLinkGitDirectory)"
         Url="$(SourceLinkUrl)"
         File="$(SourceLinkFile)"
@@ -30,7 +30,7 @@
         EmbeddedFilesIn="@(EmbeddedFiles)">
       <Output PropertyName="SourceLink" TaskParameter="SourceLink" />
       <Output ItemName="EmbeddedFiles" TaskParameter="EmbeddedFiles" />
-    </SourceLink.Create.GitHub.CreateTask>
+    </SourceLink.Create.BitBucket.CreateTask>
   </Target>
 
 </Project>
