@@ -11,9 +11,9 @@ namespace SourceLink
         private Stream stream;
         private MetadataReaderProvider provider;
 
-        public DebugReaderProvider(string path)
+        public DebugReaderProvider(string path, Stream stream)
         {
-            stream = File.OpenRead(path);
+            this.stream = stream;
             if (path.EndsWith(".dll"))
             {
                 var reader = new PEReader(stream);
@@ -32,6 +32,11 @@ namespace SourceLink
             {
                 provider = MetadataReaderProvider.FromPortablePdbStream(stream);
             }
+        }
+
+        public DebugReaderProvider(string path)
+            : this(path, File.OpenRead(path))
+        {
         }
 
         public MetadataReader GetMetaDataReader()
