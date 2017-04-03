@@ -1,16 +1,18 @@
 ﻿using Microsoft.Extensions.CommandLineUtils;
 using Newtonsoft.Json;
+using NuGet.Packaging;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Text.RegularExpressions;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Reflection.Metadata;
 using System.Security.Cryptography;
-using NuGet.Packaging;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace SourceLink {
     public class Program
@@ -178,7 +180,9 @@ namespace SourceLink {
         {
             var missingDocs = new List<Document>();
             var erroredDocs = new List<Document>();
-            foreach (var doc in GetDocumentsWithUrlHashes(drp))
+            var documents = GetDocumentsWithUrlHashes(drp).GetAwaiter().GetResult();
+
+            foreach (var doc in documents)
             {
                 if (doc.IsEmbedded)
                 {
@@ -439,7 +443,7 @@ namespace SourceLink {
             return null;
         }
 
-        static IEnumerable<Document> GetDocumentsWithUrlHashes(DebugReaderProvider drp)
+        static async Task<IEnumerable<Document>> GetDocumentsWithUrlHashes(DebugReaderProvider drp)
         {
             // https://github.com/ctaggart/SourceLink/blob/v1/Exe/Http.fs
             // https://github.com/ctaggart/SourceLink/blob/v1/Exe/Checksums.fs
@@ -454,48 +458,53 @@ namespace SourceLink {
                 //hc.DefaultRequestHeaders.Authorization = AuthenticationHeaderValue("Basic",
                 //    Convert.ToBase64String(Encoding.ASCII.GetBytes("username:password")));
 
-                foreach (var doc in GetDocumentsWithUrls(drp))
-                {
-                    if(doc.Url != null)
-                    {
-                        HashUrl(hc, doc);
-                        if (doc.Error == null)
-                        {
-                            if (!doc.Hash.CollectionEquals(doc.UrlHash))
-                            {
-                                doc.Error = "url hash does not match: " + doc.Hash.ToHex();
-                            }
-                        }
-                    }
-                    yield return doc;
-                }
+                var tasks = GetDocumentsWithUrls(drp)
+                    .Select(doc => CheckDocumentHash(hc, doc))
+                    .ToArray();
+
+                await Task.WhenAll(tasks);
+
+                return tasks.Select(x => x.Result);
             }
         }
 
-        // TODO async
-        static void HashUrl(HttpClient hc, Document doc)
+        static async Task<Document> CheckDocumentHash(HttpClient hc, Document doc)
         {
-            using (var req = new HttpRequestMessage(HttpMethod.Get, doc.Url))
+            if (doc.Url != null)
             {
-                using (var rsp = hc.SendAsync(req).Result)
+                await HashUrl(hc, doc);
+                if (doc.Error == null)
                 {
-                    if (rsp.IsSuccessStatusCode)
+                    if (!doc.Hash.CollectionEquals(doc.UrlHash))
                     {
-                        using (var stream = rsp.Content.ReadAsStreamAsync().Result)
-                        {
-                            // TODO Is it more efficient to cache?
-                            using(var ha = CreateHashAlgorithm(doc.HashAlgorithm))
-                            {
-                                doc.UrlHash = ha.ComputeHash(stream);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        doc.Error = "url failed " + rsp.StatusCode + ": " + rsp.ReasonPhrase;
+                        doc.Error = "url hash does not match: " + doc.Hash.ToHex();
                     }
                 }
-            }       
+            }
+
+            return doc;
+        }
+
+        // TODO async
+        static async Task HashUrl(HttpClient hc, Document doc)
+        {
+            using (var req = new HttpRequestMessage(HttpMethod.Get, doc.Url))
+            using (var rsp = await hc.SendAsync(req))
+            {
+                if (rsp.IsSuccessStatusCode)
+                {
+                    using (var stream = await rsp.Content.ReadAsStreamAsync())
+                    // TODO Is it more efficient to cache?
+                    using (var ha = CreateHashAlgorithm(doc.HashAlgorithm))
+                    {
+                        doc.UrlHash = ha.ComputeHash(stream);
+                    }
+                }
+                else
+                {
+                    doc.Error = "url failed " + rsp.StatusCode + ": " + rsp.ReasonPhrase;
+                }
+            }
         }
 
         // IDisposable
@@ -506,6 +515,5 @@ namespace SourceLink {
             if (guid == HashAlgorithmGuids.sha256) return SHA256.Create();
             throw new CryptographicException("unknown HashAlgorithm " + guid);
         }
-
     }
 }
