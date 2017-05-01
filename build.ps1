@@ -16,6 +16,7 @@ if ($env:appveyor){
 }
 
 $pack = "pack", "-c", "release", "-o", "../bin", "/p:Version=$version$versionSuffix", "/v:m"
+$pack += "/p:ci=true"
 
 Set-Location $psscriptroot\dotnet-sourcelink
 dotnet restore
@@ -40,6 +41,14 @@ dotnet $pack
 Set-Location $psscriptroot\SourceLink.Test
 dotnet restore
 dotnet $pack
+
+Set-Location $psscriptroot\build
+dotnet restore
+$nupkgs = ls ..\bin\*$version$versionSuffix.nupkg
+foreach($nupkg in $nupkgs){
+    echo "test $nupkg"
+    dotnet sourcelink test $nupkg
+}
 
 Set-Location $psscriptroot
 
