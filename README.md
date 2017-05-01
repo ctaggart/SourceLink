@@ -12,9 +12,9 @@ Here is the [General, Debugging, Options Dialog Box](https://docs.microsoft.com/
 [SourceLink v1](https://github.com/ctaggart/SourceLink/wiki/SourceLink-v1) automates [source indexing](http://msdn.microsoft.com/en-us/library/windows/hardware/ff556898.aspx) of Windows PDB files. It enables the source code repostiory to be the [source server](http://msdn.microsoft.com/en-us/library/windows/desktop/ms680641.aspx) by updating the Windows PDB files with a source index of https links. Source indexing is done by modifying the Windows PDB file after a compile.
 
 ### Enable source link support
-SourceLink v2 helps enable source link support using the [Portable PDB](https://github.com/dotnet/core/blob/master/Documentation/diagnostics/portable_pdb.md) format. They are cross platform and several times smaller than Windows PDB files. The implementation and specification are open source. Source link support is [in the spec](https://github.com/dotnet/corefx/blob/master/src/System.Reflection.Metadata/specs/PortablePdb-Metadata.md#SourceLink). The source link JSON file is built before the compile and the .NET compilers embeds it in the Portable PDB file. The compilers shipped with Visual Studio 2017 and with the DotNet SDKs support the `/sourcelink` option. Here is the relevant help for the latest C# compiler:
+SourceLink v2 helps enable source link support using the [Portable PDB](https://github.com/dotnet/core/blob/master/Documentation/diagnostics/portable_pdb.md) format. They are cross platform and several times smaller than Windows PDB files. The implementation and specification are open source. Source link support [has documentation](https://github.com/dotnet/core/blob/master/Documentation/diagnostics/source_link.md) and is [in the Portable PDB spec](https://github.com/dotnet/corefx/blob/master/src/System.Reflection.Metadata/specs/PortablePdb-Metadata.md#SourceLink). The source link JSON file is built before the compile and the .NET compilers embeds it in the Portable PDB file. The compilers shipped with Visual Studio 2017 and with the DotNet SDKs support the `/sourcelink` option. Here is the relevant help from the C# compiler:
 ```
-. "C:\Program Files\dotnet\sdk\1.0.0-rc4-004771\Roslyn\RunCsc.cmd" /?
+. "C:\Program Files\dotnet\sdk\1.0.0\Roslyn\RunCsc.cmd" /?
 
  /debug:{full|pdbonly|portable|embedded}
                                Specify debugging type ('full' is default,
@@ -28,48 +28,63 @@ SourceLink v2 helps enable source link support using the [Portable PDB](https://
  
  /sourcelink:<file>            Source link info to embed into Portable PDB.
 ```
-We recommend using the `embedded` debug type. This works for both .NET Framework and .NET Core. If you choose to embed all source files, you don't need this tool. This may be useful to private repositories before authentication is added to the debugging tools. Hopefully, [authentication support](https://github.com/dotnet/roslyn/issues/12759#issuecomment-282793617) will be in the first update for Visual Studio 2017. 
 
-### dotnet sourcelink
+# Quick Start
 
-It is possible to create a source link JSON without these tools. Here is [an example](https://github.com/ctaggart/sourcelink-test/blob/18a795d827a4b9913d4d0e1f0e6ac533ab508670/src/ClassLibrary1/ClassLibrary1.csproj) just using the git command line. However, it is easy to get wrong. `dotnet sourcelink` is a tool you can use to test that the source link works for the Portable PDB.
-
-Install by adding this `DotNetCliToolReference` to the project file:
+The [source link documention](https://github.com/dotnet/core/blob/master/Documentation/diagnostics/source_link.md) shows how to embed a source link file by running `git` commands. That is exactly how the [targets](https://github.com/ctaggart/SourceLink/blob/v2/SourceLink.Create.CommandLine/SourceLink.Create.CommandLine.targets) file for SourceLink.Create.CommandLine works. Simply add a `PackageReference`. A common way to do with is by adding it to your projects in a `Directory.Build.props`:
 ``` xml
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>netstandard1.6</TargetFramework>
-    <DebugType>embedded</DebugType>
-  </PropertyGroup>
+<Project>
   <ItemGroup>
-    <DotNetCliToolReference Include="dotnet-sourcelink" Version="2.0.2" />
+    <PackageReference Include="SourceLink.Create.CommandLine" Version="2.1.0" PrivateAssets="All" /> 
   </ItemGroup>
 </Project>
 ```
 
-From the project folder, you can then test the Portable PDB by running `dotnet sourcelink test`. Simply run `dotnet sourcelink` for a list of other commands. Source link support and this tool are not tied to git at all.
+If you are building on Windows, make sure that you configure git to checkout files with [core.autocrlf input](https://github.com/ctaggart/SourceLink/wiki/Line-Endings).
 
-If you wish to have `dotnet sourcelink test` run on your build server for each build, you can add the MSBuild targets by adding this to your project file too:
-``` xml
-<PackageReference Include="SourceLink.Test" Version="2.0.2" PrivateAssets="all" />
-```
-You can control when it runs by setting the `SourceLinkTest` property. It defaults to running when CI is true, so it will run automatically on continuous integration servers like AppVeyor and Travis CI which have that environment variable set. In general these tools are meant to be run only on your build server, but it is simple to test locally with:
-```
+You can control when it runs by setting the `SourceLinkCreate` property. That property is set to `true` by default on build servers that set `CI` or `BUILD_NUMBER` environment variables. In general these tools are meant to be run only on build servers, but it is simple to test locally by setting an MSBuild property like `/p:ci=true` or `/p:SourceLinkCreate=true`.
+
+If you have a dotnet project, you can test locally with:
+``` ps1
+dotnet restore
 dotnet build /p:ci=true /v:n
 ```
-
-### dotnet sourcelink-git
-
-The debugger will download the source file and verify that its checksum matches the one used when it was compiled. This means the source file that is compiled must be committed to the repository and the file must match exactly, including the line endings. For Windows builds, it is recommended that you configure git with `core.autocrlf input`. A git repository saves files with line endings of `lf`, but Git on Windows defaults to `core.autocrlf true`, which makes checksums not match due to the `crlf` line endings.
-
-By default, sourcelink-git will verify that all of the source files are in the repository and that their checksums match. If the checksums do not match due to line endings, it will automatically fix them to match the git repository like endings of `lf`. If the file checksums still don't match, it will tell the compiler to embed it in the Portable PDB. If the file is not in the git repository, it will tell the compiler to embed it in the Portable PDB. All of these settings are configurable.
-
-``` xml
-<DotNetCliToolReference Include="dotnet-sourcelink-git" Version="2.0.2" />
+With an full framework project, you can test locally with:
+``` ps1
+msbuild /t:restore
+msbuild /t:rebuild /v:n
 ```
 
-The tool can be run automatically by installing MSBuild targets. This tool automatically figures out the `SourceLinkUrl` based on a git remote origin for GitHub. That property can be set manually for other providers. Contributions for other MSBuild targets for other providers are welcome.
+## examples
+- [Rx.NET](https://github.com/ctaggart/SourceLink/issues/167#issuecomment-297423617)
+- [ASP.NET MVC](https://github.com/ctaggart/SourceLink/issues/173)
+
+# Test
+
+`dotnet sourcelink test` is a tool you can use to test that the source link works. Source link support and this tool are not tied to git at all. It makes sure all links work for every source file in the PDB that is not embedded. You can test a nupkg, a pdb, or a dll if the pdb is embedded. Run `dotnet sourcelink` for a list of other diagnostic commands and additional help.
+
+Install by adding:
+``` xml
+<DotNetCliToolReference Include="dotnet-sourcelink" Version="2.1.0" />
+```
+
+## examples
+- [SourceLink build.ps1](https://github.com/ctaggart/SourceLink/blob/v2/build.ps1#L45-L51)
+- [octokit.net using Cake](https://github.com/ctaggart/SourceLink/issues/174)
+
+`dotnet sourcelink test` may also be run by using the `SourceLink.Test` MSBuild targets.
+``` xml
+<PackageReference Include="SourceLink.Test" Version="2.1.0" PrivateAssets="all" />
+```
+Just like the `SourceLinkCreate` property, you can control when it is enabled by setting the `SourceLinkTest` property.
+
+# dotnet sourcelink-git
+
+Please follow the quick start if you are just getting started. `SourceLink.Create.CommandLine` uses the `git` commandline by default, does not use `dotnet`, and has been easier for new users to understand.
+
+`SourceLink.Create.GitHub` and `SourceLink.Create.BitBucket` both use `dotnet sourcelink-git`, which accesses the git information using [libgit2sharp](https://github.com/libgit2/libgit2sharp). This allows some additional features. It verifies that all of the source files are in the git repository and that their checksums match. If checksums do not match due to line endings, it will automatically fix them to match the git repository like endings of `lf`. If a source file's checksum still does not match, it will be embedded. If the source file is not in the git repository, it will be embedded. All of these settings are configurable.
 
 ``` xml
-<PackageReference Include="SourceLink.Create.GitHub" Version="2.0.2" PrivateAssets="all" />
+<PackageReference Include="SourceLink.Create.GitHub" Version="2.1.0" PrivateAssets="all" />
+<DotNetCliToolReference Include="dotnet-sourcelink-git" Version="2.1.0" />
 ```
