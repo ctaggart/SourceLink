@@ -52,7 +52,7 @@ dotnet build /p:ci=true /v:n
 With an full framework project, you can test locally with:
 ``` ps1
 msbuild /t:restore
-msbuild /t:rebuild /v:n
+msbuild /t:rebuild /p:ci=true /v:n
 ```
 
 ## examples
