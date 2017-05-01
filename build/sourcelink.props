@@ -1,12 +1,11 @@
 <Project>
-  <PropertyGroup>
+  <!--<PropertyGroup>
     <SourceLinkCreate>true</SourceLinkCreate>
     <SourceLinkTest>true</SourceLinkTest>
-  </PropertyGroup>
+  </PropertyGroup>-->
   <ItemGroup>
-    <PackageReference Include="SourceLink.Create.GitHub" Version="[2.0.1]" PrivateAssets="all" />
-    <PackageReference Include="SourceLink.Test" Version="[2.0.1]" PrivateAssets="all" />
-    <DotNetCliToolReference Include="dotnet-sourcelink-git" Version="[2.0.1]" />
-    <DotNetCliToolReference Include="dotnet-sourcelink" Version="[2.0.1]" />
+    <PackageReference Include="SourceLink.Create.CommandLine" Version="[2.1.0]" PrivateAssets="all" />
+    <!--<PackageReference Include="SourceLink.Test" Version="[2.1.0]" PrivateAssets="all" />
+    <DotNetCliToolReference Include="dotnet-sourcelink" Version="[2.1.0]" />-->
   </ItemGroup>
 </Project>

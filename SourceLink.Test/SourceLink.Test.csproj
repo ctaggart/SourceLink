@@ -37,5 +37,5 @@
     <Compile Include="..\SourceLink.Create.GitHub\Process.cs" Link="Process.cs" />
   </ItemGroup>
 
-  <!--<Import Project="../build/sourcelink.props" />-->
+  <Import Project="../build/sourcelink.props" />
 </Project>

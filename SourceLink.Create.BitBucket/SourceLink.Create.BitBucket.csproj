@@ -37,5 +37,5 @@
     </Content>
   </ItemGroup>
 
-  <!--<Import Project="../build/sourcelink.props" />-->
+  <Import Project="../build/sourcelink.props" />
 </Project>
