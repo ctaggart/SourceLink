@@ -109,7 +109,16 @@ If you are using `SourceLink.Create.CommandLine` and [Paket](https://fsprojects.
 
 # Known Issues
 
-Please vote on Visual Studio User Voice for both of these issues:
+Please vote for all of these issues:
 
-- [Debugger should support authentication with SourceLink](https://visualstudio.uservoice.com/forums/121579-visual-studio-ide/suggestions/19107784-debugger-should-support-authentication-with-source)
-- [Debugger should support C# compiler '/embed' option](https://visualstudio.uservoice.com/forums/121579-visual-studio-ide/suggestions/19107733-debugger-should-support-c-compiler-embed-optio)
+- GitHub NuGet: [msbuild /t:Pack always creates seperate symbols package](https://github.com/NuGet/Home/issues/4142)
+  
+  `dotnet pack` and `msbuild /t:pack` need to support easily packaing portalbe pdb files.
+
+- Visual Studio User Voice: [Debugger should support C# compiler '/embed' option](https://visualstudio.uservoice.com/forums/121579-visual-studio-ide/suggestions/19107733-debugger-should-support-c-compiler-embed-optio)
+
+  The Visual Studio 2017 debugger does not currently look for embedded source files.
+
+- Visual Studio User Voice: [Debugger should support authentication with SourceLink](https://visualstudio.uservoice.com/forums/121579-visual-studio-ide/suggestions/19107784-debugger-should-support-authentication-with-source)
+
+   In order to use source link with private GitHub repositories and other private repositories, it needs to support authentication.
