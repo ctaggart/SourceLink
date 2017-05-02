@@ -1,5 +1,5 @@
 $version = '2.1.0' # the version under development, update after a release
-$versionSuffix = '-a121' # manually incremented for local builds
+$versionSuffix = '-a122' # manually incremented for local builds
 
 function isVersionTag($tag){
     $v = New-Object Version
@@ -39,6 +39,14 @@ dotnet restore
 dotnet $pack
 
 Set-Location $psscriptroot\SourceLink.Test
+dotnet restore
+dotnet $pack
+
+Set-Location $psscriptroot\SourceLink.Embed.AllSourceFiles
+dotnet restore
+dotnet $pack
+
+Set-Location $psscriptroot\SourceLink.Embed.PaketFiles
 dotnet restore
 dotnet $pack
 

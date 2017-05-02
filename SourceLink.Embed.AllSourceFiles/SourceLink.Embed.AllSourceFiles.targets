@@ -1,0 +1,13 @@
+﻿<Project>
+  <PropertyGroup>
+    <BuildDependsOn>EmbedAllSourceFiles;$(BuildDependsOn)</BuildDependsOn>
+  </PropertyGroup>
+  <Target Name="EmbedAllSourceFiles">
+    <ItemGroup>
+      <EmbeddedFiles Include="$([System.IO.Path]::GetFullPath('%(Compile.Identity)'))" />
+    </ItemGroup>
+    <CreateProperty Value="@(EmbeddedFiles)">  
+      <Output TaskParameter="Value" PropertyName="embed" />  
+    </CreateProperty>
+  </Target>
+</Project>
