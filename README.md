@@ -113,7 +113,7 @@ Please vote for all of these issues:
 
 - GitHub NuGet: [msbuild /t:Pack always creates seperate symbols package](https://github.com/NuGet/Home/issues/4142)
   
-  `dotnet pack` and `msbuild /t:pack` need to support easily packaing portalbe pdb files.
+  `dotnet pack` and `msbuild /t:pack` need to support easily packaging portable pdb files.
 
 - Visual Studio User Voice: [Debugger should support C# compiler '/embed' option](https://visualstudio.uservoice.com/forums/121579-visual-studio-ide/suggestions/19107733-debugger-should-support-c-compiler-embed-optio)
 
