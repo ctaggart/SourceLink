@@ -1,6 +1,6 @@
 ﻿<Project>
   <PropertyGroup>
-    <BuildDependsOn>EmbedAllSourceFiles;$(BuildDependsOn)</BuildDependsOn>
+    <BuildDependsOn Condition="$(DebugType) == 'portable' or $(DebugType) == 'embedded'">EmbedAllSourceFiles;$(BuildDependsOn)</BuildDependsOn>
   </PropertyGroup>
   <Target Name="EmbedAllSourceFiles">
     <ItemGroup>
