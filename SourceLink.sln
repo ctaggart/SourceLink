@@ -25,11 +25,33 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SourceLink.Create.CommandLi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SourceLink.Create.BitBucket", "SourceLink.Create.BitBucket\SourceLink.Create.BitBucket.csproj", "{76CC64F0-2D47-4B3C-ADEA-6E758953F2D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SourceLink.Embed.AllSourceFiles", "SourceLink.Embed.AllSourceFiles\SourceLink.Embed.AllSourceFiles.csproj", "{A791FDDC-9BAD-441B-9545-C26D2292E5C3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SourceLink.Embed.AllSourceFiles", "SourceLink.Embed.AllSourceFiles\SourceLink.Embed.AllSourceFiles.csproj", "{A791FDDC-9BAD-441B-9545-C26D2292E5C3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SourceLink.Embed.PaketFiles", "SourceLink.Embed.PaketFiles\SourceLink.Embed.PaketFiles.csproj", "{81801FB5-9388-43BA-B8FD-508A428C03CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SourceLink.Embed.PaketFiles", "SourceLink.Embed.PaketFiles\SourceLink.Embed.PaketFiles.csproj", "{81801FB5-9388-43BA-B8FD-508A428C03CF}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "dotnet-sourcelink-shared", "dotnet-sourcelink-shared\dotnet-sourcelink-shared.shproj", "{FD0C81CE-4FAE-47CE-B89A-20F1DB6DAD0A}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SourceLink.Embed.Shared", "SourceLink.Embed.Shared\SourceLink.Embed.Shared.shproj", "{083CD576-0BE4-4AAC-86D8-00E50C660759}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dotnet", "dotnet", "{2402E19F-C4A4-43A4-B939-F5CD198EEED3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SourceLink", "SourceLink", "{07737978-28A8-42A2-A240-A66EF5EC4C5E}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SourceLink.Create.Shared", "SourceLink.Create.Shared\SourceLink.Create.Shared.shproj", "{225D4DCF-82A5-49B0-8F45-7CBADA058CA9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Create", "Create", "{F157756B-2442-4131-848B-CBEF39E8F706}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Embed", "Embed", "{CB177CE6-ADA8-4017-B5B3-579B72B67B2A}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SourceLink.Shared", "SourceLink.Shared\SourceLink.Shared.shproj", "{B1B7304A-FB72-435B-920F-B2DC53DA6054}"
 EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		SourceLink.Embed.Shared\SourceLink.Embed.Shared.projitems*{083cd576-0be4-4aac-86d8-00e50c660759}*SharedItemsImports = 13
+		SourceLink.Create.Shared\SourceLink.Create.Shared.projitems*{225d4dcf-82a5-49b0-8f45-7cbada058ca9}*SharedItemsImports = 13
+		SourceLink.Shared\SourceLink.Shared.projitems*{b1b7304a-fb72-435b-920f-b2dc53da6054}*SharedItemsImports = 13
+		dotnet-sourcelink-shared\dotnet-sourcelink-shared.projitems*{fd0c81ce-4fae-47ce-b89a-20f1db6dad0a}*SharedItemsImports = 13
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
@@ -150,5 +172,20 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{68D40DAC-77EF-426A-979D-1CC4723CB2A1} = {2402E19F-C4A4-43A4-B939-F5CD198EEED3}
+		{5CEE8EC8-7A54-4860-8B5D-29F89D7F7F4C} = {F157756B-2442-4131-848B-CBEF39E8F706}
+		{87BCE13E-47FF-43A4-ADF4-F645FD4966AD} = {2402E19F-C4A4-43A4-B939-F5CD198EEED3}
+		{FB0D8C0B-27DF-4D20-9F15-09794D95F744} = {F157756B-2442-4131-848B-CBEF39E8F706}
+		{76CC64F0-2D47-4B3C-ADEA-6E758953F2D3} = {F157756B-2442-4131-848B-CBEF39E8F706}
+		{A791FDDC-9BAD-441B-9545-C26D2292E5C3} = {CB177CE6-ADA8-4017-B5B3-579B72B67B2A}
+		{81801FB5-9388-43BA-B8FD-508A428C03CF} = {CB177CE6-ADA8-4017-B5B3-579B72B67B2A}
+		{FD0C81CE-4FAE-47CE-B89A-20F1DB6DAD0A} = {2402E19F-C4A4-43A4-B939-F5CD198EEED3}
+		{083CD576-0BE4-4AAC-86D8-00E50C660759} = {CB177CE6-ADA8-4017-B5B3-579B72B67B2A}
+		{225D4DCF-82A5-49B0-8F45-7CBADA058CA9} = {F157756B-2442-4131-848B-CBEF39E8F706}
+		{F157756B-2442-4131-848B-CBEF39E8F706} = {07737978-28A8-42A2-A240-A66EF5EC4C5E}
+		{CB177CE6-ADA8-4017-B5B3-579B72B67B2A} = {07737978-28A8-42A2-A240-A66EF5EC4C5E}
+		{B1B7304A-FB72-435B-920F-B2DC53DA6054} = {07737978-28A8-42A2-A240-A66EF5EC4C5E}
 	EndGlobalSection
 EndGlobal

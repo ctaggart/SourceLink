@@ -1,4 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\SourceLink.Create.Shared\SourceLink.Create.Shared.projitems" Label="Shared" />
+  <Import Project="..\SourceLink.Shared\SourceLink.Shared.projitems" Label="Shared" />
   <Import Project="../build/common.props" />
   <PropertyGroup>
     <TargetFrameworks>netstandard1.4;net461</TargetFrameworks>

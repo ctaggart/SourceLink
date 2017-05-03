@@ -32,10 +32,7 @@
       <PackagePath>build/net461</PackagePath>
     </Content>
   </ItemGroup>
-
-  <ItemGroup>
-    <Compile Include="..\SourceLink.Create.GitHub\Process.cs" Link="Process.cs" />
-  </ItemGroup>
+  <Import Project="..\SourceLink.Shared\SourceLink.Shared.projitems" Label="Shared" />
 
   <Import Project="../build/sourcelink.props" />
 </Project>

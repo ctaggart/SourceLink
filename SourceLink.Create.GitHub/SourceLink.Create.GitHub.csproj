@@ -32,6 +32,8 @@
       <PackagePath>build/net461</PackagePath>
     </Content>
   </ItemGroup>
+  <Import Project="..\SourceLink.Create.Shared\SourceLink.Create.Shared.projitems" Label="Shared" />
+  <Import Project="..\SourceLink.Shared\SourceLink.Shared.projitems" Label="Shared" />
 
   <Import Project="../build/sourcelink.props" />
 </Project>
