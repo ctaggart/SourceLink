@@ -12,5 +12,6 @@
     <PackageReference Include="NuGet.Packaging" Version="4.0.0" />
     <PackageReference Include="System.Reflection.Metadata" Version="1.4.2" />
   </ItemGroup>
+  <Import Project="..\dotnet-sourcelink-shared\dotnet-sourcelink-shared.projitems" Label="Shared" />
   <Import Project="../build/sourcelink.props" />
 </Project>

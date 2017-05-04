@@ -6,10 +6,6 @@
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <!--<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>-->
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Include="..\SourceLink.Create.GitHub\GitCreateTask.cs" Link="GitCreateTask.cs" />
-    <Compile Include="..\SourceLink.Create.GitHub\Process.cs" Link="Process.cs" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.1.548" />
@@ -36,6 +32,8 @@
       <PackagePath>build/net461</PackagePath>
     </Content>
   </ItemGroup>
+  <Import Project="..\SourceLink.Create.Shared\SourceLink.Create.Shared.projitems" Label="Shared" />
+  <Import Project="..\SourceLink.Shared\SourceLink.Shared.projitems" Label="Shared" />
 
   <Import Project="../build/sourcelink.props" />
 </Project>

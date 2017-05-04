@@ -7,14 +7,10 @@
     <RootNamespace>SourceLink.Git</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\dotnet-sourcelink\SourceLinkJson.cs" Link="SourceLinkJson.cs" />
-    <Compile Include="..\dotnet-sourcelink\System.cs" Link="System.cs" />
-    <Compile Include="..\dotnet-sourcelink\Version.cs" Link="Version.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="LibGit2Sharp.Portable" Version="0.24.10" />
     <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
   </ItemGroup>
+  <Import Project="..\dotnet-sourcelink-shared\dotnet-sourcelink-shared.projitems" Label="Shared" />
   <Import Project="../build/sourcelink.props" />
 </Project>
