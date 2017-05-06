@@ -275,32 +275,17 @@ namespace SourceLink {
                 {
                     try
                     {
-                        var ext = Path.GetExtension(file);
-                        if (ext == ".pdb")
+                        using (var stream = p.GetStream(file))
+                        using (var ms = new MemoryStream()) // seek required
                         {
-                            using (var drp = new DebugReaderProvider(file, p.GetStream(file)))
+                            stream.CopyTo(ms);
+                            ms.Position = 0;
+                            using (var drp = new DebugReaderProvider(file, ms))
                             {
                                 if (TestFile(drp) != 0)
                                 {
                                     Console.WriteLine("failed for " + file);
                                     errors++;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            using (var stream = p.GetStream(file))
-                            using (var ms = new MemoryStream()) // PEReader requires seek
-                            {
-                                stream.CopyTo(ms);
-                                ms.Position = 0;
-                                using (var drp = new DebugReaderProvider(file, ms))
-                                {
-                                    if (TestFile(drp) != 0)
-                                    {
-                                        Console.WriteLine("failed for " + file);
-                                        errors++;
-                                    }
                                 }
                             }
                         }
