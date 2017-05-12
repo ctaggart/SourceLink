@@ -24,7 +24,7 @@ $file = 'VisualFSharp-' + $Version + '.vsix'
 $tempfile = [IO.Path]::Combine([IO.Path]::GetTempPath(), $file)
 $logFile = [IO.Path]::ChangeExtension($tempfile, '.txt')
 $wc.DownloadFile($feed + '/' + $file, $tempfile)
-$vs = (Get-VSSetupInstance)[0]
+$vs = Get-VSSetupInstance
 [array]$argumentList = "/logFile:`"$logFile`""
 $argumentList += "/appidinstallpath:`"$($vs.InstallationPath)\Common7\IDE\devenv.exe`""
 $skuName = $vs.Product.Id.Replace("Microsoft.VisualStudio.Product.","")
@@ -39,5 +39,5 @@ if($Quiet.IsPresent){
     $argumentList += "/quiet"
 }
 $argumentList += $tempfile
-Start-Process (Join-Path $vs.InstallationPath 'Common7\IDE\VSIXInstaller.exe') -Wait -ArgumentList $argumentList
+Start-Process (Join-Path $vs[0].InstallationPath 'Common7\IDE\VSIXInstaller.exe') -Wait -ArgumentList $argumentList
 Remove-Item $tempfile
