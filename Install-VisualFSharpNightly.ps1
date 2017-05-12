@@ -24,8 +24,7 @@ $file = 'VisualFSharp-' + $Version + '.vsix'
 $tempfile = [IO.Path]::Combine([IO.Path]::GetTempPath(), $file)
 $logFile = [IO.Path]::ChangeExtension($tempfile, '.txt')
 $wc.DownloadFile($feed + '/' + $file, $tempfile)
-$vs = Get-VSSetupInstance
-$vs | fl
+$vs = (Get-VSSetupInstance)[0]
 [array]$argumentList = "/logFile:`"$logFile`""
 $argumentList += "/appidinstallpath:`"$($vs.InstallationPath)\Common7\IDE\devenv.exe`""
 $skuName = $vs.Product.Id.Replace("Microsoft.VisualStudio.Product.","")
