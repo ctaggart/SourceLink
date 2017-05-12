@@ -5,7 +5,10 @@ clone_depth: 10
 before_build:
   - ps: Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
   - ps: Install-Module VSSetup -Scope CurrentUser
-  - ps: Invoke-WebRequest https://raw.githubusercontent.com/Microsoft/visualfsharp/master/scripts/Install-VisualFSharpNightly.ps1 -OutFile Install-VisualFSharpNightly.ps1
+  # - ps: Invoke-WebRequest https://raw.githubusercontent.com/Microsoft/visualfsharp/master/scripts/Install-VisualFSharpNightly.ps1 -OutFile Install-VisualFSharpNightly.ps1
+  - ps |
+    $vs = Get-VSSetupInstance
+    $vs | fl
   - ps: ./Install-VisualFSharpNightly.ps1
 build_script:
   - ps: |
