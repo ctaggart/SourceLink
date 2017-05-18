@@ -122,7 +122,7 @@ Please vote for all of these issues:
       <PackagePath>lib/netstandard1.6</PackagePath>
     </Content>
   </ItemGroup>
-```
+  ```
 
 - Visual Studio User Voice: [Debugger should support C# compiler '/embed' option](https://visualstudio.uservoice.com/forums/121579-visual-studio-ide/suggestions/19107733-debugger-should-support-c-compiler-embed-optio)
 
