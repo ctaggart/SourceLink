@@ -1,6 +1,6 @@
 ﻿<Project>
   <PropertyGroup>
-    <BuildDependsOn Condition="$(DebugType) == 'portable' or $(DebugType) == 'embedded'">EmbedPaketFiles;$(BuildDependsOn)</BuildDependsOn>
+    <BuildDependsOn>EmbedPaketFiles;$(BuildDependsOn)</BuildDependsOn>
   </PropertyGroup>
   <Target Name="EmbedPaketFiles">
     <ItemGroup>
