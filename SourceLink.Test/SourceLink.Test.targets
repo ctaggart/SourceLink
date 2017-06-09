@@ -8,9 +8,9 @@
   <PropertyGroup>
     <SourceLinkTest Condition="'$(SourceLinkTest)' == ''">$(CI)</SourceLinkTest>
     <SourceLinkTest Condition="'$(SourceLinkTest)' == '' and '$(BUILD_NUMBER)' != ''">true</SourceLinkTest>
-    <CompileDependsOn Condition="'$(SourceLinkTest)' == 'true' and ($(DebugType) == 'portable' or $(DebugType) == 'embedded')">$(CompileDependsOn);SourceLinkTest</CompileDependsOn>
+    <CompileDependsOn Condition="'$(SourceLinkTest)' == 'true'">$(CompileDependsOn);SourceLinkTest</CompileDependsOn>
     <SourceLinkPdb Condition="'$(SourceLinkPdb)' == ''">$(PdbFile)</SourceLinkPdb>
-    <SourceLinkPdb Condition="'$(SourceLinkPdb)' == '' and $(DebugType) == 'portable'">$(IntermediateOutputPath)$(TargetName).pdb</SourceLinkPdb>
+    <SourceLinkPdb Condition="'$(SourceLinkPdb)' == '' and ($(DebugType) != 'embedded' and $(DebugType) != 'none')">$(IntermediateOutputPath)$(TargetName).pdb</SourceLinkPdb>
     <SourceLinkPdb Condition="'$(SourceLinkPdb)' == '' and $(DebugType) == 'embedded'">$(IntermediateOutputPath)$(TargetName).dll</SourceLinkPdb>
   </PropertyGroup>
 
