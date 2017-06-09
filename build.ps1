@@ -1,4 +1,4 @@
-$version = '2.1.3' # the version under development, update after a release
+$version = '2.2.0' # the version under development, update after a release
 $versionSuffix = '-a122' # manually incremented for local builds
 
 function isVersionTag($tag){
