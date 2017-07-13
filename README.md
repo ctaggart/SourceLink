@@ -113,7 +113,7 @@ Please vote for all of these issues:
 
 - GitHub NuGet: [msbuild /t:Pack always creates seperate symbols package](https://github.com/NuGet/Home/issues/4142)
   
-  `dotnet pack` and `msbuild /t:pack` need to support more easily packaging portable pdb files. Currenlty, a way to include the pdb is to use [dotnet pack instructions](https://docs.microsoft.com/en-us/dotnet/articles/core/tools/extensibility) in your project file. An [example](https://github.com/ctaggart/SourceLink/issues/181#issuecomment-302353276):
+  `dotnet pack` and `msbuild /t:pack` need to support more easily packaging portable pdb files. Currently, a way to include the pdb is to use [dotnet pack instructions](https://docs.microsoft.com/en-us/dotnet/articles/core/tools/extensibility) in your project file. An [example](https://github.com/ctaggart/SourceLink/issues/181#issuecomment-302353276):
 
   ``` xml
   <ItemGroup Label="dotnet pack instructions">
