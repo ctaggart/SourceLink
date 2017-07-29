@@ -263,8 +263,7 @@ namespace SourceLink.Git {
                     documents = documents
                 };
 
-                using (var sw = new StreamWriter(File.OpenWrite(file)))
-                {
+                using (var sw = new StreamWriter(File.Open(file, FileMode.Create, FileAccess.Write, FileShare.Read))) {
                     var js = new JsonSerializer();
                     js.Serialize(sw, json);
                 }
