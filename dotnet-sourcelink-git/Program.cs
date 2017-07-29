@@ -163,9 +163,8 @@ namespace SourceLink.Git {
                             }
                             else
                             {
-                                var index = repo.Index[sf.GitPath];
-                                if (index == null)
-                                {
+                                var index = repo.Index[sf.GitPath] ?? FindInSubmodule(repo, sf);
+                                if (index == null) {
                                     filesNotInGit.Add(sf);
                                 }
                                 else if (index.Path != sf.GitPath)
@@ -244,12 +243,24 @@ namespace SourceLink.Git {
                     }
                 }
 
+                var documents = new Dictionary<string, string> {
+                    {string.Format("{0}{1}{2}", repoPath, Path.DirectorySeparatorChar, '*'), url},
+                };
+
+                using (var repo = new Repository(repoPath)) {
+                    foreach (var submodule in repo.Submodules) {
+                        var path =
+                            $"{repoPath}{Path.DirectorySeparatorChar}{submodule.Path.Replace('/', Path.DirectorySeparatorChar)}{Path.DirectorySeparatorChar}*";
+                        var rawUrl = submodule.Url.Replace("ssh://git@", "https://")
+                            .Replace("github.com", "raw.githubusercontent.com");
+                        var fullUrl = $"{rawUrl}/{submodule.IndexCommitId}/*";
+                        documents.Add(path, fullUrl);
+                    }
+                }
+
                 var json = new SourceLinkJson
                 {
-                    documents = new Dictionary<string, string>
-                    {
-                        { string.Format("{0}{1}{2}", repoPath, Path.DirectorySeparatorChar, '*'), url },
-                    }
+                    documents = documents
                 };
 
                 using (var sw = new StreamWriter(File.OpenWrite(file)))
@@ -278,6 +289,22 @@ namespace SourceLink.Git {
 
                 return errors == 0 ? 0 : 1;
             });
+        }
+
+        public static IndexEntry FindInSubmodule(Repository repo, SourceFile file)
+        {
+            foreach (var submodule in repo.Submodules) {
+                var normalizedSubmodulePath = submodule.Path.Replace('/', Path.DirectorySeparatorChar);
+                var submoduleFilePath = file.GitPath.Replace(normalizedSubmodulePath + Path.DirectorySeparatorChar, "");
+                using (var r = new Repository(Path.Combine(repo.Info.WorkingDirectory, normalizedSubmodulePath))) {
+                    if (r.Index[submoduleFilePath] != null) {
+                        file.GitPath = GetGitPath(r.Info.WorkingDirectory.TrimEnd(Path.DirectorySeparatorChar), file.FilePath);
+                        return r.Index[submoduleFilePath];
+                    }
+                }
+            }
+
+            return null;
         }
 
         public static bool TryFixLineEndings(SHA1 sha1, SourceFile sf)
