@@ -11,9 +11,10 @@ namespace SourceLink.Create.GitHub
                 origin = origin.Replace(':', '/');
                 origin = origin.Replace("git@", "https://");
             }
-            origin = origin.Replace(".git", "");
+            origin = origin.Replace(".git", string.Empty);
+            origin = origin.Replace("/", string.Empty);
             var uri = new System.Uri(origin);
-            return "https://raw.githubusercontent.com" + uri.LocalPath + "/{commit}/*";
+            return $"https://raw.githubusercontent.com{uri.LocalPath}/{{commit}}/*";
         }
     }
 }
