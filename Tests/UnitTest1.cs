@@ -19,7 +19,10 @@ namespace Tests
             //// git
             //Assert.Equal("https://raw.githubusercontent.com/ctaggart/sourcelink-test/{0}/*",
             //    CreateTask.GetRepoUrl("git@github.com:ctaggart/sourcelink-test.git"));
-        }
 
+            //// trailing slash
+            //Assert.Equal("https://raw.githubusercontent.com/ctaggart/sourcelink-test/{0}/*",
+            // CreateTask.GetRepoUrl("https://github.com/ctaggart/sourcelink-test/"));
+        }
     }
 }
