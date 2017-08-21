@@ -1,7 +1,7 @@
 image: Visual Studio 2017
 init:
   - git config --global core.autocrlf input
-  - "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe"
+  - '"C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe"'
 clone_depth: 10
 build_script:
   - ps: |
