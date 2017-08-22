@@ -27,6 +27,8 @@
         File="$(SourceLinkFile)"
         Sources="@(SourceLinkSources)"
         NoAutoLF="$(SourceLinkNoAutoLF)"
+        NotInGit="$(SourceLinkNotInGit)"
+        HashMismatch="$(SourceLinkHashMismatch)"
         EmbeddedFilesIn="@(EmbeddedFiles)">
       <Output PropertyName="SourceLink" TaskParameter="SourceLink" />
       <Output ItemName="EmbeddedFiles" TaskParameter="EmbeddedFiles" />
