@@ -1,5 +1,6 @@
 ﻿using Microsoft.Build.Framework;
 using MSBuildTask = Microsoft.Build.Utilities.Task;
+using System;
 using System.Text;
 using IO = System.IO;
 using System.Collections.Generic;
@@ -77,7 +78,7 @@ namespace SourceLink.Create
             {
                 sbArgs.Append(" --hashmismatch \"" + HashMismatch + "\"");
             }
-            if ("true".Equals(NoAutoLF))
+            if ("true".Equals(NoAutoLF, StringComparison.OrdinalIgnoreCase))
             {
                 sbArgs.Append(" --noautolf");
             }
