@@ -11,7 +11,8 @@ namespace SourceLink.Create.BitBucket
                 origin = origin.Replace(':', '/');
                 origin = origin.Replace("git@", "https://");
             }
-            origin = origin.Replace(".git", "");
+            origin = origin.Replace(".git", string.Empty);
+            origin = origin.Replace("/", string.Empty);
             var uri = new System.Uri(origin);
             return "https://bitbucket.org" + uri.LocalPath + "/raw/{commit}/*";
         }
