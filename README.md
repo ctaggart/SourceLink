@@ -113,15 +113,17 @@ Please vote for all of these issues:
 
 - GitHub NuGet: [msbuild /t:Pack always creates seperate symbols package](https://github.com/NuGet/Home/issues/4142)
   
-  `dotnet pack` and `msbuild /t:pack` need to support more easily packaging portable pdb files. Currently, a way to include the pdb is to use [dotnet pack instructions](https://docs.microsoft.com/en-us/dotnet/articles/core/tools/extensibility) in your project file. An [example](https://github.com/ctaggart/SourceLink/issues/181#issuecomment-302353276):
+  `dotnet pack` and `msbuild /t:pack` need to support more easily packaging portable pdb files. Currently, the recommended way of including them is to use the extension point designed for including content that is different for each target framework:
 
   ``` xml
-  <ItemGroup Label="dotnet pack instructions">
-    <Content Include="$(OutputPath)Paket.Core.pdb">
-      <Pack>true</Pack>
-      <PackagePath>lib/netstandard1.6</PackagePath>
-    </Content>
-  </ItemGroup>
+  <PropertyGroup>
+    <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);IncludePDBsInPackage</TargetsForTfmSpecificContentInPackage>
+  </PropertyGroup>
+  <Target Name="IncludePDBsInPackage" Condition="'$(IncludeBuildOutput)' != 'false'">
+    <ItemGroup>
+      <TfmSpecificPackageFile Include="$(OutputPath)\$(AssemblyName).pdb" PackagePath="lib/$(TargetFramework)" />
+    </ItemGroup>
+  </Target>
   ```
 
 - Visual Studio User Voice: [Debugger should support C# compiler '/embed' option](https://visualstudio.uservoice.com/forums/121579-visual-studio-ide/suggestions/19107733-debugger-should-support-c-compiler-embed-optio)
