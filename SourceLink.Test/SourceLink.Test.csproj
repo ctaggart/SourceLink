@@ -6,6 +6,11 @@
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="bin\**" />
+    <EmbeddedResource Remove="bin\**" />
+    <None Remove="bin\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.1.548" PrivateAssets="all" />
@@ -16,20 +21,6 @@
     <Content Include="SourceLink.Test.targets">
       <Pack>true</Pack>
       <PackagePath>build</PackagePath>
-    </Content>
-
-    <Content Include="$(OutputPath)netstandard1.4/SourceLink.Test.dll">
-      <Pack>true</Pack>
-      <PackagePath>build/netstandard1.4</PackagePath>
-    </Content>
-    <Content Include="$(OutputPath)netstandard1.4/SourceLink.Test.deps.json">
-      <Pack>true</Pack>
-      <PackagePath>build/netstandard1.4</PackagePath>
-    </Content>
-
-    <Content Include="$(OutputPath)net461/SourceLink.Test.dll">
-      <Pack>true</Pack>
-      <PackagePath>build/net461</PackagePath>
     </Content>
   </ItemGroup>
   <Import Project="..\SourceLink.Shared\SourceLink.Shared.projitems" Label="Shared" />

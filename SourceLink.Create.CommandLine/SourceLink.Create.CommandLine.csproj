@@ -9,6 +9,11 @@
     <!--<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>-->
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="bin\**" />
+    <EmbeddedResource Remove="bin\**" />
+    <None Remove="bin\**" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="..\SourceLink.Create.BitBucket\BitBucketUrlConverter.cs" Link="BitBucketUrlConverter.cs" />
     <Compile Include="..\SourceLink.Create.GitHub\GitHubUrlConverter.cs" Link="GitHubUrlConverter.cs" />
   </ItemGroup>
@@ -22,20 +27,6 @@
     <Content Include="SourceLink.Create.CommandLine.targets">
       <Pack>true</Pack>
       <PackagePath>build</PackagePath>
-    </Content>
-
-    <Content Include="$(OutputPath)netstandard1.4/SourceLink.Create.CommandLine.dll">
-      <Pack>true</Pack>
-      <PackagePath>build/netstandard1.4</PackagePath>
-    </Content>
-    <Content Include="$(OutputPath)netstandard1.4/SourceLink.Create.CommandLine.deps.json">
-      <Pack>true</Pack>
-      <PackagePath>build/netstandard1.4</PackagePath>
-    </Content>
-
-    <Content Include="$(OutputPath)net461/SourceLink.Create.CommandLine.dll">
-      <Pack>true</Pack>
-      <PackagePath>build/net461</PackagePath>
     </Content>
   </ItemGroup>
 
