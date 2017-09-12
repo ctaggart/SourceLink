@@ -9,6 +9,7 @@ namespace Tests
         [InlineData("git@github.com:ctaggart/sourcelink-test.git")]
         [InlineData("https://github.com/ctaggart/sourcelink-test.git")]
         [InlineData("https://github.com/ctaggart/sourcelink-test")]
+        [InlineData("https://github.com/ctaggart/sourcelink-test/")]
         public void Should_return_url_in_canonical_form(string provided)
         {
             var task = new CreateTask();
