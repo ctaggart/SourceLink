@@ -1,5 +1,4 @@
-﻿
-namespace SourceLink.Create.BitBucket
+﻿namespace SourceLink.Create.BitBucket
 {
     public static class UrlConverter
     {

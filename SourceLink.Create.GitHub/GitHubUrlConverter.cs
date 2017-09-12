@@ -1,5 +1,4 @@
-﻿
-namespace SourceLink.Create.GitHub
+﻿namespace SourceLink.Create.GitHub
 {
     public static class UrlConverter
     {

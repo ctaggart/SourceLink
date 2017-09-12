@@ -15,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\dotnet-sourcelink-git\dotnet-sourcelink-git.csproj" />
     <ProjectReference Include="..\dotnet-sourcelink\dotnet-sourcelink.csproj" />
+    <ProjectReference Include="..\SourceLink.Create.BitBucket\SourceLink.Create.BitBucket.csproj" />
     <ProjectReference Include="..\SourceLink.Create.GitHub\SourceLink.Create.GitHub.csproj" />
   </ItemGroup>
 
