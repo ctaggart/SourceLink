@@ -6,6 +6,9 @@ init:
 
 clone_depth: 10
 
+before_build:
+  - cmd: dotnet restore .\SourceLink.sln
+
 build_script:
   - ps: |
       dotnet --version
@@ -16,6 +19,10 @@ test:
   assemblies:
     only:
       - '**\Tests.dll'
+
+
+test_script:
+    - ps: dotnet test .\Tests\Tests.csproj  
 
 artifacts:
   - path: bin\*.nupkg

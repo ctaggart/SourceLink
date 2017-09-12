@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.7
+VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{876D3926-2BE5-40B4-B9D4-1218875A3870}"
 	ProjectSection(SolutionItems) = preProject
@@ -44,6 +44,12 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Embed", "Embed", "{CB177CE6-ADA8-4017-B5B3-579B72B67B2A}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SourceLink.Shared", "SourceLink.Shared\SourceLink.Shared.shproj", "{B1B7304A-FB72-435B-920F-B2DC53DA6054}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{853D5303-E7E6-48D5-A480-BB5B34BC9B06}"
+	ProjectSection(SolutionItems) = preProject
+		appveyor.yml = appveyor.yml
+		build.ps1 = build.ps1
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -187,5 +193,8 @@ Global
 		{F157756B-2442-4131-848B-CBEF39E8F706} = {07737978-28A8-42A2-A240-A66EF5EC4C5E}
 		{CB177CE6-ADA8-4017-B5B3-579B72B67B2A} = {07737978-28A8-42A2-A240-A66EF5EC4C5E}
 		{B1B7304A-FB72-435B-920F-B2DC53DA6054} = {07737978-28A8-42A2-A240-A66EF5EC4C5E}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7623516C-0410-449C-9EFC-84B884102D70}
 	EndGlobalSection
 EndGlobal
