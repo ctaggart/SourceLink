@@ -1,18 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>    
-    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <TargetFrameworks>netcoreapp1.1</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
-    <PackageReference Include="xunit" Version="2.2.0" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0-*" />
+    <PackageReference Include="xunit" Version="2.3.0-*" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.3.0-*" />
+    <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.0-*" />
+    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.*" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\dotnet-sourcelink-git\dotnet-sourcelink-git.csproj" />
     <ProjectReference Include="..\dotnet-sourcelink\dotnet-sourcelink.csproj" />
+    <ProjectReference Include="..\SourceLink.Create.BitBucket\SourceLink.Create.BitBucket.csproj" />
+    <ProjectReference Include="..\SourceLink.Create.GitHub\SourceLink.Create.GitHub.csproj" />
   </ItemGroup>
 
   <ItemGroup>
