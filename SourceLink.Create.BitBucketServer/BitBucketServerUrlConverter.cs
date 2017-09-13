@@ -1,4 +1,6 @@
-﻿namespace SourceLink.Create.BitBucketServer
+﻿using System.Text.RegularExpressions;
+
+namespace SourceLink.Create.BitBucketServer
 {
     public static class UrlConverter
     {
