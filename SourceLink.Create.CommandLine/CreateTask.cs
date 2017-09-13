@@ -67,7 +67,8 @@ namespace SourceLink.Create.CommandLine
         {
             var urlConverters = new List<UrlConverter> {
                 GitHub.UrlConverter.Convert,
-                BitBucket.UrlConverter.Convert
+                BitBucket.UrlConverter.Convert,
+                BitBucketServer.UrlConverter.Convert
             };
             foreach(var urlConverter in urlConverters)
             {
