@@ -34,6 +34,10 @@ Set-Location $psscriptroot\SourceLink.Create.BitBucket
 dotnet restore
 dotnet $pack
 
+Set-Location $psscriptroot\SourceLink.Create.BitBucketServer
+dotnet restore
+dotnet $pack
+
 Set-Location $psscriptroot\SourceLink.Create.CommandLine
 dotnet restore
 dotnet $pack

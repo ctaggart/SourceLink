@@ -25,5 +25,14 @@ namespace Tests
             var task = new SourceLink.Create.BitBucket.CreateTask();
             Assert.Equal("https://bitbucket.org/ctaggart/sourcelink-test/raw/{commit}/*", task.ConvertUrl(provided));
         }
+
+        [Theory]
+        [InlineData("ssh://git@internal.bitbucketserver.local:7999/sol123/reallyawesomeproject.git")]
+        [InlineData("https://internal.bitbucketserver.local/scm/sol123/reallyawesomeproject.git")]
+        public void Should_return_url_in_canonical_form_for_BitBucketServer(string provided)
+        {
+            var task = new SourceLink.Create.BitBucketServer.CreateTask();
+            Assert.Equal("https://internal.bitbucketserver.local/projects/sol123/repos/reallyawesomeproject/raw/*?at={commit}", task.ConvertUrl(provided));
+        }
     }
 }

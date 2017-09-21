@@ -82,7 +82,7 @@ Just like the `SourceLinkCreate` property, you can control when it is enabled by
 
 Please follow the quick start if you are just getting started. `SourceLink.Create.CommandLine` uses the `git` commandline by default, does not use `dotnet`, and has been easier for new users to understand.
 
-`SourceLink.Create.GitHub` and `SourceLink.Create.BitBucket` both use `dotnet sourcelink-git`, which accesses the git information using [libgit2sharp](https://github.com/libgit2/libgit2sharp). This allows some additional features. It verifies that all of the source files are in the git repository and that their checksums match. If checksums do not match due to line endings, it will automatically fix them to match the git repository like endings of `lf`. If a source file's checksum still does not match, it will be embedded. If the source file is not in the git repository, it will be embedded. All of these settings are configurable.
+`SourceLink.Create.GitHub`, `SourceLink.Create.BitBucket` and `SourceLink.Create.BitBucketServer` use `dotnet sourcelink-git`, which accesses the git information using [libgit2sharp](https://github.com/libgit2/libgit2sharp). This allows some additional features. It verifies that all of the source files are in the git repository and that their checksums match. If checksums do not match due to line endings, it will automatically fix them to match the git repository like endings of `lf`. If a source file's checksum still does not match, it will be embedded. If the source file is not in the git repository, it will be embedded. All of these settings are configurable.
 
 ``` xml
 <PackageReference Include="SourceLink.Create.GitHub" Version="2.1.2" PrivateAssets="all" />

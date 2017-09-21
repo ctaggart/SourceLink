@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SourceLink.Create.CommandLi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SourceLink.Create.BitBucket", "SourceLink.Create.BitBucket\SourceLink.Create.BitBucket.csproj", "{76CC64F0-2D47-4B3C-ADEA-6E758953F2D3}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SourceLink.Create.BitBucketServer", "SourceLink.Create.BitBucketServer\SourceLink.Create.BitBucketServer.csproj", "{66682790-9305-4807-B951-C2241BF7512A}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SourceLink.Embed.AllSourceFiles", "SourceLink.Embed.AllSourceFiles\SourceLink.Embed.AllSourceFiles.csproj", "{A791FDDC-9BAD-441B-9545-C26D2292E5C3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SourceLink.Embed.PaketFiles", "SourceLink.Embed.PaketFiles\SourceLink.Embed.PaketFiles.csproj", "{81801FB5-9388-43BA-B8FD-508A428C03CF}"
@@ -151,6 +153,18 @@ Global
 		{76CC64F0-2D47-4B3C-ADEA-6E758953F2D3}.Release|x64.Build.0 = Release|Any CPU
 		{76CC64F0-2D47-4B3C-ADEA-6E758953F2D3}.Release|x86.ActiveCfg = Release|Any CPU
 		{76CC64F0-2D47-4B3C-ADEA-6E758953F2D3}.Release|x86.Build.0 = Release|Any CPU
+		{66682790-9305-4807-B951-C2241BF7512A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66682790-9305-4807-B951-C2241BF7512A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66682790-9305-4807-B951-C2241BF7512A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{66682790-9305-4807-B951-C2241BF7512A}.Debug|x64.Build.0 = Debug|Any CPU
+		{66682790-9305-4807-B951-C2241BF7512A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{66682790-9305-4807-B951-C2241BF7512A}.Debug|x86.Build.0 = Debug|Any CPU
+		{66682790-9305-4807-B951-C2241BF7512A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66682790-9305-4807-B951-C2241BF7512A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66682790-9305-4807-B951-C2241BF7512A}.Release|x64.ActiveCfg = Release|Any CPU
+		{66682790-9305-4807-B951-C2241BF7512A}.Release|x64.Build.0 = Release|Any CPU
+		{66682790-9305-4807-B951-C2241BF7512A}.Release|x86.ActiveCfg = Release|Any CPU
+		{66682790-9305-4807-B951-C2241BF7512A}.Release|x86.Build.0 = Release|Any CPU
 		{A791FDDC-9BAD-441B-9545-C26D2292E5C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A791FDDC-9BAD-441B-9545-C26D2292E5C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A791FDDC-9BAD-441B-9545-C26D2292E5C3}.Debug|x64.ActiveCfg = Debug|Any CPU
