@@ -26,3 +26,7 @@ test_script:
 
 artifacts:
   - path: bin\*.nupkg
+
+notifications:
+- provider: Webhook
+  url: https://api.ctaggart.com/v1/appveyor
