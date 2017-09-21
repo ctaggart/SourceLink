@@ -8,7 +8,7 @@
   <PropertyGroup>
     <SourceLinkCreate Condition="'$(SourceLinkCreate)' == ''">$(CI)</SourceLinkCreate>
     <SourceLinkCreate Condition="'$(SourceLinkCreate)' == '' and '$(BUILD_NUMBER)' != ''">true</SourceLinkCreate>
-    <SourceLinkCreate Condition="'$(SourceLinkCreate)' == '' and '$(TF_BUILD)' != ''">true</SourceLinkCreate>    
+    <SourceLinkCreate Condition="'$(SourceLinkCreate)' == '' and '$(TF_BUILD)' != ''">true</SourceLinkCreate>
     <CompileDependsOn Condition="'$(SourceLinkCreate)' == 'true'">SourceLinkCreate;$(CompileDependsOn)</CompileDependsOn>
     <SourceLinkFile Condition="'$(SourceLinkFile)' == ''">$(SourceLink)</SourceLinkFile>
     <SourceLinkFile Condition="'$(SourceLinkFile)' == ''">$(IntermediateOutputPath)sourcelink.json</SourceLinkFile>
