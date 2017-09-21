@@ -43,14 +43,14 @@ namespace SourceLink.Create
                 var originCmd = Process.RunAndGetOutput("dotnet", originArgs);
                 if (originCmd.ExitCode != 0 || originCmd.OutputLines.Count != 1)
                 {
-                    Log.LogMessage(MessageImportance.High, "unable to find repository origin with: dotnet " + originArgs);
+                    Log.LogError("unable to find repository origin with: dotnet " + originArgs);
                     return false;
                 }
                 var origin = originCmd.OutputLines[0];
                 url = ConvertUrl(origin);
                 if (url == null)
                 {
-                    Log.LogMessage(MessageImportance.High, "unable to convert origin url: " + origin);
+                    Log.LogError("unable to convert origin url: " + origin);
                     return false;
                 }
             }

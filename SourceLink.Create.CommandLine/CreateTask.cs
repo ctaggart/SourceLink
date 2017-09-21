@@ -30,14 +30,14 @@ namespace SourceLink.Create.CommandLine
             {
                 if(OriginUrl == null)
                 {
-                    Log.LogMessage(MessageImportance.High, "OriginUrl not set");
+                    Log.LogError("OriginUrl not set");
                     return false;
                 }
                 url = ConvertUrl(OriginUrl);
-                Log.LogMessage(MessageImportance.High, "SourceLinkUrl: " + url);
+                Log.LogMessage(MessageImportance.Normal, "SourceLinkUrl: " + url);
                 if (url == null)
                 {
-                    Log.LogMessage(MessageImportance.High, "unable to convert OriginUrl: " + OriginUrl);
+                    Log.LogError("unable to convert OriginUrl: " + OriginUrl);
                     return false;
                 }
             }
