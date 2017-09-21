@@ -8,7 +8,7 @@
   <PropertyGroup>
     <SourceLinkTest Condition="'$(SourceLinkTest)' == ''">$(CI)</SourceLinkTest>
     <SourceLinkTest Condition="'$(SourceLinkTest)' == '' and '$(BUILD_NUMBER)' != ''">true</SourceLinkTest>
-    <SourceLinkCreate Condition="'$(SourceLinkTest)' == '' and '$(TF_BUILD)' != ''">true</SourceLinkCreate>
+    <SourceLinkTest Condition="'$(SourceLinkTest)' == '' and '$(TF_BUILD)' != ''">true</SourceLinkTest>
     <CompileDependsOn Condition="'$(SourceLinkTest)' == 'true'">$(CompileDependsOn);SourceLinkTest</CompileDependsOn>
     <SourceLinkPdb Condition="'$(SourceLinkPdb)' == ''">$(PdbFile)</SourceLinkPdb>
     <SourceLinkPdb Condition="'$(SourceLinkPdb)' == '' and ($(DebugType) != 'embedded' and $(DebugType) != 'none')">$(IntermediateOutputPath)$(TargetName).pdb</SourceLinkPdb>
