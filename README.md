@@ -42,6 +42,8 @@ The [source link documention](https://github.com/dotnet/core/blob/master/Documen
 
 If you are building on Windows, make sure that you configure git to checkout files with [core.autocrlf input](https://github.com/ctaggart/SourceLink/wiki/Line-Endings).
 
+By default `SourceLink.Create.CommandLine` will try to process GitHub and BitBucket cloned repositories. You can specify a specific server type by setting the `SourceLinkServerType` MSBuild property like `/p:SourceLinkServerType=GitHub`, `/p:SourceLinkServerType=BitBucket` or `/p:SourceLinkServerType=BitBucketServer`.
+
 You can control when it runs by setting the `SourceLinkCreate` property. That property is set to `true` by default on build servers that set `CI` or `BUILD_NUMBER` environment variables. In general these tools are meant to be run only on build servers, but you can test locally by setting an MSBuild property like `/p:ci=true` or `/p:SourceLinkCreate=true`.
 
 If you have a dotnet project, you can test locally with:

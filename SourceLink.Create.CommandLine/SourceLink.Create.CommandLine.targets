@@ -32,7 +32,8 @@
         Url="$(SourceLinkUrl)"
         OriginUrl="$(SourceLinkOriginUrl)"
         Commit="$(SourceLinkCommit)"
-        File="$(SourceLinkFile)">
+        File="$(SourceLinkFile)"
+        ServerType="$(SourceLinkServerType)">
       <Output PropertyName="SourceLink" TaskParameter="SourceLink" />
     </SourceLink.Create.CommandLine.CreateTask>
   </Target>
