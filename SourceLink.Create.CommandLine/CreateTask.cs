@@ -69,15 +69,17 @@ namespace SourceLink.Create.CommandLine
         {
             var urlConverters = new List<UrlConverter>();
 
-            switch (serverType)
+            var normalizeServerType = serverType?.ToUpperInvariant();
+
+            switch (normalizeServerType)
             {
-                case "GitHub":
+                case "GITHUB":
                     urlConverters.Add(GitHub.UrlConverter.Convert);
                     break;
-                case "BitBucket":
+                case "BITBUCKET":
                     urlConverters.Add(BitBucket.UrlConverter.Convert);
                     break;
-                case "BitBucketServer":
+                case "BITBUCKETSERVER":
                     urlConverters.Add(BitBucketServer.UrlConverter.Convert);
                     break;
                 default:
