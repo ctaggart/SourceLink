@@ -167,20 +167,20 @@ namespace SourceLink {
                 return 0;
             });
         }
-
-        public static int TestFile(string path)
+        
+        public static int TestFile(string path, IAuthenticationHeaderValueProvider authenticationHeaderValueProvider = null)
         {
             using (var drp = new DebugReaderProvider(path))
             {
-                return TestFile(drp);
+                return TestFile(drp, authenticationHeaderValueProvider);
             }
         }
 
-        public static int TestFile(DebugReaderProvider drp)
+        public static int TestFile(DebugReaderProvider drp, IAuthenticationHeaderValueProvider authenticationHeaderValueProvider = null)
         {
             var missingDocs = new List<Document>();
             var erroredDocs = new List<Document>();
-            var documents = GetDocumentsWithUrlHashes(drp).GetAwaiter().GetResult();
+            var documents = GetDocumentsWithUrlHashes(drp, authenticationHeaderValueProvider).GetAwaiter().GetResult();
 
             foreach (var doc in documents)
             {
@@ -234,7 +234,7 @@ namespace SourceLink {
             return 0;
         }
 
-        public static int TestNupkg(string path, List<string> files)
+        public static int TestNupkg(string path, List<string> files, IAuthenticationHeaderValueProvider authenticationHeaderValueProvider = null)
         {
             var errors = 0;
             using (var p = new PackageArchiveReader(File.OpenRead(path)))
@@ -282,7 +282,7 @@ namespace SourceLink {
                             ms.Position = 0;
                             using (var drp = new DebugReaderProvider(file, ms))
                             {
-                                if (TestFile(drp) != 0)
+                                if (TestFile(drp, authenticationHeaderValueProvider) != 0)
                                 {
                                     Console.WriteLine("failed for " + file);
                                     errors++;
@@ -305,6 +305,11 @@ namespace SourceLink {
             command.Description = "test each URL and verify that the checksums match";
             var pathArgument = command.Argument("path", "path to pdb, dll or nupkg", false);
             var fileOption = command.Option("-f|--file <path>", "the path to a dll or pdb in a nupkg", CommandOptionType.MultipleValue);
+            var authOption = command.Option("-a|--use-auth <type>", "Use authentication. Defaults to Basic", CommandOptionType.SingleValue);
+            var authEncodingOption = command.Option("-ae|--auth-encoding <encoding>", "Encoding to use on authentication value. Defaults to ASCII", CommandOptionType.SingleValue);
+            var authUsernameOption = command.Option("-u|--username <username>", "Username to use to authenticate", CommandOptionType.SingleValue);
+            var authPasswordOption = command.Option("-p|--password <password>", "Password for the username that is use to authenticate", CommandOptionType.SingleValue);
+
             command.HelpOption("-h|--help");
 
             command.OnExecute(() =>
@@ -320,13 +325,26 @@ namespace SourceLink {
                     Console.WriteLine("file does not exist: " + path);
                     return 3;
                 }
+
+
+                // collect all the authentication details from the commandline
+                var authDetails = (
+                    AuthType: authOption.HasValue() ? authOption.Value() ?? "Basic" : null,
+                    Encoding: authEncodingOption.HasValue() ? Encoding.GetEncoding(authEncodingOption.Value()) : Encoding.ASCII,
+                    Username: authUsernameOption.Value(),
+                    Password: authPasswordOption.Value()
+                );
+
+                // get the authentication header provider based on the commandline inputs
+                var authenticationHeaderValueProvider = GetAuthenticationHeaderValueProvider(authDetails);
+
                 switch (Path.GetExtension(path))
                 {
                     case ".dll":
                     case ".pdb":
-                        return TestFile(path);
+                        return TestFile(path, authenticationHeaderValueProvider);
                     case ".nupkg":
-                        var errors = TestNupkg(path, fileOption.Values);
+                        var errors = TestNupkg(path, fileOption.Values, authenticationHeaderValueProvider);
                         if (errors > 0)
                         {
                             Console.WriteLine("{0} files did not pass in {1}", errors, path);
@@ -337,6 +355,23 @@ namespace SourceLink {
                         return 4;
                 }
             });
+        }
+
+        private static IAuthenticationHeaderValueProvider GetAuthenticationHeaderValueProvider((string AuthType, Encoding Encoding, string Username, string password) authDetails)
+        {
+            if (string.IsNullOrWhiteSpace(authDetails.AuthType))
+            {
+                return null;
+            }
+
+            switch (authDetails.AuthType.ToLower())
+            {
+                case "basic":
+                    return new BasicAuthenticationHeaderValueProvider(authDetails.Username, authDetails.password, authDetails.Encoding);
+
+                default:
+                    throw new NotSupportedException($"Authentication type of {authDetails.AuthType} is not supported");
+            }
         }
 
         public static readonly Guid SourceLinkId = new Guid("CC110556-A091-4D38-9FEC-25AB9A351A6A");
@@ -428,7 +463,7 @@ namespace SourceLink {
             return null;
         }
 
-        static async Task<IEnumerable<Document>> GetDocumentsWithUrlHashes(DebugReaderProvider drp)
+        static async Task<IEnumerable<Document>> GetDocumentsWithUrlHashes(DebugReaderProvider drp, IAuthenticationHeaderValueProvider authenticationHeaderValueProvider)
         {
             // https://github.com/ctaggart/SourceLink/blob/v1/Exe/Http.fs
             // https://github.com/ctaggart/SourceLink/blob/v1/Exe/Checksums.fs
@@ -436,13 +471,17 @@ namespace SourceLink {
             var handler = new HttpClientHandler();
             if (handler.SupportsAutomaticDecompression)
                 handler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+
             using (var hc = new HttpClient(handler))
             {
                 hc.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("SourceLink", "2.0.0"));
-                // TODO Basic Auth support, ASCII or UTF8
-                //hc.DefaultRequestHeaders.Authorization = AuthenticationHeaderValue("Basic",
-                //    Convert.ToBase64String(Encoding.ASCII.GetBytes("username:password")));
 
+                if (authenticationHeaderValueProvider != null)
+                {
+                    // if authentication is required get the header value
+                    hc.DefaultRequestHeaders.Authorization = authenticationHeaderValueProvider.GetValue();
+                }
+                
                 var tasks = GetDocumentsWithUrls(drp)
                     .Select(doc => CheckDocumentHash(hc, doc))
                     .ToArray();
