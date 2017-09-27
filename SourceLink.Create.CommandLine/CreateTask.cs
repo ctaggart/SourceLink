@@ -20,6 +20,8 @@ namespace SourceLink.Create.CommandLine
         [Required]
         public string File { get; set; }
 
+        public string ServerType { get;set; }
+
         [Output]
         public string SourceLink { get; set; }
 
@@ -33,7 +35,7 @@ namespace SourceLink.Create.CommandLine
                     Log.LogError("OriginUrl not set");
                     return false;
                 }
-                url = ConvertUrl(OriginUrl);
+                url = ConvertUrl(OriginUrl, ServerType);
                 Log.LogMessage(MessageImportance.Normal, "SourceLinkUrl: " + url);
                 if (url == null)
                 {
@@ -63,18 +65,36 @@ namespace SourceLink.Create.CommandLine
 
         public delegate string UrlConverter(string url);
 
-        public static string ConvertUrl(string origin)
+        public static string ConvertUrl(string origin, string serverType)
         {
-            var urlConverters = new List<UrlConverter> {
-                GitHub.UrlConverter.Convert,
-                BitBucket.UrlConverter.Convert
-            };
+            var urlConverters = new List<UrlConverter>();
+
+            var normalizeServerType = serverType?.ToUpperInvariant();
+
+            switch (normalizeServerType)
+            {
+                case "GITHUB":
+                    urlConverters.Add(GitHub.UrlConverter.Convert);
+                    break;
+                case "BITBUCKET":
+                    urlConverters.Add(BitBucket.UrlConverter.Convert);
+                    break;
+                case "BITBUCKETSERVER":
+                    urlConverters.Add(BitBucketServer.UrlConverter.Convert);
+                    break;
+                default:
+                    urlConverters.Add(GitHub.UrlConverter.Convert);
+                    urlConverters.Add(BitBucket.UrlConverter.Convert);
+                    break;
+            }
+
             foreach(var urlConverter in urlConverters)
             {
                 var url = urlConverter(origin);
                 if (url != null)
                     return url;
             }
+
             return null;
         }
 
