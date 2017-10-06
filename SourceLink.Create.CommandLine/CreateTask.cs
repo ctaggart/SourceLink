@@ -76,6 +76,9 @@ namespace SourceLink.Create.CommandLine
                 case "GITHUB":
                     urlConverters.Add(GitHub.UrlConverter.Convert);
                     break;
+                case "GITLAB":
+                    urlConverters.Add(GitLab.UrlConverter.Convert);
+                    break;
                 case "BITBUCKET":
                     urlConverters.Add(BitBucket.UrlConverter.Convert);
                     break;

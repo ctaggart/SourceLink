@@ -1,0 +1,38 @@
+﻿<Project>
+  <PropertyGroup>
+    <SourceLinkCreateGitLabDll Condition="'$(MSBuildRuntimeType)' == 'Core'">netstandard1.4\SourceLink.Create.GitLab.dll</SourceLinkCreateGitLabDll>
+    <SourceLinkCreateGitLabDll Condition="'$(MSBuildRuntimeType)' != 'Core'">net461\SourceLink.Create.GitLab.dll</SourceLinkCreateGitLabDll>
+  </PropertyGroup>
+  <UsingTask TaskName="SourceLink.Create.GitLab.CreateTask" AssemblyFile="$(SourceLinkCreateGitLabDll)" />
+
+  <PropertyGroup>
+    <SourceLinkCreate Condition="'$(SourceLinkCreate)' == ''">$(CI)</SourceLinkCreate>
+    <SourceLinkCreate Condition="'$(SourceLinkCreate)' == '' and '$(BUILD_NUMBER)' != ''">true</SourceLinkCreate>
+    <SourceLinkCreate Condition="'$(SourceLinkCreate)' == '' and '$(TF_BUILD)' != ''">true</SourceLinkCreate>
+    <CompileDependsOn Condition="'$(SourceLinkCreate)' == 'true'">SourceLinkCreate;$(CompileDependsOn)</CompileDependsOn>
+    <SourceLinkRepo Condition="'$(SourceLinkRepo)' == ''">$(MSBuildProjectDirectory)</SourceLinkRepo>
+    <SourceLinkFile Condition="'$(SourceLinkFile)' == ''">$(SourceLink)</SourceLinkFile>
+    <SourceLinkFile Condition="'$(SourceLinkFile)' == ''">$(IntermediateOutputPath)sourcelink.json</SourceLinkFile>
+    <SourceLinkNotInGit Condition="'$(SourceLinkNotInGit)' == ''">embed</SourceLinkNotInGit>
+    <SourceLinkHashMismatch Condition="'$(SourceLinkHashMismatch)' == ''">embed</SourceLinkHashMismatch>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <SourceLinkSources Condition="'@(SourceLinkSources)' == ''" Include="@(Compile)" Exclude="@(EmbeddedFiles)" />
+  </ItemGroup>
+
+  <Target Name="SourceLinkCreate">
+    <SourceLink.Create.GitLab.CreateTask
+        GitDirectory="$(SourceLinkGitDirectory)"
+        Url="$(SourceLinkUrl)"
+        File="$(SourceLinkFile)"
+        Sources="@(SourceLinkSources)"
+        NoAutoLF="$(SourceLinkNoAutoLF)"
+        NotInGit="$(SourceLinkNotInGit)"
+        HashMismatch="$(SourceLinkHashMismatch)"
+        EmbeddedFilesIn="@(EmbeddedFiles)">
+      <Output PropertyName="SourceLink" TaskParameter="SourceLink" />
+      <Output ItemName="EmbeddedFiles" TaskParameter="EmbeddedFiles" />
+    </SourceLink.Create.GitLab.CreateTask>
+  </Target>
+</Project>

@@ -16,6 +16,17 @@ namespace Tests
         }
 
         [Theory]
+        [InlineData("git@gitlab.com:ctaggart/sourcelink-test.git")]
+        [InlineData("https://gitlab.com/ctaggart/sourcelink-test.git")]
+        [InlineData("https://gitlab.com/ctaggart/sourcelink-test")]
+        [InlineData("https://gitlab.com/ctaggart/sourcelink-test/")]
+        public void Should_return_url_in_canonical_form_for_GitLab(string provided)
+        {
+            var task = new SourceLink.Create.GitLab.CreateTask();
+            Assert.Equal("https://gitlab.com/ctaggart/sourcelink-test/raw/{commit}/*", task.ConvertUrl(provided));
+        }
+
+        [Theory]
         [InlineData("git@bitbucket.org:ctaggart/sourcelink-test.git")]
         [InlineData("https://bitbucket.org/ctaggart/sourcelink-test.git")]
         [InlineData("https://bitbucket.org/ctaggart/sourcelink-test")]

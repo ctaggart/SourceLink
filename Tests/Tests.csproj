@@ -18,6 +18,7 @@
     <ProjectReference Include="..\SourceLink.Create.BitBucket\SourceLink.Create.BitBucket.csproj" />
     <ProjectReference Include="..\SourceLink.Create.BitBucketServer\SourceLink.Create.BitBucketServer.csproj" />
     <ProjectReference Include="..\SourceLink.Create.GitHub\SourceLink.Create.GitHub.csproj" />
+    <ProjectReference Include="..\SourceLink.Create.GitLab\SourceLink.Create.GitLab.csproj" />
   </ItemGroup>
 
   <ItemGroup>
