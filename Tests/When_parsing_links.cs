@@ -38,6 +38,28 @@ namespace Tests
         }
 
         [Theory]
+        [InlineData("https://bitbucket.company.com/projects/SMN/repos/company.innernamespace.project")]
+        [InlineData("https://bitbucket.company.com/projects/SMN/repos/company.innernamespace.project/")]
+        public void Should_return_url_in_canonical_form_for_BitBucket_with_company_url(string provided)
+        {
+            var task = new SourceLink.Create.BitBucketServer.CreateTask();
+            Assert.Equal("https://bitbucket.company.com/projects/SMN/repos/company.innernamespace.project/raw/*?at={commit}", task.ConvertUrl(provided));
+        }
+
+
+        [Theory]
+        [InlineData("https://bitbucket.company.com")]
+        [InlineData("https://bitbucket.company.com/projects/SMN")]
+        [InlineData("https://bitbucket.company.com/projects/SMN/repos")]
+        [InlineData("https://bitbucket.company.com/repos/some.comapny")]
+        [InlineData("https://bitbucket.company.com/projects/SMN/repos/company.innernamespace.project/invalidPart")]
+        public void Should_not_match_invalid_company_url(string provided)
+        {
+            var task = new SourceLink.Create.BitBucketServer.CreateTask();
+            Assert.NotEqual("https://bitbucket.company.com/projects/SMN/repos/company.innernamespace.project/raw/*?at={commit}", task.ConvertUrl(provided));
+        }
+
+        [Theory]
         [InlineData("ssh://git@internal.bitbucketserver.local:7999/sol123/reallyawesomeproject.git")]
         [InlineData("https://internal.bitbucketserver.local/scm/sol123/reallyawesomeproject.git")]
         public void Should_return_url_in_canonical_form_for_BitBucketServer(string provided)
