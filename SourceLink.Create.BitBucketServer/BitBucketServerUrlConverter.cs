@@ -14,6 +14,11 @@ namespace SourceLink.Create.BitBucketServer
                 match = Regex.Match(origin, @"^ssh:\/\/git@(.*):\d+\/(.*)\/(.*)\.git$", RegexOptions.IgnoreCase);
             }
 
+            if(match.Success == false) // Company url
+            {
+                match = Regex.Match(origin, @"^https:\/\/(.*)\/projects\/(.*)\/repos\/([^\/]*?)\/?$", RegexOptions.IgnoreCase);
+            }
+
             // Any match?
             if (match.Success)
             {
