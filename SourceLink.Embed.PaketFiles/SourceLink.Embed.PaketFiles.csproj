@@ -5,6 +5,7 @@
     <IncludeBuildOutput>false</IncludeBuildOutput>
   </PropertyGroup>
   <ItemGroup Label="dotnet pack instructions">
+    <PackageReference Update="NETStandard.Library" PrivateAssets="all" />
     <Content Include="SourceLink.Embed.PaketFiles.targets">
       <Pack>true</Pack>
       <PackagePath>build</PackagePath>
