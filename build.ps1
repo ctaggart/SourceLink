@@ -67,8 +67,3 @@ foreach($nupkg in $nupkgs){
 }
 
 Set-Location $psscriptroot
-
-# testing on local nuget feed
-if (-not $env:appveyor){
-    Copy-Item .\bin\*$version$versionSuffix.nupkg C:\dotnet\nupkg\
-}
