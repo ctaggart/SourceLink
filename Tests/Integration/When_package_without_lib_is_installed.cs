@@ -31,7 +31,7 @@ namespace Tests.Integration
                $"    <TargetFramework>{targetFramework}</TargetFramework>",
                 "  </PropertyGroup>",
                 "  <ItemGroup>",
-               $"    <PackageReference Include=\"{packageName}\" Version=\"{packageVersion}\" PrivateAssets=\"all\" />",
+               $"    <PackageReference Include=\"{packageName}\" Version=\"{packageVersion}\" ExcludeAssets=\"build\" PrivateAssets=\"all\" />",
                 "  </ItemGroup>",
                 "</Project>"
             }))
