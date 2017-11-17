@@ -115,7 +115,14 @@ Please vote for all of these issues:
 
 - GitHub NuGet: [msbuild /t:Pack always creates seperate symbols package](https://github.com/NuGet/Home/issues/4142)
   
-  `dotnet pack` and `msbuild /t:pack` need to support more easily packaging portable pdb files. Currently, the recommended way of including them is to use the extension point designed for including content that is different for each target framework:
+  `dotnet pack` and `msbuild /t:pack` do not include the pdb files by default. As of Visual Studio 2017 15.4 or .NET Core 2.0.2 SDK and above, you can fix this by modifying this property:
+  ``` xml
+  <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+  ```
+  
+  We may automatically set that property in the next version of SourceLink, see [issue #282](https://github.com/ctaggart/SourceLink/issues/282).
+  
+  The previous recommended way of including them was to use the extension point designed for including content that is different for each target framework:
 
   ``` xml
   <PropertyGroup>
@@ -127,8 +134,6 @@ Please vote for all of these issues:
     </ItemGroup>
   </Target>
   ```
-
-  Another workaround is being investigated in [issue #282](https://github.com/ctaggart/SourceLink/issues/282).
 
 - Visual Studio User Voice: [Debugger should support C# compiler '/embed' option](https://visualstudio.uservoice.com/forums/121579-visual-studio-ide/suggestions/19107733-debugger-should-support-c-compiler-embed-optio)
 
