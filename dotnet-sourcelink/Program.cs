@@ -442,7 +442,7 @@ namespace SourceLink {
         public static string GetUrl(string file, SourceLinkJson json)
         {
             if (json == null) return null;
-            foreach (var key in json.documents.Keys)
+            foreach (var key in json.documents.Keys.OrderByDescending(x => x.Split(Path.DirectorySeparatorChar).Length).ThenBy(x => x))
             {
                 if (key.Contains("*"))
                 {
