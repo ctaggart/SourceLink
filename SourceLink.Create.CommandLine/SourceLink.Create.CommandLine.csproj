@@ -22,6 +22,10 @@
 
   <!-- https://docs.microsoft.com/en-us/dotnet/articles/core/preview3/tools/extensibility -->
   <ItemGroup Label="dotnet pack instructions">
+    <Content Include="SourceLink.Create.CommandLine.props">
+      <Pack>true</Pack>
+      <PackagePath>build</PackagePath>
+    </Content>
     <Content Include="SourceLink.Create.CommandLine.targets">
       <Pack>true</Pack>
       <PackagePath>build</PackagePath>
