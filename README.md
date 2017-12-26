@@ -35,7 +35,7 @@ The [source link documention](https://github.com/dotnet/core/blob/master/Documen
 ``` xml
 <Project>
   <ItemGroup>
-    <PackageReference Include="SourceLink.Create.CommandLine" Version="2.6.0" PrivateAssets="All" /> 
+    <PackageReference Include="SourceLink.Create.CommandLine" Version="2.7.0" PrivateAssets="All" /> 
   </ItemGroup>
 </Project>
 ```
@@ -67,7 +67,7 @@ msbuild /t:rebuild /p:ci=true /v:n
 
 Install by adding:
 ``` xml
-<DotNetCliToolReference Include="dotnet-sourcelink" Version="2.6.0" />
+<DotNetCliToolReference Include="dotnet-sourcelink" Version="2.7.0" />
 ```
 
 ## examples
@@ -76,7 +76,7 @@ Install by adding:
 
 `dotnet sourcelink test` may also be run by using the `SourceLink.Test` MSBuild targets.
 ``` xml
-<PackageReference Include="SourceLink.Test" Version="2.6.0" PrivateAssets="all" />
+<PackageReference Include="SourceLink.Test" Version="2.7.0" PrivateAssets="all" />
 ```
 Just like the `SourceLinkCreate` property, you can control when it is enabled by setting the `SourceLinkTest` property.
 
@@ -87,8 +87,8 @@ Please follow the quick start if you are just getting started. `SourceLink.Creat
 `SourceLink.Create.GitHub`, `SourceLink.Create.BitBucket` and `SourceLink.Create.BitBucketServer` use `dotnet sourcelink-git`, which accesses the git information using [libgit2sharp](https://github.com/libgit2/libgit2sharp). This allows some additional features. It verifies that all of the source files are in the git repository and that their checksums match. If checksums do not match due to line endings, it will automatically fix them to match the git repository like endings of `lf`. If a source file's checksum still does not match, it will be embedded. If the source file is not in the git repository, it will be embedded. All of these settings are configurable.
 
 ``` xml
-<PackageReference Include="SourceLink.Create.GitHub" Version="2.6.0" PrivateAssets="all" />
-<DotNetCliToolReference Include="dotnet-sourcelink-git" Version="2.6.0" />
+<PackageReference Include="SourceLink.Create.GitHub" Version="2.7.0" PrivateAssets="all" />
+<DotNetCliToolReference Include="dotnet-sourcelink-git" Version="2.7.0" />
 ```
 
 # Embedding Source Files
@@ -99,46 +99,26 @@ For source files are not committed to the repository, it is helpful to embed the
 
 If you just want to embed all of the source files in the pdb and not use source link, add this package:
 ``` xml
-<PackageReference Include="SourceLink.Embed.AllSourceFiles" Version="2.6.0" PrivateAssets="all" />
+<PackageReference Include="SourceLink.Embed.AllSourceFiles" Version="2.7.0" PrivateAssets="all" />
 ```
 
 ## Paket Files
 
 If you are using `SourceLink.Create.CommandLine` and [Paket](https://fsprojects.github.io/Paket/)'s support for including source code that is not in your repository, you can embed those files in the pdb with:
 ``` xml
-<PackageReference Include="SourceLink.Embed.PaketFiles" Version="2.6.0" PrivateAssets="all" />
+<PackageReference Include="SourceLink.Embed.PaketFiles" Version="2.7.0" PrivateAssets="all" />
 ```
 
 # Known Issues
 
-Please vote for all of these issues:
+- Private repositories are not supported
 
-- GitHub NuGet: [msbuild /t:Pack always creates seperate symbols package](https://github.com/NuGet/Home/issues/4142)
+  Visual Studio 2017 15.6 may add support. Please vote for User Voice: [Debugger should support authentication with SourceLink](https://visualstudio.uservoice.com/forums/121579-visual-studio-ide/suggestions/19107784-debugger-should-support-authentication-with-source).
+
+- dotnet pack does not include pdb files by default
   
-  `dotnet pack` and `msbuild /t:pack` do not include the pdb files by default. As of Visual Studio 2017 15.4 or .NET Core 2.0.2 SDK and above, you can fix this by modifying this property:
-  ``` xml
-  <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-  ```
+  Update to SourceLink 2.7.0 which [adds .pdb files](https://github.com/ctaggart/SourceLink/pull/291) to the list of files to pack.
+
+- Visual Studio does not debug into embedded source files
   
-  We may automatically set that property in the next version of SourceLink, see [issue #282](https://github.com/ctaggart/SourceLink/issues/282).
-  
-  The previous recommended way of including them was to use the extension point designed for including content that is different for each target framework:
-
-  ``` xml
-  <PropertyGroup>
-    <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);IncludePDBsInPackage</TargetsForTfmSpecificContentInPackage>
-  </PropertyGroup>
-  <Target Name="IncludePDBsInPackage" Condition="'$(IncludeBuildOutput)' != 'false'">
-    <ItemGroup>
-      <TfmSpecificPackageFile Include="$(OutputPath)\$(AssemblyName).pdb" PackagePath="lib\$(TargetFramework)" />
-    </ItemGroup>
-  </Target>
-  ```
-
-- Visual Studio User Voice: [Debugger should support C# compiler '/embed' option](https://visualstudio.uservoice.com/forums/121579-visual-studio-ide/suggestions/19107733-debugger-should-support-c-compiler-embed-optio)
-
-  The Visual Studio 2017 debugger does not currently look for embedded source files. The fix will ship with Visual Studio 2017 15.5.
-
-- Visual Studio User Voice: [Debugger should support authentication with SourceLink](https://visualstudio.uservoice.com/forums/121579-visual-studio-ide/suggestions/19107784-debugger-should-support-authentication-with-source)
-
-   In order to use source link with private GitHub repositories and other private repositories, it needs to support authentication.
+  Update to Visual Studio 2017 15.5 or later. Support [was added](https://visualstudio.uservoice.com/forums/121579-visual-studio-ide/suggestions/19107733-debugger-should-support-c-compiler-embed-optio).
