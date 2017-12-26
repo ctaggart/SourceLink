@@ -252,7 +252,7 @@ namespace SourceLink.Git {
                     }
                 };
 
-                using (var sw = new StreamWriter(File.OpenWrite(file)))
+                using (var sw = FileUtil.OpenWrite(file))
                 {
                     var js = new JsonSerializer();
                     js.Serialize(sw, json);
@@ -262,7 +262,7 @@ namespace SourceLink.Git {
                 if (embedFiles.Count > 0)
                 {
                     Console.WriteLine("embedding " + embedFiles.Count + " source files");
-                    using (var sw = new StreamWriter(File.OpenWrite(embedFile)))
+                    using (var sw = FileUtil.OpenWrite(embedFile))
                     {
                         foreach (var sf in embedFiles)
                         {
