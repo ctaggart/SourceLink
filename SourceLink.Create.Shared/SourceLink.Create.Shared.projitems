@@ -9,6 +9,7 @@
     <Import_RootNamespace>SourceLink.Create</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)FileUtil.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GitCreateTask.cs" />
   </ItemGroup>
 </Project>

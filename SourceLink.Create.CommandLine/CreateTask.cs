@@ -50,7 +50,7 @@ namespace SourceLink.Create.CommandLine
             rootDirectory += '*';
             rootDirectory = rootDirectory.Replace(@"\", @"\\"); // json escape
 
-            using (var json = new IO.StreamWriter(IO.File.OpenWrite(File)))
+            using (var json = FileUtil.OpenWrite(File))
             {
                 json.Write("{\"documents\":{\"");
                 json.Write(rootDirectory);

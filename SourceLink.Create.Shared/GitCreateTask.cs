@@ -56,7 +56,7 @@ namespace SourceLink.Create
             }
 
             var compileFile = IO.Path.ChangeExtension(File, ".compile");
-            using (var sw = new IO.StreamWriter(IO.File.OpenWrite(compileFile)))
+            using (var sw = FileUtil.OpenWrite(compileFile))
             {
                 if (Sources != null)
                 {
