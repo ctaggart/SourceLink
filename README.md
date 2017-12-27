@@ -31,7 +31,7 @@ SourceLink v2 helps enable source link support using the [Portable PDB](https://
 
 # Quick Start
 
-The [source link documention](https://github.com/dotnet/core/blob/master/Documentation/diagnostics/source_link.md) shows how to embed a source link file by running `git` commands. That is exactly how the [targets](https://github.com/ctaggart/SourceLink/blob/v2/SourceLink.Create.CommandLine/SourceLink.Create.CommandLine.targets) file for `SourceLink.Create.CommandLine` works. Simply add a `PackageReference`. A common way to do with is by adding it to your projects in a `Directory.Build.props`:
+The [source link documention](https://github.com/dotnet/core/blob/master/Documentation/diagnostics/source_link.md) shows how to embed a source link file by running `git` commands. That is exactly how the [targets](SourceLink.Create.CommandLine/SourceLink.Create.CommandLine.targets) file for `SourceLink.Create.CommandLine` works. Simply add a `PackageReference`. A common way to do with is by adding it to your projects in a `Directory.Build.props`:
 ``` xml
 <Project>
   <ItemGroup>
@@ -71,7 +71,7 @@ Install by adding:
 ```
 
 ## examples
-- [SourceLink build.ps1](https://github.com/ctaggart/SourceLink/blob/v2/build.ps1#L45-L51)
+- [SourceLink build.ps1](build.ps1#L45-L51)
 - [octokit.net using Cake](https://github.com/ctaggart/SourceLink/issues/174)
 
 `dotnet sourcelink test` may also be run by using the `SourceLink.Test` MSBuild targets.
