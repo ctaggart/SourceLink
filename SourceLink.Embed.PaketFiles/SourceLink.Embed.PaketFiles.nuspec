@@ -1,0 +1,21 @@
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>SourceLink.Embed.PaketFiles</id>
+    <version>$version$</version>
+    <authors>$authors$</authors>
+    <owners>Cameron Taggart</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
+    <projectUrl>https://github.com/ctaggart/SourceLink</projectUrl>
+    <iconUrl>https://ctaggart.github.io/SourceLink/SourceLink128.jpg</iconUrl>
+    <description>$description$</description>
+    <tags>sourcelink pdb symbols git sourceindexing debugging sourceserver build</tags>
+    <!-- <dependencies>
+      <group targetFramework=".NETStandard1.4" />
+    </dependencies> -->
+  </metadata>
+  <files>
+    <file target="build" src="SourceLink.Embed.PaketFiles.props" />
+    <file target="build" src="SourceLink.Embed.PaketFiles.targets" />
+  </files>
+</package>
