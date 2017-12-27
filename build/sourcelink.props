@@ -1,5 +1,5 @@
 <Project>
   <ItemGroup>
-    <PackageReference Include="SourceLink.Create.CommandLine" Version="2.7.0-b626" PrivateAssets="all" />
+    <PackageReference Include="SourceLink.Create.CommandLine" Version="2.7.0" PrivateAssets="all" />
   </ItemGroup>
 </Project>

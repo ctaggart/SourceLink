@@ -4,6 +4,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <DotNetCliToolReference Include="dotnet-sourcelink" Version="2.7.0-b626" />
+    <DotNetCliToolReference Include="dotnet-sourcelink" Version="2.7.0" />
   </ItemGroup>
 </Project>
