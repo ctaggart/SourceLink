@@ -18,6 +18,10 @@
       <Pack>true</Pack>
       <PackagePath>build</PackagePath>
     </Content>
+    <Content Include="SourceLink.Create.BitBucketServer.props">
+      <Pack>true</Pack>
+      <PackagePath>buildCrossTargeting</PackagePath>
+    </Content>
     <Content Include="SourceLink.Create.BitBucketServer.targets">
       <Pack>true</Pack>
       <PackagePath>build</PackagePath>

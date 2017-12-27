@@ -18,6 +18,10 @@
       <Pack>true</Pack>
       <PackagePath>build</PackagePath>
     </Content>
+    <Content Include="SourceLink.Create.GitLab.props">
+      <Pack>true</Pack>
+      <PackagePath>buildCrossTargeting</PackagePath>
+    </Content>
     <Content Include="SourceLink.Create.GitLab.targets">
       <Pack>true</Pack>
       <PackagePath>build</PackagePath>

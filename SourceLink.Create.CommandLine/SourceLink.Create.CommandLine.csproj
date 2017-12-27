@@ -26,6 +26,10 @@
       <Pack>true</Pack>
       <PackagePath>build</PackagePath>
     </Content>
+    <Content Include="SourceLink.Create.CommandLine.props">
+      <Pack>true</Pack>
+      <PackagePath>buildCrossTargeting</PackagePath>
+    </Content>
     <Content Include="SourceLink.Create.CommandLine.targets">
       <Pack>true</Pack>
       <PackagePath>build</PackagePath>
