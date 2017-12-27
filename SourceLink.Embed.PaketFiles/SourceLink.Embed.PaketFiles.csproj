@@ -3,17 +3,15 @@
   <PropertyGroup>
     <TargetFramework>netstandard1.4</TargetFramework>
     <IncludeBuildOutput>false</IncludeBuildOutput>
+    <NuspecFile>$(MSBuildThisFileDirectory)$(MSBuildProjectName).nuspec</NuspecFile>
   </PropertyGroup>
-  <ItemGroup Label="dotnet pack instructions">
-    <PackageReference Update="NETStandard.Library" PrivateAssets="all" />
-    <Content Include="SourceLink.Embed.PaketFiles.props">
-      <Pack>true</Pack>
-      <PackagePath>build</PackagePath>
-    </Content>
-    <Content Include="SourceLink.Embed.PaketFiles.targets">
-      <Pack>true</Pack>
-      <PackagePath>build</PackagePath>
-    </Content>
-  </ItemGroup>
+  <Target Name="SetNuspecProperties" BeforeTargets="GenerateNuspec">
+    <PropertyGroup>
+      <NuspecProperties>$(NuspecProperties);id=$(AssemblyName)</NuspecProperties>
+      <NuspecProperties>$(NuspecProperties);version=$(PackageVersion)</NuspecProperties>
+      <NuspecProperties>$(NuspecProperties);authors=$(Authors)</NuspecProperties>
+      <NuspecProperties>$(NuspecProperties);description=$(Description)</NuspecProperties>
+    </PropertyGroup>
+  </Target>
   <Import Project="..\SourceLink.Embed.Shared\SourceLink.Embed.Shared.projitems" Label="Shared" />
 </Project>
