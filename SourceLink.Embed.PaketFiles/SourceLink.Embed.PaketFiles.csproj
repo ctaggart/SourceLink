@@ -10,6 +10,10 @@
       <Pack>true</Pack>
       <PackagePath>build</PackagePath>
     </Content>
+    <Content Include="SourceLink.Embed.PaketFiles.props">
+      <Pack>true</Pack>
+      <PackagePath>buildCrossTargeting</PackagePath>
+    </Content>
     <Content Include="SourceLink.Embed.PaketFiles.targets">
       <Pack>true</Pack>
       <PackagePath>build</PackagePath>
