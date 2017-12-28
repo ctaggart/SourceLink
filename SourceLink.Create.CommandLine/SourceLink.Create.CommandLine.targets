@@ -36,6 +36,14 @@
         ServerType="$(SourceLinkServerType)">
       <Output PropertyName="SourceLink" TaskParameter="SourceLink" />
     </SourceLink.Create.CommandLine.CreateTask>
+    <ItemGroup>
+      <FullPathEmbeddedFiles
+          Condition="$([System.IO.File]::Exists('%(Identity)'))"
+          Include="$([System.IO.Path]::GetFullPath('%(EmbeddedFiles.Identity)'))" />
+    </ItemGroup>
+    <CreateProperty Value="@(FullPathEmbeddedFiles)">  
+      <Output TaskParameter="Value" PropertyName="embed" />  
+    </CreateProperty>
   </Target>
 
 </Project>
