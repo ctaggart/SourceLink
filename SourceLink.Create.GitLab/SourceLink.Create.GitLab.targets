@@ -34,5 +34,8 @@
       <Output PropertyName="SourceLink" TaskParameter="SourceLink" />
       <Output ItemName="EmbeddedFiles" TaskParameter="EmbeddedFiles" />
     </SourceLink.Create.GitLab.CreateTask>
+    <CreateProperty Value="@(EmbeddedFiles)">  
+      <Output TaskParameter="Value" PropertyName="embed" />  
+    </CreateProperty>
   </Target>
 </Project>
