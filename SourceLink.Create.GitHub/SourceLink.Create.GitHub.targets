@@ -37,7 +37,7 @@
     <ItemGroup>
       <EmbeddedFiles Include="@(_EmbeddedFiles)" />
       <FullPathEmbeddedFiles
-          Condition="$([System.IO.File]::Exists('%(Identity)'))"
+          Condition="$([System.IO.File]::Exists('%(EmbeddedFiles.Identity)'))"
           Include="$([System.IO.Path]::GetFullPath('%(EmbeddedFiles.Identity)'))" />
     </ItemGroup>
     <CreateProperty Value="@(FullPathEmbeddedFiles)">  

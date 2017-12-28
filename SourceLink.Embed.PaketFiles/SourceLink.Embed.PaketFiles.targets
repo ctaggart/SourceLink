@@ -5,11 +5,11 @@
   <Target Name="EmbedPaketFiles">
     <ItemGroup>
       <PaketFiles
-          Condition="$([System.String]::Copy('%(Identity)').Contains('paket-files'))"
+          Condition="$([System.String]::Copy('%(Compile.Identity)').Contains('paket-files'))"
           Include="%(Compile.Identity)" />
       <EmbeddedFiles Include="@(PaketFiles)" />
       <FullPathEmbeddedFiles
-          Condition="$([System.IO.File]::Exists('%(Identity)'))"
+          Condition="$([System.IO.File]::Exists('%(EmbeddedFiles.Identity)'))"
           Include="$([System.IO.Path]::GetFullPath('%(EmbeddedFiles.Identity)'))" />
     </ItemGroup>
     <CreateProperty Value="@(FullPathEmbeddedFiles)">  
