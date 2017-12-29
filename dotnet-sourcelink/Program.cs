@@ -501,15 +501,20 @@ namespace SourceLink {
                 {
                     if (!doc.Hash.CollectionEquals(doc.UrlHash))
                     {
-                        doc.Error = "url hash does not match: " + doc.Hash.ToHex();
+                        await HashUrlCrlf(hc, doc);
+                        if (doc.Error == null)
+                        {
+                            if (!doc.Hash.CollectionEquals(doc.UrlHashCrlf))
+                            {
+                                doc.Error = "url hash does not match: " + doc.Hash.ToHex();
+                            }
+                        }
                     }
                 }
             }
-
             return doc;
         }
 
-        // TODO async
         static async Task HashUrl(HttpClient hc, Document doc)
         {
             using (var req = new HttpRequestMessage(HttpMethod.Get, doc.Url))
@@ -522,6 +527,53 @@ namespace SourceLink {
                     using (var ha = CreateHashAlgorithm(doc.HashAlgorithm))
                     {
                         doc.UrlHash = ha.ComputeHash(stream);
+                    }
+                }
+                else
+                {
+                    doc.Error = "url failed " + rsp.StatusCode + ": " + rsp.ReasonPhrase;
+                }
+            }
+        }
+
+        static async Task HashUrlCrlf(HttpClient hc, Document doc)
+        {
+            using (var req = new HttpRequestMessage(HttpMethod.Get, doc.Url))
+            using (var rsp = await hc.SendAsync(req))
+            {
+                if (rsp.IsSuccessStatusCode)
+                {
+                    using (var stream = await rsp.Content.ReadAsStreamAsync())
+                    // TODO Is it more efficient to cache?
+                    using (var ha = CreateHashAlgorithm(doc.HashAlgorithm))
+                    {
+                        var fileBytes = new byte[] { };
+                        // https://github.com/ctaggart/SourceLink/blob/v1/Exe/LineFeed.fs#L31-L50
+                        // passing UTFEncoding without the BOM set allows it to be detected
+                        // http://stackoverflow.com/a/27976558/23059
+                        using (var sr = new StreamReader(stream, new UTF8Encoding(false)))
+                        {
+                            var text = sr.ReadToEnd();
+                            var lines = text.Split(new char[] { '\n' });
+                            if (lines.Length > 0)
+                            {
+                                using (var ms = new MemoryStream())
+                                {
+                                    using (var sw = new StreamWriter(ms, sr.CurrentEncoding))
+                                    {
+                                        for (var i = 0; i < lines.Length - 1; i++)
+                                        {
+                                            sw.Write(lines[i]);
+                                            sw.Write('\r');
+                                            sw.Write('\n');
+                                        }
+                                        sw.Write(lines[lines.Length - 1]);
+                                    }
+                                    fileBytes = ms.ToArray();
+                                    doc.UrlHashCrlf = ha.ComputeHash(fileBytes);
+                                }
+                            }
+                        }
                     }
                 }
                 else
