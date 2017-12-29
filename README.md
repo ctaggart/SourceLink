@@ -35,7 +35,7 @@ The [source link documention](https://github.com/dotnet/core/blob/master/Documen
 ``` xml
 <Project>
   <ItemGroup>
-    <PackageReference Include="SourceLink.Create.CommandLine" Version="2.7.0" PrivateAssets="All" /> 
+    <PackageReference Include="SourceLink.Create.CommandLine" Version="2.7.2" PrivateAssets="All" /> 
   </ItemGroup>
 </Project>
 ```
@@ -67,7 +67,7 @@ msbuild /t:rebuild /p:ci=true /v:n
 
 Install by adding:
 ``` xml
-<DotNetCliToolReference Include="dotnet-sourcelink" Version="2.7.0" />
+<DotNetCliToolReference Include="dotnet-sourcelink" Version="2.7.2" />
 ```
 
 ## examples
@@ -76,7 +76,7 @@ Install by adding:
 
 `dotnet sourcelink test` may also be run by using the `SourceLink.Test` MSBuild targets.
 ``` xml
-<PackageReference Include="SourceLink.Test" Version="2.7.0" PrivateAssets="all" />
+<PackageReference Include="SourceLink.Test" Version="2.7.2" PrivateAssets="all" />
 ```
 Just like the `SourceLinkCreate` property, you can control when it is enabled by setting the `SourceLinkTest` property.
 
@@ -87,8 +87,8 @@ Please follow the quick start if you are just getting started. `SourceLink.Creat
 `SourceLink.Create.GitHub`, `SourceLink.Create.BitBucket` and `SourceLink.Create.BitBucketServer` use `dotnet sourcelink-git`, which accesses the git information using [libgit2sharp](https://github.com/libgit2/libgit2sharp). This allows some additional features. It verifies that all of the source files are in the git repository and that their checksums match. If checksums do not match due to line endings, it will automatically fix them to match the git repository like endings of `lf`. If a source file's checksum still does not match, it will be embedded. If the source file is not in the git repository, it will be embedded. All of these settings are configurable.
 
 ``` xml
-<PackageReference Include="SourceLink.Create.GitHub" Version="2.7.0" PrivateAssets="all" />
-<DotNetCliToolReference Include="dotnet-sourcelink-git" Version="2.7.0" />
+<PackageReference Include="SourceLink.Create.GitHub" Version="2.7.2" PrivateAssets="all" />
+<DotNetCliToolReference Include="dotnet-sourcelink-git" Version="2.7.2" />
 ```
 
 # Embedding Source Files
@@ -99,14 +99,14 @@ For source files are not committed to the repository, it is helpful to embed the
 
 If you just want to embed all of the source files in the pdb and not use source link, add this package:
 ``` xml
-<PackageReference Include="SourceLink.Embed.AllSourceFiles" Version="2.7.0" PrivateAssets="all" />
+<PackageReference Include="SourceLink.Embed.AllSourceFiles" Version="2.7.2" PrivateAssets="all" />
 ```
 
 ## Paket Files
 
 If you are using `SourceLink.Create.CommandLine` and [Paket](https://fsprojects.github.io/Paket/)'s support for including source code that is not in your repository, you can embed those files in the pdb with:
 ``` xml
-<PackageReference Include="SourceLink.Embed.PaketFiles" Version="2.7.0" PrivateAssets="all" />
+<PackageReference Include="SourceLink.Embed.PaketFiles" Version="2.7.2" PrivateAssets="all" />
 ```
 
 # Known Issues
@@ -117,7 +117,7 @@ If you are using `SourceLink.Create.CommandLine` and [Paket](https://fsprojects.
 
 - dotnet pack does not include pdb files by default
   
-  Update to SourceLink 2.7.0 which [adds .pdb files](https://github.com/ctaggart/SourceLink/pull/291) to the list of files to pack.
+  Update to SourceLink 2.7.2 which [adds .pdb files](https://github.com/ctaggart/SourceLink/pull/291) to the list of files to pack.
 
 - Visual Studio does not debug into embedded source files
   
