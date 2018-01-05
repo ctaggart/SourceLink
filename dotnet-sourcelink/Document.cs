@@ -13,6 +13,7 @@ namespace SourceLink
 
         public string Url { get; set; }
         public byte[] UrlHash { get; set; }
+        public byte[] UrlHashCrlf { get; set; }
         public string Error { get; set; }
     }
 

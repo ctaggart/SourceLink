@@ -4,7 +4,11 @@
   </PropertyGroup>
   <Target Name="EmbedAllSourceFiles">
     <ItemGroup>
-      <EmbeddedFiles Include="$([System.IO.Path]::GetFullPath('%(Compile.Identity)'))" />
+      <AllSourceFiles Include="%(Compile.Identity)" />
+      <EmbeddedFiles Include="@(AllSourceFiles)" />
+      <FullPathEmbeddedFiles
+          Condition="$([System.IO.File]::Exists('%(EmbeddedFiles.Identity)'))"
+          Include="$([System.IO.Path]::GetFullPath('%(EmbeddedFiles.Identity)'))" />
     </ItemGroup>
     <CreateProperty Value="@(EmbeddedFiles)">  
       <Output TaskParameter="Value" PropertyName="embed" />  

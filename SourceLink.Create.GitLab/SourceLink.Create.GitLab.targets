@@ -32,7 +32,17 @@
         HashMismatch="$(SourceLinkHashMismatch)"
         EmbeddedFilesIn="@(EmbeddedFiles)">
       <Output PropertyName="SourceLink" TaskParameter="SourceLink" />
-      <Output ItemName="EmbeddedFiles" TaskParameter="EmbeddedFiles" />
-    </SourceLink.Create.GitLab.CreateTask>
+      <Output ItemName="_EmbeddedFiles" TaskParameter="EmbeddedFiles" />
+    </SourceLink.Create.GitHub.CreateTask>
+    <ItemGroup>
+      <EmbeddedFiles Include="@(_EmbeddedFiles)" />
+      <FullPathEmbeddedFiles
+          Condition="$([System.IO.File]::Exists('%(EmbeddedFiles.Identity)'))"
+          Include="$([System.IO.Path]::GetFullPath('%(EmbeddedFiles.Identity)'))" />
+    </ItemGroup>
+    <CreateProperty Value="@(FullPathEmbeddedFiles)">  
+      <Output TaskParameter="Value" PropertyName="embed" />  
+    </CreateProperty>
   </Target>
+
 </Project>
