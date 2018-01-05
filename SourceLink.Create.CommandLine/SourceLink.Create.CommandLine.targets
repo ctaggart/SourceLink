@@ -18,13 +18,13 @@
   </PropertyGroup>
 
   <Target Name="SourceLinkCreate">
-    <Exec EchoOff="true" Condition="'$(SourceLinkRootDirectory)' == ''" Command="$(SourceLinkRootDirectoryCommand)" ConsoleToMsBuild="true">
+    <Exec StandardOutputImportance="Low" Condition="'$(SourceLinkRootDirectory)' == ''" Command="$(SourceLinkRootDirectoryCommand)" ConsoleToMsBuild="true">
       <Output TaskParameter="ConsoleOutput" PropertyName="SourceLinkRootDirectory" />
     </Exec>
-    <Exec EchoOff="true" Condition="'$(SourceLinkUrl)' == '' and '$(SourceLinkOriginUrl)' == ''" Command="$(SourceLinkOriginUrlCommand)" ConsoleToMsBuild="true">
+    <Exec StandardOutputImportance="Low" Condition="'$(SourceLinkUrl)' == '' and '$(SourceLinkOriginUrl)' == ''" Command="$(SourceLinkOriginUrlCommand)" ConsoleToMsBuild="true">
       <Output TaskParameter="ConsoleOutput" PropertyName="SourceLinkOriginUrl" />
     </Exec>
-    <Exec EchoOff="true" Condition="'$(SourceLinkCommit)' == ''" Command="$(SourceLinkCommitCommand)" ConsoleToMsBuild="true">
+    <Exec StandardOutputImportance="Low" Condition="'$(SourceLinkCommit)' == ''" Command="$(SourceLinkCommitCommand)" ConsoleToMsBuild="true">
       <Output TaskParameter="ConsoleOutput" PropertyName="SourceLinkCommit" />
     </Exec>
     <SourceLink.Create.CommandLine.CreateTask
