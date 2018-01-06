@@ -1,7 +1,8 @@
 
 # SourceLink
 <img src="https://ctaggart.github.io/SourceLink/SourceLink128.jpg" align="right">
- Source link support allows source code to be downloaded on demand while debugging. SourceLink is a set of build tools to help create and test for source link support. [Source link support](https://github.com/dotnet/core/blob/master/Documentation/diagnostics/source_link.md) is a developer productivity feature that allows unique information about an assembly's original source code to be embedded in its PDB during compilation.
+
+Source link support allows source code to be downloaded on demand while debugging. SourceLink is a set of build tools to help create and test for source link support. [Source link support](https://github.com/dotnet/core/blob/master/Documentation/diagnostics/source_link.md) is a developer productivity feature that allows unique information about an assembly's original source code to be embedded in its PDB during compilation.
 
 ## .NET Foundation
 
