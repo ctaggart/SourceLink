@@ -117,7 +117,6 @@ If you are using `SourceLink.Create.CommandLine` and [Paket](https://fsprojects.
 
 - dotnet pack does not include pdb files by default
   
-  Update to SourceLink 2.7.4 which [adds .pdb files](https://github.com/ctaggart/SourceLink/pull/291) to the list of files to pack.
   Update to SourceLink 2.7 which [adds .pdb files](https://github.com/ctaggart/SourceLink/pull/291) to the list of files to pack.
 
 - Visual Studio does not debug into embedded source files
