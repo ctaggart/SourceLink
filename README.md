@@ -41,7 +41,7 @@ msbuild /t:rebuild /p:SourceLinkCreate=true /v:n
 ```
 
 # Package PDB in nupkg
-As of SourceLink 2.7, the pdb files will automatically be included in your nupkg if you use `dotnet pack` or `msbuild /t:pack`. This makes the MSBuild propertyes `/p:IncludeSymbols=true` and `/p:IncludeSource=true` obsolete and you may safely remove those options. 
+As of SourceLink 2.7, the pdb files will automatically be included in your nupkg if you use `dotnet pack` or `msbuild /t:pack`. This makes the MSBuild properties `/p:IncludeSymbols=true` and `/p:IncludeSource=true` obsolete and you may safely disable those options. 
 
 # Test
 
