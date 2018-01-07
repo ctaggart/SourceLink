@@ -16,7 +16,7 @@ SourceLink is licensed under the [MIT license](LICENSE).
 
 ![image](https://cloud.githubusercontent.com/assets/80104/23337630/001cedb6-fbba-11e6-9c44-68f4c826470c.png)
 
-The [source link support documention](https://github.com/dotnet/core/blob/master/Documentation/diagnostics/source_link.md) shows how to embed a source link file by running `git` commands. That is exactly how the [targets](SourceLink.Create.CommandLine/SourceLink.Create.CommandLine.targets) file for `SourceLink.Create.CommandLine` works. Simply add this `PackageReference` to each project that you wish to enable source link for. See the wiki if you are [using Paket](https://github.com/ctaggart/SourceLink/wiki/Paket). A common way to add this for multiple projects is to use a `Directory.Build.props`:
+The [source link support documention](https://github.com/dotnet/core/blob/master/Documentation/diagnostics/source_link.md) shows how to embed a source link file by running `git` commands. That is exactly how the [targets](SourceLink.Create.CommandLine/SourceLink.Create.CommandLine.targets) file for `SourceLink.Create.CommandLine` works. Add this `PackageReference` to each project that you wish to enable source link support for. See the wiki if you are [using Paket](https://github.com/ctaggart/SourceLink/wiki/Paket). A common way to add this for multiple projects is to use a `Directory.Build.props`:
 ``` xml
 <Project>
   <ItemGroup>
