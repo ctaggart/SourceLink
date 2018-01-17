@@ -65,9 +65,13 @@ namespace SourceLink {
                     Console.WriteLine("file does not exist: " + path);
                     return 3;
                 }
-
-                using (var drp = new DebugReaderProvider(path))
+                using (var drp = DebugReaderProvider.Create(path))
                 {
+                    if(drp == null)
+                    {
+                        Console.WriteLine("unable to read debug info: " + path);
+                        return 5;
+                    }
                     var bytes = GetSourceLinkBytes(drp);
                     if (bytes == null || bytes.Length == 0)
                     {
@@ -101,8 +105,13 @@ namespace SourceLink {
                     return 3;
                 }
 
-                using (var drp = new DebugReaderProvider(path))
+                using (var drp = DebugReaderProvider.Create(path))
                 {
+                    if (drp == null)
+                    {
+                        Console.WriteLine("unable to read debug info: " + path);
+                        return 4;
+                    }
                     foreach (var doc in GetDocuments(drp))
                     {
                         Console.WriteLine("{0} {1} {2} {3}", doc.Hash.ToHex(), HashAlgorithmGuids.GetName(doc.HashAlgorithm), LanguageGuids.GetName(doc.Language), doc.Name);
@@ -133,8 +142,13 @@ namespace SourceLink {
                     return 3;
                 }
 
-                using (var drp = new DebugReaderProvider(path))
+                using (var drp = DebugReaderProvider.Create(path))
                 {
+                    if (drp == null)
+                    {
+                        Console.WriteLine("unable to read debug info: " + path);
+                        return 5;
+                    }
                     var missingDocs = new List<Document>();
                     foreach (var doc in GetDocumentsWithUrls(drp))
                     {
@@ -170,8 +184,13 @@ namespace SourceLink {
         
         public static int TestFile(string path, IAuthenticationHeaderValueProvider authenticationHeaderValueProvider = null)
         {
-            using (var drp = new DebugReaderProvider(path))
+            using (var drp = DebugReaderProvider.Create(path))
             {
+                if (drp == null)
+                {
+                    Console.WriteLine("unable to read debug info: " + path);
+                    return 5;
+                }
                 return TestFile(drp, authenticationHeaderValueProvider);
             }
         }
@@ -280,8 +299,13 @@ namespace SourceLink {
                         {
                             stream.CopyTo(ms);
                             ms.Position = 0;
-                            using (var drp = new DebugReaderProvider(file, ms))
+                            using (var drp = DebugReaderProvider.Create(file, ms))
                             {
+                                if (drp == null)
+                                {
+                                    Console.WriteLine("unable to read debug info: " + path);
+                                    return 5;
+                                }
                                 if (TestFile(drp, authenticationHeaderValueProvider) != 0)
                                 {
                                     Console.WriteLine("failed for " + file);
@@ -341,6 +365,8 @@ namespace SourceLink {
                 switch (Path.GetExtension(path))
                 {
                     case ".dll":
+
+                        return TestFile(path, authenticationHeaderValueProvider);
                     case ".pdb":
                         return TestFile(path, authenticationHeaderValueProvider);
                     case ".nupkg":
