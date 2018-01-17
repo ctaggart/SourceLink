@@ -20,7 +20,7 @@ The [source link support documention](https://github.com/dotnet/core/blob/master
 ``` xml
 <Project>
   <ItemGroup>
-    <PackageReference Include="SourceLink.Create.CommandLine" Version="2.7.4" PrivateAssets="All" /> 
+    <PackageReference Include="SourceLink.Create.CommandLine" Version="2.7.6" PrivateAssets="All" /> 
   </ItemGroup>
 </Project>
 ```
@@ -49,7 +49,7 @@ As of SourceLink 2.7, the pdb files will automatically be included in your nupkg
 
 Install by adding:
 ``` xml
-<DotNetCliToolReference Include="dotnet-sourcelink" Version="2.7.4" />
+<DotNetCliToolReference Include="dotnet-sourcelink" Version="2.7.6" />
 ```
 
 # Embedding Source Files
@@ -60,7 +60,7 @@ For source files are not committed to the repository, it is helpful to embed the
 
 If you just want to embed all of the source files in the pdb and not use source link support, add this package:
 ``` xml
-<PackageReference Include="SourceLink.Embed.AllSourceFiles" Version="2.7.4" PrivateAssets="all" />
+<PackageReference Include="SourceLink.Embed.AllSourceFiles" Version="2.7.6" PrivateAssets="all" />
 ```
 
 # Documentation
