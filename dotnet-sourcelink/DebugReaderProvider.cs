@@ -12,33 +12,37 @@ namespace SourceLink
         private Stream stream;
         private MetadataReaderProvider provider;
 
-        public DebugReaderProvider(string path, Stream stream)
+        private DebugReaderProvider() { }
+
+        public static DebugReaderProvider Create(string path, Stream stream)
         {
-            Path = path;
-            this.stream = stream;
+            var drp = new DebugReaderProvider();
+            drp.Path = path;
+            drp.stream = stream;
             if (path.EndsWith(".dll"))
             {
                 var reader = new PEReader(stream);
-                if (reader.HasMetadata)
-                {
-                    // https://github.com/dotnet/corefx/blob/master/src/System.Reflection.Metadata/tests/PortableExecutable/PEReaderTests.cs
-                    var debugDirectoryEntries = reader.ReadDebugDirectory();
-                    var embeddedPdb = debugDirectoryEntries.Where(dde => dde.Type == DebugDirectoryEntryType.EmbeddedPortablePdb).FirstOrDefault();
-                    if (!embeddedPdb.Equals(default(DebugDirectoryEntry)))
-                    {
-                        provider = reader.ReadEmbeddedPortablePdbDebugDirectoryData(embeddedPdb);
-                    }
-                }
+                if (!reader.HasMetadata)
+                    return null;
+
+                // https://github.com/dotnet/corefx/blob/master/src/System.Reflection.Metadata/tests/PortableExecutable/PEReaderTests.cs
+                var debugDirectoryEntries = reader.ReadDebugDirectory();
+                var embeddedPdb = debugDirectoryEntries.Where(dde => dde.Type == DebugDirectoryEntryType.EmbeddedPortablePdb).FirstOrDefault();
+                if (embeddedPdb.Equals(default(DebugDirectoryEntry)))
+                    return null;
+
+                drp.provider = reader.ReadEmbeddedPortablePdbDebugDirectoryData(embeddedPdb);
             }
             else
             {
-                provider = MetadataReaderProvider.FromPortablePdbStream(stream);
+                drp.provider = MetadataReaderProvider.FromPortablePdbStream(stream);
             }
+            return drp;
         }
 
-        public DebugReaderProvider(string path)
-            : this(path, File.OpenRead(path))
+        public static DebugReaderProvider Create(string path)
         {
+            return Create(path, File.OpenRead(path));
         }
 
         public MetadataReader GetMetaDataReader()
