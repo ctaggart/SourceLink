@@ -365,8 +365,6 @@ namespace SourceLink {
                 switch (Path.GetExtension(path))
                 {
                     case ".dll":
-
-                        return TestFile(path, authenticationHeaderValueProvider);
                     case ".pdb":
                         return TestFile(path, authenticationHeaderValueProvider);
                     case ".nupkg":
