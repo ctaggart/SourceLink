@@ -1,5 +1,6 @@
 ﻿<Project>
-  <Target Name="AddReferenceRelatedPathsToCopyLocal" AfterTargets="ResolveAssemblyReferences">
+  <Target Name="AddReferenceRelatedPathsToCopyLocal" AfterTargets="ResolveAssemblyReferences"
+      Condition="'$(TargetFrameworkIdentifier)' != '.NETCoreApp'">
     <ItemGroup>
       <ReferenceCopyLocalPaths Include="@(_ReferenceRelatedPaths)" />
     </ItemGroup>
