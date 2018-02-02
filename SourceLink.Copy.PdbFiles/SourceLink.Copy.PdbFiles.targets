@@ -1,0 +1,7 @@
+﻿<Project>
+  <Target Name="AddReferenceRelatedPathsToCopyLocal" AfterTargets="ResolveAssemblyReferences">
+    <ItemGroup>
+      <ReferenceCopyLocalPaths Include="@(_ReferenceRelatedPaths)" />
+    </ItemGroup>
+  </Target>
+</Project>
