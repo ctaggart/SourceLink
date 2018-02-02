@@ -20,7 +20,7 @@ The [source link support documention](https://github.com/dotnet/core/blob/master
 ``` xml
 <Project>
   <ItemGroup>
-    <PackageReference Include="SourceLink.Create.CommandLine" Version="2.7.6" PrivateAssets="All" /> 
+    <PackageReference Include="SourceLink.Create.CommandLine" Version="2.8.0" PrivateAssets="All" /> 
   </ItemGroup>
 </Project>
 ```
@@ -49,7 +49,7 @@ As of SourceLink 2.7, the pdb files will automatically be included in your nupkg
 
 Install by adding:
 ``` xml
-<DotNetCliToolReference Include="dotnet-sourcelink" Version="2.7.6" />
+<DotNetCliToolReference Include="dotnet-sourcelink" Version="2.8.0" />
 ```
 
 # Embedding Source Files
@@ -60,13 +60,25 @@ For source files are not committed to the repository, it is helpful to embed the
 
 If you just want to embed all of the source files in the pdb and not use source link support, add this package:
 ``` xml
-<PackageReference Include="SourceLink.Embed.AllSourceFiles" Version="2.7.6" PrivateAssets="all" />
+<PackageReference Include="SourceLink.Embed.AllSourceFiles" Version="2.8.0" PrivateAssets="all" />
 ```
 
 # Documentation
 Additional [documentation is on the wiki](https://github.com/ctaggart/SourceLink/wiki).
 
 # Known Issues
+
+- New project system does not copy PDBs from packages when targeting .NET Framework
+
+  Add `SourceLink.Copy.PdbFiles` to your project file. See [#313](https://github.com/ctaggart/SourceLink/issues/313) for details.
+
+``` xml
+<Project>
+  <ItemGroup>
+    <PackageReference Include="SourceLink.Copy.PdbFiles" Version="2.8.0" PrivateAssets="All" /> 
+  </ItemGroup>
+</Project>
+```
 
 - Private repositories are not supported
 
