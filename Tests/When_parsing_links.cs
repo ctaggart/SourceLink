@@ -16,6 +16,15 @@ namespace Tests
         }
 
         [Theory]
+        [InlineData("https://fabrikam.visualstudio.com/SomeProject/_git/SomeRepo")]
+        [InlineData("https://fabrikam.visualstudio.com/DefaultCollection/SomeProject/_git/SomeRepo")]
+        public void Should_return_url_in_canonical_form_for_VSTS(string provided)
+        {
+            var task = new SourceLink.Create.VSTS.CreateTask();
+            Assert.Equal("https://fabrikam.visualstudio.com/DefaultCollection/_apis/git/SomeProject/repositories/SomeRepo/items?api-version=1.0&versionType=commit&version={commit}&scopePath=*", task.ConvertUrl(provided));
+        }
+
+        [Theory]
         [InlineData("git@gitlab.com:ctaggart/sourcelink-test.git")]
         [InlineData("https://gitlab.com/ctaggart/sourcelink-test.git")]
         [InlineData("https://gitlab.com/ctaggart/sourcelink-test")]
