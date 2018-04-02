@@ -13,6 +13,7 @@ namespace Tests.Integration
         [InlineData("SourceLink.Create.CommandLine")]
         [InlineData("SourceLink.Create.GitHub")]
         [InlineData("SourceLink.Create.GitLab")]
+        [InlineData("SourceLink.Create.VSTS")]
         [InlineData("SourceLink.Embed.AllSourceFiles")]
         [InlineData("SourceLink.Embed.PaketFiles")]
         [InlineData("SourceLink.Test")]
