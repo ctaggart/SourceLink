@@ -7,6 +7,7 @@
     <!-- https://github.com/NuGet/Home/wiki/Adding-nuget-pack-as-a-msbuild-target -->
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <!--<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>-->
+    <DevelopmentDependency>True</DevelopmentDependency>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\SourceLink.Create.BitBucket\BitBucketUrlConverter.cs" Link="BitBucketUrlConverter.cs" />
