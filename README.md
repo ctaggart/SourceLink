@@ -82,7 +82,7 @@ Additional [documentation is on the wiki](https://github.com/ctaggart/SourceLink
 
 - Private repositories are not supported
 
-  Visual Studio 2017 15.6 may add support. Please vote for User Voice: [Debugger should support authentication with SourceLink](https://visualstudio.uservoice.com/forums/121579-visual-studio-ide/suggestions/19107784-debugger-should-support-authentication-with-source).
+  Visual Studio 2017 15.7 added support for sourlink to authenticated Github.com and VSTS repositories. Support for other repository hosts is TBD: [Uservoice request](https://visualstudio.uservoice.com/forums/121579-visual-studio-ide/suggestions/19107784-debugger-should-support-authentication-with-source).
 
 - Visual Studio does not debug into embedded source files
   
