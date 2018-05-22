@@ -33,7 +33,7 @@
         EmbeddedFilesIn="@(EmbeddedFiles)">
       <Output PropertyName="SourceLink" TaskParameter="SourceLink" />
       <Output ItemName="_EmbeddedFiles" TaskParameter="EmbeddedFiles" />
-    </SourceLink.Create.GitHub.CreateTask>
+    </SourceLink.Create.GitLab.CreateTask>
     <ItemGroup>
       <EmbeddedFiles Include="@(_EmbeddedFiles)" />
       <FullPathEmbeddedFiles
