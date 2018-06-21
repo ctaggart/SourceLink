@@ -1,8 +1,9 @@
 ﻿<Project>
-  <Target Name="AddReferenceRelatedPathsToCopyLocal" AfterTargets="ResolveAssemblyReferences"
-      Condition="('$(TargetFrameworkIdentifier)' != '.NETCoreApp') and ('$(TargetFrameworkIdentifier)' != '.NETStandard')">
+  <Target Name="_ResolveCopyLocalNuGetPackagePdbs" AfterTargets="ResolveReferences"
+      Condition="$(CopyLocalLockFileAssemblies) == true">
     <ItemGroup>
-      <ReferenceCopyLocalPaths Include="@(_ReferenceRelatedPaths)" />
+      <ReferenceCopyLocalPaths Include="@(ReferenceCopyLocalPaths->'%(RootDir)%(Directory)%(Filename).pdb')" 
+          Condition="'%(ReferenceCopyLocalPaths.NuGetPackageId)' != '' and Exists('%(RootDir)%(Directory)%(Filename).pdb')" />
     </ItemGroup>
   </Target>
 </Project>
