@@ -1,6 +1,6 @@
 ﻿<Project>
   <PropertyGroup>
-    <SourceLinkCreateCommandLineDll Condition="'$(MSBuildRuntimeType)' == 'Core'">netstandard1.4\SourceLink.Create.CommandLine.dll</SourceLinkCreateCommandLineDll>
+    <SourceLinkCreateCommandLineDll Condition="'$(MSBuildRuntimeType)' == 'Core'">netstandard2.0\SourceLink.Create.CommandLine.dll</SourceLinkCreateCommandLineDll>
     <SourceLinkCreateCommandLineDll Condition="'$(MSBuildRuntimeType)' != 'Core'">net461\SourceLink.Create.CommandLine.dll</SourceLinkCreateCommandLineDll>
   </PropertyGroup>
   <UsingTask TaskName="SourceLink.Create.CommandLine.CreateTask" AssemblyFile="$(SourceLinkCreateCommandLineDll)" />

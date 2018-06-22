@@ -2,14 +2,17 @@
   <Import Project="../build/common.props" />
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>netcoreapp2.0;netcoreapp1.0</TargetFrameworks>
-    <PackageType>DotnetCliTool</PackageType>
-    <RootNamespace>SourceLink.Git</RootNamespace>
+    <TargetFrameworks>netcoreapp2.1</TargetFrameworks>
+    <RootNamespace>SourceLink</RootNamespace>
+    <ToolCommandName>sourcelink</ToolCommandName>
+    <PackAsTool>True</PackAsTool>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="LibGit2Sharp.Portable" Version="0.24.10" />
     <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.1" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+    <PackageReference Include="NuGet.Packaging" Version="4.4.0" />
+    <PackageReference Include="System.Reflection.Metadata" Version="1.5.0" />
+    <PackageReference Include="System.ValueTuple" Version="4.4.0" />
   </ItemGroup>
   <Import Project="..\dotnet-sourcelink-shared\dotnet-sourcelink-shared.projitems" Label="Shared" />
   <Import Project="../build/sourcelink.props" />

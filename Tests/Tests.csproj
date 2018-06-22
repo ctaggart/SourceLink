@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.1</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,23 +14,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\dotnet-sourcelink-git\dotnet-sourcelink-git.csproj" />
-    <ProjectReference Include="..\dotnet-sourcelink\dotnet-sourcelink.csproj" />
-    <ProjectReference Include="..\SourceLink.Create.BitBucket\SourceLink.Create.BitBucket.csproj" />
-    <ProjectReference Include="..\SourceLink.Create.BitBucketServer\SourceLink.Create.BitBucketServer.csproj" />
-    <ProjectReference Include="..\SourceLink.Create.GitHub\SourceLink.Create.GitHub.csproj" />
-    <ProjectReference Include="..\SourceLink.Create.GitLab\SourceLink.Create.GitLab.csproj" />
+    <ProjectReference Include="..\dotnet-sourcelink\sourcelink.csproj" />
+    <ProjectReference Include="..\SourceLink.Create.CommandLine\SourceLink.Create.CommandLine.csproj" />
   </ItemGroup>
 
   <Target Name="CopyPackagesForIntegrationTesting" AfterTargets="AfterBuild">
     <ItemGroup>
-      <ProjectForPackageTesting Include="..\SourceLink.Create.BitBucket\SourceLink.Create.BitBucket.csproj" />
-      <ProjectForPackageTesting Include="..\SourceLink.Create.BitBucketServer\SourceLink.Create.BitBucketServer.csproj" />
       <ProjectForPackageTesting Include="..\SourceLink.Create.CommandLine\SourceLink.Create.CommandLine.csproj" />
-      <ProjectForPackageTesting Include="..\SourceLink.Create.GitHub\SourceLink.Create.GitHub.csproj" />
-      <ProjectForPackageTesting Include="..\SourceLink.Create.GitLab\SourceLink.Create.GitLab.csproj" />
-      <ProjectForPackageTesting Include="..\SourceLink.Embed.AllSourceFiles\SourceLink.Embed.AllSourceFiles.csproj" />
-      <ProjectForPackageTesting Include="..\SourceLink.Embed.PaketFiles\SourceLink.Embed.PaketFiles.csproj" />
       <ProjectForPackageTesting Include="..\SourceLink.Test\SourceLink.Test.csproj" />
     </ItemGroup>
 

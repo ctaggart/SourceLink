@@ -8,13 +8,7 @@ namespace Tests.Integration
     public static class When_package_without_lib_is_installed
     {
         [Theory]
-        [InlineData("SourceLink.Create.BitBucket")]
-        [InlineData("SourceLink.Create.BitBucketServer")]
         [InlineData("SourceLink.Create.CommandLine")]
-        [InlineData("SourceLink.Create.GitHub")]
-        [InlineData("SourceLink.Create.GitLab")]
-        [InlineData("SourceLink.Embed.AllSourceFiles")]
-        [InlineData("SourceLink.Embed.PaketFiles")]
         [InlineData("SourceLink.Test")]
         public static void Should_not_reference_additional_libraries(string packageName)
         {

@@ -30,7 +30,12 @@ namespace SourceLink {
 
             if (args.Length == 0)
             {
-                Console.WriteLine("SourceLink " + Version.GetAssemblyInformationalVersion());
+                var version = Version.GetAssemblyInformationalVersion();
+                // trim the metadata, in this case a git commit
+                int index = version.IndexOf("+");
+                if (index > 0)
+                    version = version.Substring(0, index);
+                Console.WriteLine("SourceLink " + version);
                 app.ShowHelp();
                 return 0;
             }

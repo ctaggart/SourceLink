@@ -1,6 +1,6 @@
 ﻿<Project>
   <PropertyGroup>
-    <SourceLinkTestDll Condition="'$(MSBuildRuntimeType)' == 'Core'">netstandard1.4\SourceLink.Test.dll</SourceLinkTestDll>
+    <SourceLinkTestDll Condition="'$(MSBuildRuntimeType)' == 'Core'">netstandard2.0\SourceLink.Test.dll</SourceLinkTestDll>
     <SourceLinkTestDll Condition="'$(MSBuildRuntimeType)' != 'Core'">net461\SourceLink.Test.dll</SourceLinkTestDll>
   </PropertyGroup>
   <UsingTask TaskName="SourceLink.Test.TestTask" AssemblyFile="$(SourceLinkTestDll)" />

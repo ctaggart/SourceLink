@@ -1,6 +1,5 @@
 <Project>
   <PropertyGroup>
-    
     <Authors>Cameron Taggart</Authors>
     <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
     <PackageIconUrl>https://ctaggart.github.io/SourceLink/SourceLink128.jpg</PackageIconUrl>
@@ -10,8 +9,5 @@
       SourceLink: Source Code On Demand
       Source Link your Portable PDB files to allow source code to be downloaded on demand
     </Description>
-
-    <DebugType>embedded</DebugType>
-    
   </PropertyGroup>
 </Project>
