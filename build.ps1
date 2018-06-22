@@ -27,12 +27,12 @@ dotnet $pack
 Set-Location $psscriptroot\SourceLink.Test
 dotnet $pack
 
-Set-Location $psscriptroot\build
-dotnet restore
-$nupkgs = ls ..\bin\*$version$versionSuffix.nupkg
-foreach($nupkg in $nupkgs){
-    echo "test $nupkg"
-    dotnet sourcelink test $nupkg
-}
+# Set-Location $psscriptroot\build
+# dotnet restore
+# $nupkgs = ls ..\bin\*$version$versionSuffix.nupkg
+# foreach($nupkg in $nupkgs){
+#     echo "test $nupkg"
+#     dotnet sourcelink test $nupkg
+# }
 
 Set-Location $psscriptroot

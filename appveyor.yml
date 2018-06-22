@@ -2,7 +2,7 @@ image: Visual Studio 2017
 
 init:
   - git config --global core.autocrlf input
-  - '"C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe"'
+  # - '"C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe"'
 
 clone_depth: 10
 
@@ -11,7 +11,7 @@ before_build:
 
 build_script:
   - ps: |
-      dotnet --version
+      # dotnet --version
       .\build.ps1
       if ($lastexitcode -ne 0){ exit $lastexitcode }
 
@@ -19,7 +19,6 @@ test:
   assemblies:
     only:
       - '**\Tests.dll'
-
 
 test_script:
     - ps: dotnet test .\Tests\Tests.csproj  
