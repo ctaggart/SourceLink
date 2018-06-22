@@ -11,7 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotnet-sourcelink", "dotnet-sourcelink\dotnet-sourcelink.csproj", "{68D40DAC-77EF-426A-979D-1CC4723CB2A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sourcelink", "dotnet-sourcelink\sourcelink.csproj", "{68D40DAC-77EF-426A-979D-1CC4723CB2A1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{13B28F5D-43CA-4243-A932-3352BB788216}"
 EndProject

@@ -15,6 +15,8 @@ if ($env:appveyor){
     Update-AppveyorBuild -Version "$version$versionSuffix"
 }
 
+# just build some, as we are not packing them yet for v3
+$build = "build", "-c", "release", "-o", "../bin", "/p:Version=$version$versionSuffix", "/v:m"
 $pack = "pack", "-c", "release", "-o", "../bin", "/p:Version=$version$versionSuffix", "/v:m"
 $pack += "/p:ci=true"
 
@@ -22,10 +24,10 @@ Set-Location $psscriptroot\dotnet-sourcelink
 dotnet $pack
 
 Set-Location $psscriptroot\SourceLink.Create.CommandLine
-dotnet $pack
+dotnet $build
 
 Set-Location $psscriptroot\SourceLink.Test
-dotnet $pack
+dotnet $build
 
 # Set-Location $psscriptroot\build
 # dotnet restore
