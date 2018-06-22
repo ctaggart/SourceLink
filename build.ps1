@@ -19,15 +19,12 @@ $pack = "pack", "-c", "release", "-o", "../bin", "/p:Version=$version$versionSuf
 $pack += "/p:ci=true"
 
 Set-Location $psscriptroot\dotnet-sourcelink
-dotnet restore
 dotnet $pack
 
 Set-Location $psscriptroot\SourceLink.Create.CommandLine
-dotnet restore
 dotnet $pack
 
 Set-Location $psscriptroot\SourceLink.Test
-dotnet restore
 dotnet $pack
 
 Set-Location $psscriptroot\build

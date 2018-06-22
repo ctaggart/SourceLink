@@ -20,13 +20,7 @@
 
   <Target Name="CopyPackagesForIntegrationTesting" AfterTargets="AfterBuild">
     <ItemGroup>
-      <ProjectForPackageTesting Include="..\SourceLink.Create.BitBucket\SourceLink.Create.BitBucket.csproj" />
-      <ProjectForPackageTesting Include="..\SourceLink.Create.BitBucketServer\SourceLink.Create.BitBucketServer.csproj" />
       <ProjectForPackageTesting Include="..\SourceLink.Create.CommandLine\SourceLink.Create.CommandLine.csproj" />
-      <ProjectForPackageTesting Include="..\SourceLink.Create.GitHub\SourceLink.Create.GitHub.csproj" />
-      <ProjectForPackageTesting Include="..\SourceLink.Create.GitLab\SourceLink.Create.GitLab.csproj" />
-      <ProjectForPackageTesting Include="..\SourceLink.Embed.AllSourceFiles\SourceLink.Embed.AllSourceFiles.csproj" />
-      <ProjectForPackageTesting Include="..\SourceLink.Embed.PaketFiles\SourceLink.Embed.PaketFiles.csproj" />
       <ProjectForPackageTesting Include="..\SourceLink.Test\SourceLink.Test.csproj" />
     </ItemGroup>
 
