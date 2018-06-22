@@ -15,13 +15,13 @@ build_script:
       .\build.ps1
       if ($lastexitcode -ne 0){ exit $lastexitcode }
 
-test:
-  assemblies:
-    only:
-      - '**\Tests.dll'
+# test:
+#   assemblies:
+#     only:
+#       - '**\Tests.dll'
 
-test_script:
-    - ps: dotnet test .\Tests\Tests.csproj  
+# test_script:
+#     - ps: dotnet test .\Tests\Tests.csproj  
 
 artifacts:
   - path: bin\*.nupkg

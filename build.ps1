@@ -16,7 +16,7 @@ if ($env:appveyor){
 }
 
 # just build some, as we are not packing them yet for v3
-$build = "build", "-c", "release", "-o", "../bin", "/p:Version=$version$versionSuffix", "/v:m"
+$build = "build", "-c", "release", "/p:Version=$version$versionSuffix", "/v:m"
 $pack = "pack", "-c", "release", "-o", "../bin", "/p:Version=$version$versionSuffix", "/v:m"
 $pack += "/p:ci=true"
 
