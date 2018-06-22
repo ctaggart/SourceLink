@@ -1,20 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\SourceLink.Create.Shared\SourceLink.Create.Shared.projitems" Label="Shared" />
-  <Import Project="..\SourceLink.Shared\SourceLink.Shared.projitems" Label="Shared" />
   <Import Project="../build/common.props" />
   <PropertyGroup>
-    <TargetFrameworks>netstandard1.4;net461</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netstandard1.4;net461</TargetFrameworks>
     <!-- https://github.com/NuGet/Home/wiki/Adding-nuget-pack-as-a-msbuild-target -->
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <!--<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>-->
     <DevelopmentDependency>True</DevelopmentDependency>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Include="..\SourceLink.Create.BitBucket\BitBucketUrlConverter.cs" Link="BitBucketUrlConverter.cs" />
-    <Compile Include="..\SourceLink.Create.BitBucketServer\BitBucketServerUrlConverter.cs" Link="BitBucketServerUrlConverter.cs" /> 
-    <Compile Include="..\SourceLink.Create.GitHub\GitHubUrlConverter.cs" Link="GitHubUrlConverter.cs" />
-    <Compile Include="..\SourceLink.Create.GitLab\GitLabUrlConverter.cs" Link="GitLabUrlConverter.cs" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.3.409" PrivateAssets="all" />

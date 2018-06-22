@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="../build/common.props" />
   <PropertyGroup>
-    <TargetFrameworks>netstandard1.4;net461</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netstandard1.4;net461</TargetFrameworks>
     <!-- https://github.com/NuGet/Home/wiki/Adding-nuget-pack-as-a-msbuild-target -->
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
@@ -34,7 +34,6 @@
       <PackagePath>build/net461</PackagePath>
     </Content>
   </ItemGroup>
-  <Import Project="..\SourceLink.Shared\SourceLink.Shared.projitems" Label="Shared" />
 
   <Import Project="../build/sourcelink.props" />
 </Project>

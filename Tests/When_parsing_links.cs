@@ -11,8 +11,8 @@ namespace Tests
         [InlineData("https://github.com/ctaggart/sourcelink-test/")]
         public void Should_return_url_in_canonical_form_for_GitHub(string provided)
         {
-            var task = new SourceLink.Create.GitHub.CreateTask();
-            Assert.Equal("https://raw.githubusercontent.com/ctaggart/sourcelink-test/{commit}/*", task.ConvertUrl(provided));
+            Assert.Equal("https://raw.githubusercontent.com/ctaggart/sourcelink-test/{commit}/*",
+                SourceLink.Create.GitHub.UrlConverter.Convert(provided));
         }
 
         [Theory]
@@ -22,8 +22,8 @@ namespace Tests
         [InlineData("https://gitlab.com/ctaggart/sourcelink-test/")]
         public void Should_return_url_in_canonical_form_for_GitLab(string provided)
         {
-            var task = new SourceLink.Create.GitLab.CreateTask();
-            Assert.Equal("https://gitlab.com/ctaggart/sourcelink-test/raw/{commit}/*", task.ConvertUrl(provided));
+            Assert.Equal("https://gitlab.com/ctaggart/sourcelink-test/raw/{commit}/*",
+                 SourceLink.Create.GitLab.UrlConverter.Convert(provided));
         }
 
         [Theory]
@@ -33,8 +33,8 @@ namespace Tests
         [InlineData("https://bitbucket.org/ctaggart/sourcelink-test/")]
         public void Should_return_url_in_canonical_form_for_BitBucket(string provided)
         {
-            var task = new SourceLink.Create.BitBucket.CreateTask();
-            Assert.Equal("https://bitbucket.org/ctaggart/sourcelink-test/raw/{commit}/*", task.ConvertUrl(provided));
+            Assert.Equal("https://bitbucket.org/ctaggart/sourcelink-test/raw/{commit}/*",
+                SourceLink.Create.BitBucket.UrlConverter.Convert(provided));
         }
 
         [Theory]
@@ -42,8 +42,8 @@ namespace Tests
         [InlineData("https://bitbucket.company.com/projects/SMN/repos/company.innernamespace.project/")]
         public void Should_return_url_in_canonical_form_for_BitBucket_with_company_url(string provided)
         {
-            var task = new SourceLink.Create.BitBucketServer.CreateTask();
-            Assert.Equal("https://bitbucket.company.com/projects/SMN/repos/company.innernamespace.project/raw/*?at={commit}", task.ConvertUrl(provided));
+            Assert.Equal("https://bitbucket.company.com/projects/SMN/repos/company.innernamespace.project/raw/*?at={commit}",
+                SourceLink.Create.BitBucketServer.UrlConverter.Convert(provided));
         }
 
 
@@ -55,8 +55,8 @@ namespace Tests
         [InlineData("https://bitbucket.company.com/projects/SMN/repos/company.innernamespace.project/invalidPart")]
         public void Should_not_match_invalid_company_url(string provided)
         {
-            var task = new SourceLink.Create.BitBucketServer.CreateTask();
-            Assert.NotEqual("https://bitbucket.company.com/projects/SMN/repos/company.innernamespace.project/raw/*?at={commit}", task.ConvertUrl(provided));
+            Assert.NotEqual("https://bitbucket.company.com/projects/SMN/repos/company.innernamespace.project/raw/*?at={commit}",
+                SourceLink.Create.BitBucketServer.UrlConverter.Convert(provided));
         }
 
         [Theory]
@@ -64,8 +64,8 @@ namespace Tests
         [InlineData("https://internal.bitbucketserver.local/scm/sol123/reallyawesomeproject.git")]
         public void Should_return_url_in_canonical_form_for_BitBucketServer(string provided)
         {
-            var task = new SourceLink.Create.BitBucketServer.CreateTask();
-            Assert.Equal("https://internal.bitbucketserver.local/projects/sol123/repos/reallyawesomeproject/raw/*?at={commit}", task.ConvertUrl(provided));
+            Assert.Equal("https://internal.bitbucketserver.local/projects/sol123/repos/reallyawesomeproject/raw/*?at={commit}",
+                SourceLink.Create.BitBucketServer.UrlConverter.Convert(provided));
         }
     }
 }
