@@ -16,15 +16,15 @@ Most of the SourceLink 2 tools from this repository are made obsolete by the .NE
 
 # Test
 
-For SourceLink version 3, [sourcelink](https://www.nuget.org/packages/SourceLink/3.0.0-build.732) is a [.NET Core global tool](https://natemcmaster.com/blog/2018/05/12/dotnet-global-tools/).
+For SourceLink version 3, [sourcelink](https://www.nuget.org/packages/SourceLink) is a [.NET Core global tool](https://natemcmaster.com/blog/2018/05/12/dotnet-global-tools/).
 ```
-dotnet tool install --global sourcelink --version 3.0.0-build.732
+dotnet tool install --global sourcelink
 ```
 
-`sourcelink` is a command you can use to test that the source link works. It makes sure all links work for every source file that is not embedded in the PDB. You can test a nupkg, a pdb, or a dll if the pdb is embedded. Run `sourcelink` without any options for a list of diagnostic commands and help:
+`sourcelink` is a tool to test that the source link enabled nupkg or pdb file work. It tests all source files listed in the pdb. You can also print diagnostic information for a pdb. Run `sourcelink` without any options for a list of diagnostic commands and help:
 
 ```
-SourceLink 3.0.0-build.732
+SourceLink 3.0.0
 Source Code On Demand
 
 Usage:  [options] [command]
