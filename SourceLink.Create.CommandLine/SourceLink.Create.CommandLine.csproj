@@ -6,6 +6,7 @@
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <!--<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>-->
     <DevelopmentDependency>True</DevelopmentDependency>
+    <Description>A tool to help enable source link for pdb files using command line applications. git is used by default.</Description>
   </PropertyGroup>
 
   <ItemGroup>

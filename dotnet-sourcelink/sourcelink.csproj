@@ -6,6 +6,7 @@
     <RootNamespace>SourceLink</RootNamespace>
     <ToolCommandName>sourcelink</ToolCommandName>
     <PackAsTool>True</PackAsTool>
+    <Description>A tool to test that the source link enabled nupkg or pdb file work. It tests all source files listed in the pdb. You can also print diagnostic information for a pdb.</Description>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.1" />
