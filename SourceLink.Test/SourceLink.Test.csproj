@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="../build/common.props" />
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <!-- https://github.com/NuGet/Home/wiki/Adding-nuget-pack-as-a-msbuild-target -->
@@ -34,6 +33,4 @@
       <PackagePath>build/net461</PackagePath>
     </Content>
   </ItemGroup>
-
-  <Import Project="../build/sourcelink.props" />
 </Project>
