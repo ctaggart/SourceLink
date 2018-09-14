@@ -34,6 +34,4 @@
       <PackagePath>build/net461</PackagePath>
     </Content>
   </ItemGroup>
-
-  <Import Project="../build/sourcelink.props" />
 </Project>

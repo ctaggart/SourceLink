@@ -16,5 +16,4 @@
     <PackageReference Include="System.ValueTuple" Version="4.4.0" />
   </ItemGroup>
   <Import Project="..\dotnet-sourcelink-shared\dotnet-sourcelink-shared.projitems" Label="Shared" />
-  <Import Project="../build/sourcelink.props" />
 </Project>
