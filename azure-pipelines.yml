@@ -3,11 +3,9 @@
 pool:
   vmImage: 'VS2017-Win2016'
 
-variables:
-  buildConfiguration: 'Release'
-
 steps:
 - powershell: |
-    env
-  displayName: 'get environment variables'
-  
+    dotnet --info
+    dotnet build -c Release
+    cd 
+  displayName: 'build'
