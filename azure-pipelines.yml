@@ -10,4 +10,9 @@ steps:
     cd Tests
     dotnet restore
     dotnet test
-  displayName: 'build'
+  # displayName: 'build'
+
+- task: PublishTestResults@2
+inputs:
+  testRunner: VSTest
+  testResultsFiles: '**/*.trx'

@@ -27,3 +27,4 @@ launchSettings.json
 /*.txt
 *.user
 .vscode/
+*.trx
