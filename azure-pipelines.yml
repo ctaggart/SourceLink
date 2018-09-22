@@ -9,7 +9,7 @@ steps:
     dotnet build -c Release
     cd Tests
     dotnet restore
-    dotnet test
+    dotnet test -l trx
   # displayName: 'build'
 
 - task: PublishTestResults@2
