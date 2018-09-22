@@ -13,6 +13,6 @@ steps:
   # displayName: 'build'
 
 - task: PublishTestResults@2
-inputs:
-  testRunner: VSTest
-  testResultsFiles: '**/*.trx'
+  inputs:
+    testRunner: VSTest
+    testResultsFiles: '**/*.trx'  
