@@ -1,7 +1,8 @@
 # https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema
 trigger:
-  - refs/heads/*
-  - refs/tags/*
+  - +:refs/heads/*
+  - +:refs/pull/*/merge
+  - +:refs/tags/*
 pool:
   vmImage: 'VS2017-Win2016'
 
