@@ -10,7 +10,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <!-- <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.3.409" PrivateAssets="all" /> -->
     <!-- test nuget packages: -->
     <PackageReference Include="Google.Protobuf" Version="3.5.1" PrivateAssets="all" />
   </ItemGroup>
