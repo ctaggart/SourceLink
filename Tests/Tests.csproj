@@ -4,13 +4,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
-    <PackageReference Include="xunit" Version="2.3.1" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
-    <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.0-*" />
-    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.3.409" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.8.0" />
+    <PackageReference Include="xunit" Version="2.4.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
     <!-- test nuget packages: -->
-    <PackageReference Include="Google.Protobuf" Version="3.5.1" />
+    <PackageReference Include="Google.Protobuf" Version="3.5.1" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,10 +31,4 @@
     <RemoveDir Directories="$(IntegrationTestPackageDir)" />
     <MSBuild Projects="@(ProjectForPackageTesting)" Targets="Pack" RemoveProperties="TargetFramework" Properties="PackageOutputPath=$([System.IO.Path]::GetFullPath($(IntegrationTestPackageDir)))" />
   </Target>
-
-  <ItemGroup>
-    <!-- tagged by Test Explorer http://stackoverflow.com/a/22917902/23059 -->
-    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
-  </ItemGroup>
-
 </Project>

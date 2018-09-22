@@ -1,0 +1,18 @@
+# https://docs.microsoft.com/vsts/pipelines/languages/dotnet-core
+
+pool:
+  vmImage: 'VS2017-Win2016'
+
+steps:
+- powershell: |
+    dotnet --info
+    dotnet build -c Release
+    cd Tests
+    dotnet restore
+    dotnet test -l trx
+  # displayName: 'build'
+
+- task: PublishTestResults@2
+  inputs:
+    testRunner: VSTest
+    testResultsFiles: '**/*.trx'  
