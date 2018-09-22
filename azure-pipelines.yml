@@ -7,5 +7,7 @@ steps:
 - powershell: |
     dotnet --info
     dotnet build -c Release
-    cd 
+    cd Tests
+    dotnet restore
+    dotnet test
   displayName: 'build'
