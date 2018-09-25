@@ -29,6 +29,9 @@ dotnet $build
 Set-Location $psscriptroot\SourceLink.Test
 dotnet $build
 
+Set-Location $psscriptroot\SourceLink.MilestoneReleaseNotes
+dotnet $pack
+
 # Set-Location $psscriptroot\build
 # dotnet restore
 # $nupkgs = ls ..\bin\*$version$versionSuffix.nupkg
