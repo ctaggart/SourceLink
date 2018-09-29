@@ -1,5 +1,8 @@
-# https://docs.microsoft.com/vsts/pipelines/languages/dotnet-core
-
+# https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema
+trigger:
+  - +:refs/heads/*
+  - +:refs/pull/*/merge
+  - +:refs/tags/*
 pool:
   vmImage: 'VS2017-Win2016'
 
@@ -10,7 +13,7 @@ steps:
     cd Tests
     dotnet restore
     dotnet test -l trx
-  # displayName: 'build'
+
 
 - task: PublishTestResults@2
   inputs:
