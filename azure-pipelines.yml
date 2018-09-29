@@ -3,6 +3,7 @@ trigger:
   - refs/heads/*
   - refs/pull/*/merge
   - refs/tags/*
+
 pool:
   vmImage: 'VS2017-Win2016'
 
