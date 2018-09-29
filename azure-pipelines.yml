@@ -14,7 +14,6 @@ steps:
     dotnet restore
     dotnet test -l trx
 
-
 - task: PublishTestResults@2
   inputs:
     testRunner: VSTest
