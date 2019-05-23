@@ -288,7 +288,7 @@ namespace SourceLink {
                         {
                             files.Add(pdb);
                         }
-                        else
+                        else if (!IsSatelliteAssembly(dll, dlls))
                         {
                             files.Add(dll);
                         }
@@ -327,6 +327,12 @@ namespace SourceLink {
                 }
             }
             return errors;
+        }
+
+        private static bool IsSatelliteAssembly(string path, List<string> dlls)
+        {
+            var match = Regex.Match(path, @"^(.*)/[^/]+/([^/]+).resources.dll$");
+            return match.Success && dlls.Contains($"{match.Groups[1]}/{match.Groups[2]}.dll");
         }
 
         public static void Test(CommandLineApplication command)
