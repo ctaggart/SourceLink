@@ -46,7 +46,7 @@ namespace SourceLink {
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.Error.WriteLine(ex.Message);
                 return -1;
             }
         }
@@ -67,20 +67,20 @@ namespace SourceLink {
                 }
                 if (!File.Exists(path))
                 {
-                    Console.WriteLine("file does not exist: " + path);
+                    Console.Error.WriteLine("file does not exist: " + path);
                     return 3;
                 }
                 using (var drp = DebugReaderProvider.Create(path))
                 {
                     if(drp == null)
                     {
-                        Console.WriteLine("unable to read debug info: " + path);
+                        Console.Error.WriteLine("unable to read debug info: " + path);
                         return 5;
                     }
                     var bytes = GetSourceLinkBytes(drp);
                     if (bytes == null || bytes.Length == 0)
                     {
-                        Console.WriteLine("Source Link JSON not found in file: " + path);
+                        Console.Error.WriteLine("Source Link JSON not found in file: " + path);
                         return 4;
                     }
                     Console.WriteLine(Encoding.UTF8.GetString(bytes));
@@ -106,7 +106,7 @@ namespace SourceLink {
                 }
                 if (!File.Exists(path))
                 {
-                    Console.WriteLine("file does not exist: " + path);
+                    Console.Error.WriteLine("file does not exist: " + path);
                     return 3;
                 }
 
@@ -114,7 +114,7 @@ namespace SourceLink {
                 {
                     if (drp == null)
                     {
-                        Console.WriteLine("unable to read debug info: " + path);
+                        Console.Error.WriteLine("unable to read debug info: " + path);
                         return 4;
                     }
                     foreach (var doc in GetDocuments(drp))
@@ -143,7 +143,7 @@ namespace SourceLink {
                 }
                 if (!File.Exists(path))
                 {
-                    Console.WriteLine("file does not exist: " + path);
+                    Console.Error.WriteLine("file does not exist: " + path);
                     return 3;
                 }
 
@@ -151,7 +151,7 @@ namespace SourceLink {
                 {
                     if (drp == null)
                     {
-                        Console.WriteLine("unable to read debug info: " + path);
+                        Console.Error.WriteLine("unable to read debug info: " + path);
                         return 5;
                     }
                     var missingDocs = new List<Document>();
@@ -174,10 +174,10 @@ namespace SourceLink {
                     }
                     if (missingDocs.Count > 0)
                     {
-                        Console.WriteLine("" + missingDocs.Count + " Documents without URLs:");
+                        Console.Error.WriteLine("" + missingDocs.Count + " Documents without URLs:");
                         foreach (var doc in missingDocs)
                         {
-                            Console.WriteLine("{0} {1} {2} {3}", doc.Hash.ToHex(), HashAlgorithmGuids.GetName(doc.HashAlgorithm), LanguageGuids.GetName(doc.Language), doc.Name);
+                            Console.Error.WriteLine("{0} {1} {2} {3}", doc.Hash.ToHex(), HashAlgorithmGuids.GetName(doc.HashAlgorithm), LanguageGuids.GetName(doc.Language), doc.Name);
                         }
                         return 4;
                     }
@@ -193,7 +193,7 @@ namespace SourceLink {
             {
                 if (drp == null)
                 {
-                    Console.WriteLine("unable to read debug info: " + path);
+                    Console.Error.WriteLine("unable to read debug info: " + path);
                     return 5;
                 }
                 return TestFile(drp, authenticationHeaderValueProvider);
@@ -308,7 +308,7 @@ namespace SourceLink {
                             {
                                 if (drp == null)
                                 {
-                                    Console.WriteLine("unable to read debug info: " + path);
+                                    Console.Error.WriteLine("unable to read debug info: " + path);
                                     return 5;
                                 }
                                 if (TestFile(drp, authenticationHeaderValueProvider) != 0)
@@ -357,7 +357,7 @@ namespace SourceLink {
                 }
                 if (!File.Exists(path))
                 {
-                    Console.WriteLine("file does not exist: " + path);
+                    Console.Error.WriteLine("file does not exist: " + path);
                     return 3;
                 }
 
