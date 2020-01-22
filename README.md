@@ -8,7 +8,7 @@ Source Link support allows source code to be downloaded on demand while debuggin
 
 Source Link is now a [.NET Foundation](http://www.dotnetfoundation.org/) project at https://github.com/dotnet/sourcelink/. It [joined](http://www.dotnetfoundation.org/blog/2017/11/16/welcome-dnn-nunit-ironpython-mvvmcross-sourcelink-ilmerge-and-humanizer-to-the-net-foundation) in 2017-11. [Announced for .NET Core 2.1](https://blogs.msdn.microsoft.com/dotnet/2018/05/30/announcing-net-core-2-1/), much of the Source Link support has been integrated into the SDK.
 
-New tools are shipped in the NuGet Gallery as [Microsoft.SourceLink.*](https://www.nuget.org/packages?q=Microsoft.SourceLink.*). They work on all platforms supported by .NET Core.
+New tools are shipped in the NuGet Gallery as [Microsoft.SourceLink.*](https://www.nuget.org/packages?q=Microsoft.SourceLink.*). They work on all platforms supported by .NET Core as well as on .NET Framework.
 
 Most of the tools from this repository are made obsolete by the .NET SDK 2.1 and Microsoft.SourceLink tools. See [wiki](https://github.com/ctaggart/SourceLink/wiki) for detials. This repository will still continue to fill in gaps in tooling. The only tool so far is a `sourcelink` command-line tool for testing for Source Link support.
 
