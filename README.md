@@ -4,8 +4,6 @@
 
 Source Link support allows source code to be downloaded on demand while debugging. Source Link is a set of build tools to help create and test for source link support. [Source Link support](https://github.com/dotnet/designs/blob/master/accepted/diagnostics/source-link.md) is a developer productivity feature that allows unique information about an assembly's original source code to be embedded in its PDB during compilation.
 
-![image](https://cloud.githubusercontent.com/assets/80104/23337630/001cedb6-fbba-11e6-9c44-68f4c826470c.png)
-
 ## .NET Foundation
 
 Source Link is now a [.NET Foundation](http://www.dotnetfoundation.org/) project at https://github.com/dotnet/sourcelink/. It [joined](http://www.dotnetfoundation.org/blog/2017/11/16/welcome-dnn-nunit-ironpython-mvvmcross-sourcelink-ilmerge-and-humanizer-to-the-net-foundation) in 2017-11. [Announced for .NET Core 2.1](https://blogs.msdn.microsoft.com/dotnet/2018/05/30/announcing-net-core-2-1/), much of the Source Link support has been integrated into the SDK.
