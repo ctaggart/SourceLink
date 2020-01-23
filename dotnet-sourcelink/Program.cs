@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.CommandLineUtils;
+using Microsoft.SourceLink.Tools;
 using Newtonsoft.Json;
 using NuGet.Packaging;
 using System;
@@ -464,38 +465,14 @@ namespace SourceLink {
             if (bytes != null)
             {
                 var text = Encoding.UTF8.GetString(bytes);
-                var json = JsonConvert.DeserializeObject<SourceLinkJson>(text);
+                var map = SourceLinkMap.Parse(text, Console.Error.WriteLine);
                 foreach (var doc in GetDocuments(drp))
                 {
                     if (!doc.IsEmbedded)
-                        doc.Url = GetUrl(doc.Name, json);
+                        doc.Url = map.GetUri(doc.Name);
                     yield return doc;
                 }
             }
-        }
-
-        public static string GetUrl(string file, SourceLinkJson json)
-        {
-            if (json == null) return null;
-            foreach (var key in json.documents.Keys)
-            {
-                if (key.Contains("*"))
-                {
-                    var pattern = Regex.Escape(key).Replace(@"\*", "(.+)");
-                    var regex = new Regex(pattern);
-                    var m = regex.Match(file);
-                    if (!m.Success) continue;
-                    var url = json.documents[key];
-                    var path = m.Groups[1].Value.Replace(@"\", "/");
-                    return url.Replace("*", path);
-                }
-                else
-                {
-                    if (!key.Equals(file, StringComparison.Ordinal)) continue;
-                    return json.documents[key];
-                }
-            }
-            return null;
         }
 
         static async Task<IEnumerable<Document>> GetDocumentsWithUrlHashes(DebugReaderProvider drp, IAuthenticationHeaderValueProvider authenticationHeaderValueProvider)

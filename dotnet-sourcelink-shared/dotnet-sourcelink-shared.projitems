@@ -10,7 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)FileUtil.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)SourceLinkJson.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SourceLinkMap.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Version.cs" />
   </ItemGroup>
