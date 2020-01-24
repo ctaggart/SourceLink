@@ -1,4 +1,4 @@
-$version = '3.0.0' # the version under development, update after a release
+$version = '3.2.0' # the version under development, update after a release
 $versionSuffix = '-build.0' # manually incremented for local builds
 
 function isVersionTag($tag){
@@ -20,16 +20,10 @@ $build = "build", "-c", "release", "/p:Version=$version$versionSuffix", "/v:m"
 $pack = "pack", "-c", "release", "-o", "../bin", "/p:Version=$version$versionSuffix", "/v:m"
 $pack += "/p:ci=true"
 
+Set-Location $psscriptroot\Tests
+dotnet test -c release /v:m
+
 Set-Location $psscriptroot\dotnet-sourcelink
-dotnet $pack
-
-Set-Location $psscriptroot\SourceLink.Create.CommandLine
-dotnet $build
-
-Set-Location $psscriptroot\SourceLink.Test
-dotnet $build
-
-Set-Location $psscriptroot\SourceLink.MilestoneReleaseNotes
 dotnet $pack
 
 # Set-Location $psscriptroot\build
