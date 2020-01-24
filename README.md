@@ -39,17 +39,9 @@ Commands:
 Use " [command] --help" for more information about a command.
 ```
 
-For version 2, it is just a [dotnet cli tool](https://docs.microsoft.com/en-us/dotnet/core/tools/extensibility), run as `dotnet sourcelink` and installed by adding:
-``` xml
-<DotNetCliToolReference Include="dotnet-sourcelink" Version="2.8.3" />
-```
-
 # License
 
 SourceLink tools are licensed under the [MIT license](LICENSE).
-
-# Documentation
-Additional [documentation is on the wiki](https://github.com/ctaggart/SourceLink/wiki).
 
 # Community
 This project has adopted the code of conduct defined by the [Contributor Covenant](http://contributor-covenant.org/)
