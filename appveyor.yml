@@ -6,8 +6,8 @@ init:
 
 clone_depth: 10
 
-before_build:
-  - cmd: dotnet restore .\SourceLink.sln
+# before_build:
+#   - cmd: dotnet restore .\SourceLink.sln
 
 build_script:
   - ps: |
